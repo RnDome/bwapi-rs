@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/RnDome/bwapi-rs.svg?branch=master)](https://travis-ci.org/RnDome/bwapi-rs)
+
 # About
 
 This project is an attempt to create idiomatic Rust bindings to the [BWAPI library](http://bwapi.github.io/).
