@@ -1,0 +1,10 @@
+[package]
+name = "bwapi"
+version = "0.1.0"
+authors = ["Dmitry Kashitsyn <korvin@deeptown.org>", "Roman Proskuryakov <humbug@deeptown.org>"]
+keywords = ["starcraft", "broodwar", "api", "binding"]
+repository = "https://github.com/RnDome/bwapi-rs"
+description = "Rust bindings to the Starcraft Broodwar game API"
+license = "Unlicense/MIT"
+
+[dependencies]
