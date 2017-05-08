@@ -8,3 +8,4 @@ description = "Rust bindings to the Starcraft Broodwar game API"
 license = "Unlicense/MIT"
 
 [dependencies]
+bwapi-sys = { path = "../bwapi-sys" }
