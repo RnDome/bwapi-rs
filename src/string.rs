@@ -5,14 +5,21 @@ use std::ffi::CStr;
 use std::fmt;
 use std::ops::Deref;
 
+use iterator::FromRaw;
+use std::os::raw::c_void as void;
+
 pub struct BwString(*mut sys::String);
 
-impl BwString {
-    pub unsafe fn from_raw(raw: *mut sys::String) -> BwString {
-        // TODO Perform checks here and maintain invariant later
-        BwString(raw)
-    }
+impl FromRaw for BwString {
+    unsafe fn from_raw(raw: *mut void) -> BwString {
+        assert!(!raw.is_null());
 
+        // TODO Perform checks here and maintain invariant later
+        BwString(raw as *mut sys::String)
+    }
+}
+
+impl BwString {
     pub fn len(&self) -> usize {
         unsafe {
             sys::String_len(self.0)
@@ -32,7 +39,9 @@ impl BwString {
 impl Clone for BwString {
     fn clone(&self) -> BwString {
         unsafe {
-            BwString::from_raw(self.0)
+            let len = self.len();
+            let copy = sys::String_new(self.data().as_ptr(), len);
+            BwString::from_raw(copy as *mut void)
         }
     }
 }
@@ -76,6 +85,13 @@ impl From<BwString> for String {
     }
 }
 
+// impl From<St> for BwString {
+//     fn from(input: BwString) -> String {
+//         let slice: &str = input.as_ref();
+//         slice.to_owned()
+//     }
+// }
+
 impl Drop for BwString {
     fn drop(&mut self) {
         unsafe {
@@ -91,10 +107,10 @@ fn conversions() {
     let string = unsafe {
         let bytes: Vec<i8> = input.bytes().chain(Some(0)).map(|x| x as i8).collect();
         let sys_string = sys::String_new(bytes.as_ptr(), input.len());
-        BwString::from_raw(sys_string)
+        BwString::from_raw(sys_string as *mut void)
     };
 
-    assert_eq!(input.len(), string.len() - 1);
+    assert_eq!(input.len(), string.len());
     assert_eq!(input, string.data().to_str().unwrap());
     assert_eq!(input, <BwString as AsRef<str>>::as_ref(&string));
     assert_eq!(input, String::from(string.as_ref()));
