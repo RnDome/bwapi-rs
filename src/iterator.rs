@@ -15,19 +15,19 @@ pub trait FromRaw {
 /// Iterator is a wrapper over API iterator.
 /// To ensure safety it's lifetime is bound
 /// to the lifetime of the referenced data.
-pub struct BwIterator<'iter, T: FromRaw + 'iter> {
-    raw: &'iter mut sys::Iterator,
-    phantom: PhantomData<&'iter T>,
+pub struct BwIterator<'i, 'g: 'i, T: FromRaw + 'g> {
+    raw: &'i mut sys::Iterator,
+    phantom: PhantomData<&'g T>,
 }
 
-impl<'iter, T: FromRaw + 'iter> BwIterator<'iter, T> {
-    pub unsafe fn from(raw: *mut sys::Iterator) -> BwIterator<'iter, T> {
+impl<'i, 'g: 'i, T: FromRaw + 'g> BwIterator<'i, 'g, T> {
+    pub unsafe fn from(raw: *mut sys::Iterator) -> BwIterator<'i, 'g, T> {
         assert!(!raw.is_null());
         BwIterator { raw: &mut *raw, phantom: PhantomData }
     }
 }
 
-impl<'iter, T: FromRaw + 'iter> Iterator for BwIterator<'iter, T> {
+impl<'i,'g: 'i, T: FromRaw + 'g> Iterator for BwIterator<'i, 'g, T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -43,7 +43,7 @@ impl<'iter, T: FromRaw + 'iter> Iterator for BwIterator<'iter, T> {
     }
 }
 
-impl<'iter, T: FromRaw + 'iter> Drop for BwIterator<'iter, T> {
+impl<'i, 'g: 'i, T: FromRaw + 'g> Drop for BwIterator<'i, 'g, T> {
     fn drop(&mut self) {
         unsafe {
             sys::Iterator_release(self.raw);
