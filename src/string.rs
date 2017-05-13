@@ -8,27 +8,27 @@ use std::ops::Deref;
 use iterator::FromRaw;
 use std::os::raw::c_void as void;
 
-pub struct BwString(*mut sys::String);
+pub struct BwString(*mut sys::BwString);
 
 impl FromRaw for BwString {
     unsafe fn from_raw(raw: *mut void) -> BwString {
         assert!(!raw.is_null());
 
         // TODO Perform checks here and maintain invariant later
-        BwString(raw as *mut sys::String)
+        BwString(raw as *mut sys::BwString)
     }
 }
 
 impl BwString {
     pub fn len(&self) -> usize {
         unsafe {
-            sys::String_len(self.0)
+            sys::BwString_len(self.0)
         }
     }
 
     pub fn data(&self) -> &CStr {
         unsafe {
-            let data = sys::String_data(self.0);
+            let data = sys::BwString_data(self.0);
 
             // TODO from_bytes_with_nul_unchecked()
             CStr::from_ptr(data)
@@ -40,7 +40,7 @@ impl Clone for BwString {
     fn clone(&self) -> BwString {
         unsafe {
             let len = self.len();
-            let copy = sys::String_new(self.data().as_ptr(), len);
+            let copy = sys::BwString_new(self.data().as_ptr(), len);
             BwString::from_raw(copy as *mut void)
         }
     }
@@ -95,7 +95,7 @@ impl From<BwString> for String {
 impl Drop for BwString {
     fn drop(&mut self) {
         unsafe {
-            sys::String_release(self.0);
+            sys::BwString_release(self.0);
         }
     }
 }
@@ -106,7 +106,7 @@ fn conversions() {
 
     let string = unsafe {
         let bytes: Vec<i8> = input.bytes().chain(Some(0)).map(|x| x as i8).collect();
-        let sys_string = sys::String_new(bytes.as_ptr(), input.len());
+        let sys_string = sys::BwString_new(bytes.as_ptr(), input.len());
         BwString::from_raw(sys_string as *mut void)
     };
 

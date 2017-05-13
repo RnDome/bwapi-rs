@@ -35,6 +35,7 @@ impl<'i,'g: 'i, T: FromRaw + 'g> Iterator for BwIterator<'i, 'g, T> {
             if sys::Iterator_valid(self.raw) {
                 let item = sys::Iterator_get(self.raw);
                 sys::Iterator_next(self.raw);
+
                 Some(T::from_raw(item))
             } else {
                 None
