@@ -7,6 +7,8 @@ mod player;
 mod game;
 mod unit;
 
+mod aimodule;
+
 #[cfg(test)]
 mod tests {
     #[test]
