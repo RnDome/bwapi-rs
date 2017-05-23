@@ -1,13 +1,13 @@
 extern crate bwapi_sys;
 
-mod string;
-mod iterator;
+pub mod string;
+pub mod iterator;
 
-mod player;
-mod game;
-mod unit;
+pub mod player;
+pub mod game;
+pub mod unit;
 
-mod aimodule;
+pub mod aimodule;
 
 #[cfg(test)]
 mod tests {
