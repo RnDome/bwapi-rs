@@ -28,4 +28,10 @@ impl Player {
             Box::new(BwIterator::from(iter))
         }
     }
+
+    pub fn start_location(&self) -> sys::TilePosition {
+        unsafe {
+            sys::Player_getStartLocation(self.0)
+        }
+    }
 }

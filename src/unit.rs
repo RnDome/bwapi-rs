@@ -289,6 +289,12 @@ impl Unit {
         }
     }
 
+    pub fn is_moving(&self) -> bool {
+        unsafe {
+            sys::Unit_isMoving(self.0)
+        }
+    }
+
     pub fn is_carrying_minerals(&self) -> bool {
         unsafe {
             sys::Unit_isCarryingMinerals(self.0)
@@ -314,12 +320,6 @@ impl Unit {
         }
     }
 
-    pub fn distance_to_unit(&self, unit: &Unit) -> i32 {
-        unsafe {
-            sys::Unit_getDistance_Unit(self.0, unit.0)
-        }
-    }
-
     pub fn distance_to<T>(&self, t: &T) -> i32
         where T: HasPosition
     {
@@ -328,10 +328,10 @@ impl Unit {
         }
     }
 
-    pub fn right_click(&self, target: &Unit, shift_queue_command: bool) -> bool {
-        unsafe {
-            sys::Unit_rightClick_Unit(self.0, target.0, shift_queue_command)
-        }
+    pub fn right_click<T>(&self, target: &T, shift_queue_command: bool) -> bool 
+        where T: RightClickable
+    {
+        target.dispatch_right_click(self, shift_queue_command)
     }
 
     pub fn train(&self, unit_type: UnitType) -> bool {
@@ -355,6 +355,26 @@ impl HasPosition for Unit {
     fn get_position(&self) -> sys::Position {
         unsafe {
             sys::Unit_getPosition(self.0)
+        }
+    }
+}
+
+pub trait RightClickable {
+    fn dispatch_right_click(&self, source: &Unit, shift_queue_command: bool) -> bool;
+}
+
+impl RightClickable for Unit {
+    fn dispatch_right_click(&self, source: &Unit, shift_queue_command: bool) -> bool {
+        unsafe {
+            sys::Unit_rightClick_Unit(source.0, self.0, shift_queue_command)
+        }
+    }
+}
+
+impl RightClickable for sys::Position {
+    fn dispatch_right_click(&self, source: &Unit, shift_queue_command: bool) -> bool {
+        unsafe {
+            sys::Unit_rightClick_Position(source.0, *self, shift_queue_command)
         }
     }
 }
