@@ -15,14 +15,14 @@ impl FromRaw for Player {
 }
 
 impl Player {
-    pub fn get_name(&self) -> BwString {
+    pub fn name(&self) -> BwString {
         unsafe {
             let name = sys::Player_getName(self.0);
             BwString::from_raw(name as *mut void)
         }
     }
 
-    pub fn get_units(&self) -> Box<Iterator<Item=Unit>> {
+    pub fn units(&self) -> Box<Iterator<Item=Unit>> {
         unsafe {
             let iter = sys::Player_getUnits(self.0) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))

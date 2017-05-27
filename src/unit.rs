@@ -261,7 +261,7 @@ impl FromRaw for Unit {
 }
 
 impl Unit {
-    pub fn get_id(&self) -> i32 {
+    pub fn id(&self) -> i32 {
         unsafe {
             sys::Unit_getID(self.0)
         }
@@ -324,7 +324,7 @@ impl Unit {
         where T: HasPosition
     {
         unsafe {
-            sys::Unit_getDistance_Position(self.0, t.get_position())
+            sys::Unit_getDistance_Position(self.0, t.position())
         }
     }
 
@@ -342,17 +342,17 @@ impl Unit {
 }
 
 pub trait HasPosition {
-    fn get_position(&self) -> sys::Position;
+    fn position(&self) -> sys::Position;
 }
 
 impl HasPosition for sys::Position {
-    fn get_position(&self) -> sys::Position {
+    fn position(&self) -> sys::Position {
         self.clone()
     }
 }
 
 impl HasPosition for Unit {
-    fn get_position(&self) -> sys::Position {
+    fn position(&self) -> sys::Position {
         unsafe {
             sys::Unit_getPosition(self.0)
         }

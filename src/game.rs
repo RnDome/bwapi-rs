@@ -32,7 +32,7 @@ impl Game {
         }
     }
 
-    pub fn get_frame_count(&self) -> i32 {
+    pub fn frame_count(&self) -> i32 {
         unsafe {
             sys::Game_getFrameCount(self.0)
         }
@@ -46,13 +46,13 @@ impl Game {
         }
     }
 
-    pub fn get_self(&self) -> Player {
+    pub fn self_player(&self) -> Player {
         unsafe {
             Player::from_raw(sys::Game_self(self.0) as *mut void)
         }
     }
 
-    pub fn get_minerals(&self) -> Box<Iterator<Item=Unit>> {
+    pub fn minerals(&self) -> Box<Iterator<Item=Unit>> {
         unsafe {
             let iter = sys::Game_getMinerals(self.0) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
