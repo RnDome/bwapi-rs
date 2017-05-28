@@ -5,6 +5,7 @@ use iterator::{BwIterator, FromRaw};
 
 use unit::Unit;
 use player::*;
+use region::Region;
 
 use std::os::raw::c_void as void;
 
@@ -24,7 +25,26 @@ pub enum CoordinateType {
     Mouse = 3
 }
 
+pub enum CheatFlag {
+    CompleteMapInfo = 0,
+    UserInput = 1,
+}
+
+pub enum CommandOptLevel {
+    None = 0,
+    Some = 1,
+    More = 2,
+    Extensive = 3,
+    Aggressive = 4
+}
+
 impl Game {
+    pub fn enable_flag(&self, flag: CheatFlag) {
+        unsafe {
+            sys::Game_enableFlag(self.0, flag as i32);
+        }
+    }
+
     pub fn send_text(&self, text: &str) {
         unsafe {
             let data = CString::new(text).unwrap();
@@ -38,11 +58,30 @@ impl Game {
         }
     }
 
+    pub fn get_apm(&self, include_selects: bool) -> i32 {
+        unsafe {
+            sys::Game_getAPM(self.0, include_selects)
+        }
+    }
+
+    pub fn set_command_optimization_level(&self, level: CommandOptLevel) {
+        unsafe {
+            sys::Game_setCommandOptimizationLevel(self.0, level as i32)
+        }
+    }
+
     pub fn draw_text(&self, ctype: CoordinateType, coords: (i32, i32), text: &str) {
         unsafe {
             let data  = CString::new(text).unwrap();
-            let ctype = sys::CoordinateType{ id: ctype as i32 };
+            let ctype = sys::CoordinateType { id: ctype as i32 };
             sys::Game_drawText(self.0, ctype, coords.0, coords.1, data.as_ptr());
+        }
+    }
+
+    pub fn draw_line(&self, ctype: CoordinateType, first: (i32, i32), second: (i32, i32), color: sys::Color) {
+        unsafe {
+            let ctype = sys::CoordinateType { id: ctype as i32 };
+            sys::Game_drawLine(self.0, ctype, first.0, first.1, second.0, second.1, color);
         }
     }
 
@@ -55,6 +94,13 @@ impl Game {
     pub fn minerals(&self) -> Box<Iterator<Item=Unit>> {
         unsafe {
             let iter = sys::Game_getMinerals(self.0) as *mut sys::Iterator;
+            Box::new(BwIterator::from(iter))
+        }
+    }
+
+    pub fn regions(&self) -> Box<Iterator<Item=Region>> {
+        unsafe {
+            let iter = sys::Game_getAllRegions(self.0) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
         }
     }

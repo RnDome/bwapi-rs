@@ -10,7 +10,7 @@ use std::ffi::CStr;
 use std::os::raw::c_void as void;
 
 pub trait AIHandler {
-    fn on_start(&self);
+    fn on_start(&mut self);
     fn on_end(&mut self, isWinner: bool);
     fn on_frame(&mut self);
     fn on_send_text(&mut self, text: &str);
