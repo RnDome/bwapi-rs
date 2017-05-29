@@ -7,6 +7,7 @@ pub struct Unit(*mut sys::Unit);
 use std::os::raw::c_void as void;
 
 #[repr(i32)]
+#[allow(non_camel_case_types)]
 #[derive(PartialEq, PartialOrd, Copy, Clone)]
 pub enum UnitType {
     Terran_Marine = 0,

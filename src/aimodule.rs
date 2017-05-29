@@ -3,40 +3,21 @@ use bwapi_sys::bridge as sys;
 use unit::Unit;
 use player::Player;
 use iterator::FromRaw;
+use game;
 
 use std::ptr;
 use std::mem;
 use std::ffi::CStr;
 use std::os::raw::c_void as void;
 
-pub trait AIHandler {
-    fn on_start(&mut self);
-    fn on_end(&mut self, isWinner: bool);
-    fn on_frame(&mut self);
-    fn on_send_text(&mut self, text: &str);
-    fn on_receive_text(&mut self, player: &mut Player, text: &str);
-    fn on_player_left(&mut self, player: &mut Player);
-    // TODO fn on_nuke_detect(&mut self, target: Position);
-    fn on_unit_discover(&mut self, unit: &mut Unit);
-    fn on_unit_evade(&mut self, unit: &mut Unit);
-    fn on_unit_show(&mut self, unit: &mut Unit);
-    fn on_unit_hide(&mut self, unit: &mut Unit);
-    fn on_unit_create(&mut self, unit: &mut Unit);
-    fn on_unit_destroy(&mut self, unit: &mut Unit);
-    fn on_unit_morph(&mut self, unit: &mut Unit);
-    fn on_unit_renegade(&mut self, unit: &mut Unit);
-    fn on_save_game(&mut self, game_name: &str);
-    fn on_unit_complete(&mut self, unit: &mut Unit);
-}
-
 #[repr(C)]
 pub struct AIModule {
     vtable: Box<sys::AIModule_vtable>,
-    handler: Box<AIHandler>,
+    handler: Box<game::EventHandler>,
 }
 
 impl AIModule {
-    pub fn new(handler: Box<AIHandler>) -> AIModule {
+    pub fn new(handler: Box<game::EventHandler>) -> AIModule {
         AIModule {
             vtable: Box::new(sys::AIModule_vtable {
                 onStart: Some(AIModule::on_start),
@@ -62,7 +43,7 @@ impl AIModule {
         }
     }
 
-    unsafe fn get_handler<'a>(sys_module: *mut sys::AIModule) -> &'a mut AIHandler {
+    unsafe fn get_handler<'a>(sys_module: *mut sys::AIModule) -> &'a mut game::EventHandler {
         let module = sys_module as *mut AIModule;
         &mut * (*module).handler
     }
@@ -151,7 +132,7 @@ impl AIModule {
 
 }
 
-pub unsafe fn wrap_handler(handler: Box<AIHandler>) -> *mut ::std::os::raw::c_void {
+pub unsafe fn wrap_handler(handler: Box<game::EventHandler>) -> *mut ::std::os::raw::c_void {
     let module = Box::new(AIModule::new(handler));
     let module_ptr = Box::into_raw(module) as *mut sys::AIModule;
 
