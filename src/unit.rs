@@ -1,8 +1,15 @@
 
 use bwapi_sys::bridge as sys;
 use iterator::{BwIterator, FromRaw};
+use game::Game;
 
-pub struct Unit(*mut sys::Unit);
+use std::marker::PhantomData;
+
+#[derive(Clone)]
+pub struct Unit<'g> {
+    raw: *mut sys::Unit,
+    phantom: PhantomData<&'g Game>,
+}
 
 use std::os::raw::c_void as void;
 
@@ -245,7 +252,7 @@ pub enum UnitType {
     Buildings,
     Factories,
     Unknown,
-    MAX
+    MAX,
 }
 
 impl UnitType {
@@ -254,23 +261,27 @@ impl UnitType {
     }
 }
 
-impl FromRaw for Unit {
-    unsafe fn from_raw(raw: *mut void) -> Unit {
+impl<'g> FromRaw for Unit<'g> {
+    unsafe fn from_raw(raw: *mut void) -> Unit<'g> {
         assert!(!raw.is_null());
-        Unit(raw as *mut sys::Unit)
+        Unit {
+            raw: raw as *mut sys::Unit,
+            phantom: PhantomData,
+        }
     }
 }
 
-impl Unit {
-    pub fn id(&self) -> i32 {
-        unsafe {
-            sys::Unit_getID(self.0)
-        }
+#[derive(Hash, Debug, Clone, Eq, PartialEq, PartialOrd)]
+pub struct UnitId(i32);
+
+impl<'g> Unit<'g> {
+    pub fn id(&self) -> UnitId {
+        unsafe { UnitId(sys::Unit_getID(self.raw)) }
     }
 
     pub fn get_type(&self) -> UnitType {
         unsafe {
-            let raw_type = sys::Unit_getType(self.0).id;
+            let raw_type = sys::Unit_getType(self.raw).id;
             assert!(raw_type >= 0);
             assert!(raw_type < UnitType::MAX as i32);
 
@@ -279,44 +290,32 @@ impl Unit {
     }
 
     pub fn exists(&self) -> bool {
-        unsafe {
-            sys::Unit_exists(self.0)
-        }
+        unsafe { sys::Unit_exists(self.raw) }
     }
 
     pub fn is_idle(&self) -> bool {
-        unsafe {
-            sys::Unit_isIdle(self.0)
-        }
+        unsafe { sys::Unit_isIdle(self.raw) }
     }
 
     pub fn is_moving(&self) -> bool {
-        unsafe {
-            sys::Unit_isMoving(self.0)
-        }
+        unsafe { sys::Unit_isMoving(self.raw) }
     }
 
     pub fn is_carrying_minerals(&self) -> bool {
-        unsafe {
-            sys::Unit_isCarryingMinerals(self.0)
-        }
+        unsafe { sys::Unit_isCarryingMinerals(self.raw) }
     }
 
     pub fn is_carrying_gas(&self) -> bool {
-        unsafe {
-            sys::Unit_isCarryingGas(self.0)
-        }
+        unsafe { sys::Unit_isCarryingGas(self.raw) }
     }
 
     pub fn return_cargo(&self, shift_queue_command: bool) -> bool {
-        unsafe {
-            sys::Unit_returnCargo(self.0, shift_queue_command)
-        }
+        unsafe { sys::Unit_returnCargo(self.raw, shift_queue_command) }
     }
 
-    pub fn loaded_units(&self) -> Box<Iterator<Item=Unit>> {
+    pub fn loaded_units(&self) -> Box<Iterator<Item = Unit<'g>>> {
         unsafe {
-            let iter = sys::Unit_getLoadedUnits(self.0) as *mut sys::Iterator;
+            let iter = sys::Unit_getLoadedUnits(self.raw) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
         }
     }
@@ -324,21 +323,17 @@ impl Unit {
     pub fn distance_to<T>(&self, t: &T) -> i32
         where T: HasPosition
     {
-        unsafe {
-            sys::Unit_getDistance_Position(self.0, t.position())
-        }
+        unsafe { sys::Unit_getDistance_Position(self.raw, t.position()) }
     }
 
-    pub fn right_click<T>(&self, target: &T, shift_queue_command: bool) -> bool 
+    pub fn right_click<T>(&self, target: &T, shift_queue_command: bool) -> bool
         where T: RightClickable
     {
         target.dispatch_right_click(self, shift_queue_command)
     }
 
     pub fn train(&self, unit_type: UnitType) -> bool {
-        unsafe {
-            sys::Unit_train(self.0, unit_type.as_sys())
-        }
+        unsafe { sys::Unit_train(self.raw, unit_type.as_sys()) }
     }
 }
 
@@ -352,11 +347,9 @@ impl HasPosition for sys::Position {
     }
 }
 
-impl HasPosition for Unit {
+impl<'g> HasPosition for Unit<'g> {
     fn position(&self) -> sys::Position {
-        unsafe {
-            sys::Unit_getPosition(self.0)
-        }
+        unsafe { sys::Unit_getPosition(self.raw) }
     }
 }
 
@@ -364,18 +357,15 @@ pub trait RightClickable {
     fn dispatch_right_click(&self, source: &Unit, shift_queue_command: bool) -> bool;
 }
 
-impl RightClickable for Unit {
+impl<'g> RightClickable for Unit<'g> {
     fn dispatch_right_click(&self, source: &Unit, shift_queue_command: bool) -> bool {
-        unsafe {
-            sys::Unit_rightClick_Unit(source.0, self.0, shift_queue_command)
-        }
+        unsafe { sys::Unit_rightClick_Unit(source.raw, self.raw, shift_queue_command) }
     }
 }
 
 impl RightClickable for sys::Position {
     fn dispatch_right_click(&self, source: &Unit, shift_queue_command: bool) -> bool {
-        unsafe {
-            sys::Unit_rightClick_Position(source.0, *self, shift_queue_command)
-        }
+        unsafe { sys::Unit_rightClick_Position(source.raw, *self, shift_queue_command) }
     }
 }
+

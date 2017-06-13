@@ -20,7 +20,7 @@ impl FromRaw for BwString {
 }
 
 impl BwString {
-    pub fn len(&self) -> usize {
+    pub fn len(&self) -> i32 {
         unsafe {
             sys::BwString_len(self.0)
         }
@@ -106,7 +106,7 @@ fn conversions() {
 
     let string = unsafe {
         let bytes: Vec<i8> = input.bytes().chain(Some(0)).map(|x| x as i8).collect();
-        let sys_string = sys::BwString_new(bytes.as_ptr(), input.len());
+        let sys_string = sys::BwString_new(bytes.as_ptr(), input.len() as i32);
         BwString::from_raw(sys_string as *mut void)
     };
 

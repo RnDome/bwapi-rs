@@ -4,34 +4,40 @@ use string::BwString;
 use iterator::{BwIterator, FromRaw};
 use std::os::raw::c_void as void;
 use unit::Unit;
+use game::Game;
 
-pub struct Player(*mut sys::Player);
+use std::marker::PhantomData;
 
-impl FromRaw for Player {
-    unsafe fn from_raw(raw: *mut void) -> Player {
+#[derive(Clone)]
+pub struct Player<'g> {
+    raw: *mut sys::Player,
+    phantom: PhantomData<&'g Game>,
+}
+
+impl<'g> FromRaw for Player<'g> {
+    unsafe fn from_raw(raw: *mut void) -> Player<'g> {
         assert!(!raw.is_null());
-        Player(raw as *mut sys::Player)
+        Player { raw: raw as *mut sys::Player, phantom: PhantomData }
     }
 }
 
-impl Player {
+impl<'g> Player<'g> {
     pub fn name(&self) -> BwString {
         unsafe {
-            let name = sys::Player_getName(self.0);
+            let name = sys::Player_getName(self.raw);
             BwString::from_raw(name as *mut void)
         }
     }
 
-    pub fn units(&self) -> Box<Iterator<Item=Unit>> {
+    pub fn units(&self) -> Box<Iterator<Item = Unit<'g>>> {
         unsafe {
-            let iter = sys::Player_getUnits(self.0) as *mut sys::Iterator;
+            let iter = sys::Player_getUnits(self.raw) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
         }
     }
 
     pub fn start_location(&self) -> sys::TilePosition {
-        unsafe {
-            sys::Player_getStartLocation(self.0)
-        }
+        unsafe { sys::Player_getStartLocation(self.raw) }
     }
 }
+
