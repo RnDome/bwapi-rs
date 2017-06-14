@@ -1,5 +1,5 @@
 
-use bwapi_sys::bridge as sys;
+use bwapi_sys as sys;
 use string::BwString;
 use iterator::{BwIterator, FromRaw};
 use std::os::raw::c_void as void;

@@ -1,5 +1,5 @@
 
-use bwapi_sys::bridge as sys;
+use bwapi_sys as sys;
 
 use std::ffi::CStr;
 use std::fmt;

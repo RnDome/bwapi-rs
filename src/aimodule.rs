@@ -1,5 +1,5 @@
 
-use bwapi_sys::bridge as sys;
+use bwapi_sys as sys;
 use unit::Unit;
 use player::Player;
 use iterator::FromRaw;
