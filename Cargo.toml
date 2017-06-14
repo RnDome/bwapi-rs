@@ -9,3 +9,17 @@ license = "Unlicense/MIT"
 
 [dependencies]
 bwapi-sys = { path = "../bwapi-sys" }
+
+[[example]]
+name = "session_lifetime"
+crate-type = ["cdylib"]
+
+[[example]]
+name = "client"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+debug = true
+panic = "abort"
