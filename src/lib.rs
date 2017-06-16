@@ -16,8 +16,17 @@ pub mod region;
 pub mod aimodule;
 
 #[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn _Unwind_Resume() -> ! {
+    use std::process;
+    process::abort();
+}
+
+#[cfg(test)]
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn _Unwind_RaiseException() -> ! {
+    use std::process;
+    process::abort();
 }
