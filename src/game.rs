@@ -1,6 +1,6 @@
 
 use bwapi_sys as sys;
-use std::ffi::{CString, CStr};
+use std::ffi::CString;
 use iterator::{BwIterator, FromRaw};
 
 use unit::Unit;
@@ -10,7 +10,6 @@ use region::Region;
 use position::Position;
 
 use std::os::raw::c_void as void;
-
 pub trait EventHandler {
     fn on_start(&mut self);
     fn on_end(&mut self, is_winner: bool);

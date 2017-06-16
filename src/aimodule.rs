@@ -5,8 +5,6 @@ use player::Player;
 use iterator::FromRaw;
 use game;
 
-use std::ptr;
-use std::mem;
 use std::ffi::CStr;
 use std::os::raw::c_void as void;
 
