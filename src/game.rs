@@ -7,6 +7,8 @@ use unit::Unit;
 use player::Player;
 use region::Region;
 
+use position::Position;
+
 use std::os::raw::c_void as void;
 use std::ops::{Deref, DerefMut};
 
@@ -17,7 +19,7 @@ pub trait EventHandler<'g> {
     fn on_send_text(&'g mut self, text: &str);
     fn on_receive_text(&'g mut self, player: &mut Player, text: &str);
     fn on_player_left(&'g mut self, player: &mut Player);
-    // TODO fn on_nuke_detect(&mut self, target: Position);
+    fn on_nuke_detect(&'g mut self, target: Position);
     fn on_unit_discover(&'g mut self, unit: &mut Unit);
     fn on_unit_evade(&'g mut self, unit: &mut Unit);
     fn on_unit_show(&'g mut self, unit: &mut Unit);
