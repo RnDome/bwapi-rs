@@ -1,6 +1,7 @@
 
 use bwapi_sys as sys;
 use iterator::{BwIterator, FromRaw};
+use position::Position;
 
 pub struct Region(*mut sys::Region);
 
@@ -27,10 +28,8 @@ impl Region {
         }
     }
 
-    pub fn center(&self) -> sys::Position {
-        unsafe {
-            sys::Region_getCenter(self.0)
-        }
+    pub fn center(&self) -> Position {
+        Position::from( unsafe { sys::Region_getCenter(self.0) } )
     }
 
     pub fn defense_priority(&self) -> i32 {
