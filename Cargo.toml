@@ -10,6 +10,9 @@ license = "Unlicense/MIT"
 [dependencies]
 bwapi-sys = { path = "../bwapi-sys" }
 
+[dev-dependencies]
+assert_approx_eq = "*"
+
 [[example]]
 name = "session_lifetime"
 crate-type = ["cdylib"]
