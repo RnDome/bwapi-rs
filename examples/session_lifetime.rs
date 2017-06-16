@@ -1,5 +1,6 @@
+#![allow(unused_variables)]
+
 extern crate bwapi;
-extern crate bwapi_sys;
 
 use bwapi::aimodule::wrap_handler;
 use bwapi::game::{self, Game, CoordinateType, EventHandler};

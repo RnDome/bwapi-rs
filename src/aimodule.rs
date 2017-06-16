@@ -5,11 +5,8 @@ use player::Player;
 use iterator::FromRaw;
 use game;
 
-use std::ptr;
-use std::mem;
 use std::ffi::CStr;
 use std::os::raw::c_void as void;
-use std::borrow::Borrow;
 
 static mut GAME: *mut void = 0 as *mut void;
 
