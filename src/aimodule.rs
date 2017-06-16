@@ -76,8 +76,8 @@ impl AIModule {
         Self::get_handler(sys_module).on_player_left(&mut player);
     }
 
-    unsafe extern fn on_nuke_detect(sys_module: *mut sys::AIModule, target: sys::Position) {
-        // TODO
+    unsafe extern "C" fn on_nuke_detect(sys_module: *mut sys::AIModule, target: sys::Position) {
+        Self::get_handler(sys_module).on_nuke_detect(target.into());
     }
 
     unsafe extern fn on_unit_discover(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {

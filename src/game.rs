@@ -7,6 +7,8 @@ use unit::Unit;
 use player::Player;
 use region::Region;
 
+use position::Position;
+
 use std::os::raw::c_void as void;
 
 pub trait EventHandler {
@@ -16,7 +18,7 @@ pub trait EventHandler {
     fn on_send_text(&mut self, text: &str);
     fn on_receive_text(&mut self, player: &mut Player, text: &str);
     fn on_player_left(&mut self, player: &mut Player);
-    // TODO fn on_nuke_detect(&mut self, target: Position);
+    fn on_nuke_detect(&mut self, target: Position);
     fn on_unit_discover(&mut self, unit: &mut Unit);
     fn on_unit_evade(&mut self, unit: &mut Unit);
     fn on_unit_show(&mut self, unit: &mut Unit);
@@ -125,4 +127,3 @@ impl Game {
         }
     }
 }
-
