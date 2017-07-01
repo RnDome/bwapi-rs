@@ -14,23 +14,23 @@ use std::marker::PhantomData;
 use std::cell::Cell;
 
 pub trait EventHandler<'g> {
-    fn on_start(&'g mut self, game: Game);
-    fn on_end(&'g mut self, is_winner: bool) -> Game;
-    fn on_frame(&'g mut self);
-    fn on_send_text(&'g mut self, text: &str);
-    fn on_receive_text(&'g mut self, player: &mut Player, text: &str);
-    fn on_player_left(&'g mut self, player: &mut Player);
-    fn on_nuke_detect(&'g mut self, target: Position);
-    fn on_unit_discover(&'g mut self, unit: &mut Unit);
-    fn on_unit_evade(&'g mut self, unit: &mut Unit);
-    fn on_unit_show(&'g mut self, unit: &mut Unit);
-    fn on_unit_hide(&'g mut self, unit: &mut Unit);
-    fn on_unit_create(&'g mut self, unit: &mut Unit);
-    fn on_unit_destroy(&'g mut self, unit: &mut Unit);
-    fn on_unit_morph(&'g mut self, unit: &mut Unit);
-    fn on_unit_renegade(&'g mut self, unit: &mut Unit);
-    fn on_save_game(&'g mut self, game_name: &str);
-    fn on_unit_complete(&'g mut self, unit: &mut Unit);
+    fn on_start(&mut self, game: &mut Game<'g>);
+    fn on_end(&mut self, game: &mut Game<'g>, is_winner: bool);
+    fn on_frame(&mut self, &mut Game<'g>);
+    fn on_send_text(&mut self, &mut Game<'g>, text: &str);
+    fn on_receive_text(&mut self, &mut Game<'g>, player: &mut Player, text: &str);
+    fn on_player_left(&mut self, &mut Game<'g>, player: &mut Player);
+    fn on_nuke_detect(&mut self, &mut Game<'g>, target: Position);
+    fn on_unit_discover(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_evade(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_show(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_hide(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_create(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_destroy(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_morph(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_unit_renegade(&mut self, &mut Game<'g>, unit: Unit<'g>);
+    fn on_save_game(&mut self, &mut Game<'g>, game_name: &str);
+    fn on_unit_complete(&mut self, &mut Game<'g>, unit: Unit<'g>);
 }
 
 pub struct Game<'g> {
