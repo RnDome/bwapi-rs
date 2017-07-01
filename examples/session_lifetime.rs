@@ -2,8 +2,8 @@
 
 extern crate bwapi;
 
-use bwapi::aimodule::wrap_handler;
-use bwapi::game::{self, Game, CoordinateType, EventHandler};
+use bwapi::aimodule::new_ai_module;
+use bwapi::game::{Game, CoordinateType, EventHandler};
 use bwapi::unit::{Unit, UnitId, UnitType};
 use bwapi::player::Player;
 use bwapi::position::Position;
@@ -11,42 +11,21 @@ use bwapi::position::Position;
 use std::os::raw::c_void as void;
 use std::collections::HashMap;
 
-struct Context<'g> {
+struct Ai<'g> {
     seen_units: HashMap<UnitId, Unit<'g>>,
 }
 
-type Session<'g> = game::Session<Context<'g>>;
-
-struct Ai<'g> {
-    context: Option<Session<'g>>
-}
-
 impl<'g> Ai<'g> {
-    fn session(&mut self) -> &mut Session<'g> {
-        self.context.as_mut().unwrap()
-    }
-
-    fn game(&mut self) -> &Game {
-        self.context.as_mut().unwrap().game()
-    }
-
-    fn draw_stat(&mut self) {
-        let game = self.game();
-        let message = format!("Frame {}", game.frame_count());
+    fn draw_stat(&mut self, game: &mut Game<'g>) {
+        let frame_count = game.frame_count();
+        let message = format!("Frame {}", frame_count);
         game.draw_text(CoordinateType::Screen, (10, 10), &message);
     }
 
-    fn give_orders(&mut self) {
-        let player = self.session().game().self_player();
+    fn give_orders(&mut self, game: &mut Game<'g>) {
+        let player = game.self_player();
 
-        #[cfg_attr(rustfmt, rustfmt_skip)]
         for unit in player.units() {
-
-            for unit in unit.loaded_units() {
-                let data = self.session().data_mut();
-                data.seen_units.insert(unit.id(), unit);
-            }
-
             match unit.get_type() {
                 UnitType::Terran_SCV |
                 UnitType::Zerg_Drone |
@@ -60,7 +39,7 @@ impl<'g> Ai<'g> {
                         continue;
                     }
 
-                    if let Some(mineral) = self.session().game()
+                    if let Some(mineral) = game
                         .minerals()
                         .min_by_key(|m| unit.distance_to(m))
                     {
@@ -89,42 +68,36 @@ impl<'g> Ai<'g> {
 }
 
 impl<'g> EventHandler<'g> for Ai<'g> {
-    fn on_start(&'g mut self, game: Game) {
-        self.context = Some(Session::new(game, Context { seen_units: HashMap::new() }));
-        //self.game = Some(game);
-        // self.init();
-        let build = if cfg!(debug_assertions) { "debug" } else { "release" };
-
-        self.session().game().send_text(&format!("Hello from Rust {}!", build));
+    fn on_start(&mut self, game: &mut Game<'g>) {
+        game.send_text("Hello from Rust!");
     }
 
-    fn on_end(&'g mut self, is_winner: bool) -> Game {
-        self.context.take().unwrap().release()
+    fn on_end(&mut self, game: &mut Game<'g>, is_winner: bool) {
     }
 
-    fn on_frame(&'g mut self) {
-        self.draw_stat();
-        self.give_orders();
-        // let session = self.session();
-        // Ai::give_orders(session);
+    fn on_frame(&mut self, game: &mut Game<'g>) {
+        self.draw_stat(game);
+        self.give_orders(game);
     }
 
-    fn on_send_text(&'g mut self, text: &str) {}
-    fn on_receive_text(&'g mut self, player: &mut Player, text: &str) {}
-    fn on_player_left(&'g mut self, player: &mut Player) {}
-    fn on_nuke_detect(&'g mut self, target: Position) {}
-    fn on_unit_discover(&'g mut self, unit: &mut Unit) {
+    fn on_send_text(&mut self, game: &mut Game<'g>, text: &str) {}
+    fn on_receive_text(&mut self, game: &mut Game<'g>, player: &mut Player, text: &str) {}
+    fn on_player_left(&mut self, game: &mut Game<'g>, player: &mut Player) {}
+    fn on_nuke_detect(&mut self, game: &mut Game<'g>, target: Position) {}
 
+    fn on_unit_discover(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {
+        self.seen_units.insert(unit.id(), unit);
     }
-    fn on_unit_evade(&'g mut self, unit: &mut Unit) {}
-    fn on_unit_show(&'g mut self, unit: &mut Unit) {}
-    fn on_unit_hide(&'g mut self, unit: &mut Unit) {}
-    fn on_unit_create(&'g mut self, unit: &mut Unit) {}
-    fn on_unit_destroy(&'g mut self, unit: &mut Unit) {}
-    fn on_unit_morph(&'g mut self, unit: &mut Unit) {}
-    fn on_unit_renegade(&'g mut self, unit: &mut Unit) {}
-    fn on_save_game(&'g mut self, game_name: &str) {}
-    fn on_unit_complete(&'g mut self, unit: &mut Unit) {}
+
+    fn on_unit_evade(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_unit_show(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_unit_hide(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_unit_create(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_unit_destroy(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_unit_morph(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_unit_renegade(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
+    fn on_save_game(&mut self, game: &mut Game<'g>, game_name: &str) {}
+    fn on_unit_complete(&mut self, game: &mut Game<'g>, unit: Unit<'g>) {}
 }
 
 #[no_mangle]
@@ -132,10 +105,6 @@ impl<'g> EventHandler<'g> for Ai<'g> {
 pub unsafe extern "C" fn newAIModule() -> *mut void {
     println!("newAIModule called!");
 
-    let handler = Ai { context: None };
-    let result = wrap_handler(Box::new(handler));
-
-    result
+    new_ai_module(|_game| Box::new(Ai { seen_units: HashMap::default() }))
 }
-
 
