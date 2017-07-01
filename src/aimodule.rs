@@ -10,14 +10,17 @@ use std::os::raw::c_void as void;
 
 static mut GAME: *mut void = 0 as *mut void;
 
+type HandlerFactory = Box<'static + for<'g> FnMut(&mut game::Game<'g>) -> Box<game::EventHandler<'g> + 'g>>;
+
 #[repr(C)]
-pub struct AIModule<'g> {
+pub struct AIModule {
     vtable: Box<sys::AIModule_vtable>,
-    handler: Box<game::EventHandler<'g>>,
+    handler_factory: HandlerFactory,
+    handler: Option<*mut game::EventHandler<'static>>,
 }
 
-impl<'g> AIModule<'g> {
-    pub fn new(handler: Box<game::EventHandler<'g>>) -> AIModule {
+impl AIModule{
+    pub fn new(factory: HandlerFactory) -> AIModule {
         AIModule {
             vtable: Box::new(sys::AIModule_vtable {
                 onStart: Some(AIModule::on_start),
@@ -39,13 +42,14 @@ impl<'g> AIModule<'g> {
                 onUnitComplete: Some(AIModule::on_unit_complete),
             }),
 
-            handler,
+            handler_factory: factory,
+            handler: None
         }
     }
 
-    unsafe fn get_handler<'a>(sys_module: *mut sys::AIModule) -> &'a mut game::EventHandler<'a> {
+    unsafe fn get_handler<'a>(sys_module: *mut sys::AIModule) -> &'a mut game::EventHandler<'static> {
         let module = sys_module as *mut AIModule;
-        &mut *(*module).handler
+        &mut *(*module).handler.unwrap()
     }
 
     unsafe extern "C" fn on_start(sys_module: *mut sys::AIModule) {
@@ -61,17 +65,21 @@ impl<'g> AIModule<'g> {
         Self::get_handler(sys_module).on_frame();
     }
 
-    unsafe extern "C" fn on_send_text(sys_module: *mut sys::AIModule,
-                                      text: *const ::std::os::raw::c_char) {
+    unsafe extern "C" fn on_send_text(
+        sys_module: *mut sys::AIModule,
+        text: *const ::std::os::raw::c_char,
+    ) {
         let text = CStr::from_ptr(text)
             .to_str()
             .unwrap();
         Self::get_handler(sys_module).on_send_text(&text);
     }
 
-    unsafe extern "C" fn on_receive_text(sys_module: *mut sys::AIModule,
-                                         player: *mut sys::Player,
-                                         text: *const ::std::os::raw::c_char) {
+    unsafe extern "C" fn on_receive_text(
+        sys_module: *mut sys::AIModule,
+        player: *mut sys::Player,
+        text: *const ::std::os::raw::c_char,
+    ) {
         let mut player = Player::from_raw(player as *mut void);
         let text = CStr::from_ptr(text)
             .to_str()
@@ -128,8 +136,10 @@ impl<'g> AIModule<'g> {
         Self::get_handler(sys_module).on_unit_renegade(&mut unit);
     }
 
-    unsafe extern "C" fn on_save_game(sys_module: *mut sys::AIModule,
-                                      game_name: *const ::std::os::raw::c_char) {
+    unsafe extern "C" fn on_save_game(
+        sys_module: *mut sys::AIModule,
+        game_name: *const ::std::os::raw::c_char,
+    ) {
         let game_name = CStr::from_ptr(game_name)
             .to_str()
             .unwrap();
@@ -142,13 +152,6 @@ impl<'g> AIModule<'g> {
     }
 }
 
-pub unsafe fn wrap_handler(handler: Box<game::EventHandler>) -> *mut ::std::os::raw::c_void {
-    let module = Box::new(AIModule::new(handler));
-    let module_ptr = Box::into_raw(module) as *mut sys::AIModule;
-
-    sys::createAIModuleWrapper(module_ptr)
-}
-
 #[no_mangle]
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn gameInit(game: *mut void) {
@@ -156,3 +159,13 @@ pub unsafe extern "C" fn gameInit(game: *mut void) {
     GAME = game;
 }
 
+pub fn new_ai_module<F>(factory: F) -> *mut ::std::os::raw::c_void
+    where F: 'static + for<'g> FnMut(&mut game::Game<'g>) -> Box<game::EventHandler<'g> + 'g>
+{
+    let module = Box::new(AIModule::new(Box::new(factory)));
+    let module_ptr = Box::into_raw(module) as *mut sys::AIModule;
+
+    unsafe {
+        sys::createAIModuleWrapper(module_ptr)
+    }
+}
