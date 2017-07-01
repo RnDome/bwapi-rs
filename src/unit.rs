@@ -1,17 +1,16 @@
 
 use bwapi_sys as sys;
 use iterator::{BwIterator, FromRaw};
-use game::Game;
 
 use std::marker::PhantomData;
+use std::cell::Cell;
+use std::os::raw::c_void as void;
 
 #[derive(Clone)]
 pub struct Unit<'g> {
     raw: *mut sys::Unit,
-    phantom: PhantomData<&'g Game>,
+    phantom: PhantomData<Cell<&'g ()>>,
 }
-
-use std::os::raw::c_void as void;
 
 #[repr(i32)]
 #[allow(non_camel_case_types)]
@@ -261,7 +260,7 @@ impl UnitType {
     }
 }
 
-impl<'g> FromRaw for Unit<'g> {
+impl<'g> FromRaw<'g> for Unit<'g> {
     unsafe fn from_raw(raw: *mut void) -> Unit<'g> {
         assert!(!raw.is_null());
         Unit {
@@ -313,7 +312,7 @@ impl<'g> Unit<'g> {
         unsafe { sys::Unit_returnCargo(self.raw, shift_queue_command) }
     }
 
-    pub fn loaded_units(&self) -> Box<Iterator<Item = Unit<'g>>> {
+    pub fn loaded_units(&self) -> Box<Iterator<Item = Unit<'g>> + 'g> {
         unsafe {
             let iter = sys::Unit_getLoadedUnits(self.raw) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))

@@ -4,17 +4,17 @@ use string::BwString;
 use iterator::{BwIterator, FromRaw};
 use std::os::raw::c_void as void;
 use unit::Unit;
-use game::Game;
 
 use std::marker::PhantomData;
+use std::cell::Cell;
 
 #[derive(Clone)]
 pub struct Player<'g> {
     raw: *mut sys::Player,
-    phantom: PhantomData<&'g Game>,
+    phantom: PhantomData<Cell<&'g ()>>,
 }
 
-impl<'g> FromRaw for Player<'g> {
+impl<'g> FromRaw<'g> for Player<'g> {
     unsafe fn from_raw(raw: *mut void) -> Player<'g> {
         assert!(!raw.is_null());
         Player { raw: raw as *mut sys::Player, phantom: PhantomData }
@@ -29,7 +29,7 @@ impl<'g> Player<'g> {
         }
     }
 
-    pub fn units(&self) -> Box<Iterator<Item = Unit<'g>>> {
+    pub fn units(&self) -> Box<Iterator<Item = Unit<'g>> + 'g> {
         unsafe {
             let iter = sys::Player_getUnits(self.raw) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))

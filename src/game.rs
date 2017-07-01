@@ -10,6 +10,8 @@ use region::Region;
 use position::Position;
 
 use std::os::raw::c_void as void;
+use std::marker::PhantomData;
+use std::cell::Cell;
 
 pub trait EventHandler<'g> {
     fn on_start(&'g mut self, game: Game);
@@ -31,39 +33,15 @@ pub trait EventHandler<'g> {
     fn on_unit_complete(&'g mut self, unit: &mut Unit);
 }
 
-pub struct Session<T> {
-    game: Game,
-    context: T,
-}
-
-impl<T> Session<T> {
-    pub fn new(game: Game, context: T) -> Self { Session { game, context } }
-    pub fn release(self) -> Game { self.game }
-    pub fn game(&self) -> &Game { &self.game }
-    pub fn game_mut(&mut self) -> &mut Game { &mut self.game }
-    pub fn data(&self) -> &T { &self.context }
-    pub fn data_mut(&mut self) -> &mut T { &mut self.context }
-}
-
-/*
-impl<T> Deref for Session<T> {
-    type Target = T;
-
-    fn deref(&self) -> &T { &self.context }
-}
-
-impl<T> DerefMut for Session<T> {
-    fn deref_mut(&mut self) -> &mut T { &mut self.context }
-}*/
-
-pub struct Game {
+pub struct Game<'g> {
     raw: *mut sys::Game,
+    phantom: PhantomData<Cell<&'g ()>>,
 }
 
-impl FromRaw for Game {
-    unsafe fn from_raw(raw: *mut void) -> Game {
+impl<'g> FromRaw<'g> for Game<'g> {
+    unsafe fn from_raw(raw: *mut void) -> Game<'g> {
         assert!(!raw.is_null());
-        Game { raw: raw as *mut sys::Game }
+        Game { raw: raw as *mut sys::Game, phantom: PhantomData }
     }
 }
 
@@ -87,7 +65,7 @@ pub enum CommandOptLevel {
     Aggressive = 4,
 }
 
-impl Game {
+impl<'g> Game<'g> {
     pub fn enable_flag(&self, flag: CheatFlag) {
         unsafe {
             sys::Game_enableFlag(self.raw, flag as i32);
@@ -130,18 +108,18 @@ impl Game {
         }
     }
 
-    pub fn self_player<'s, 'p: 's>(&'s self) -> Player<'p> {
+    pub fn self_player(&self) -> Player<'g> {
         unsafe { Player::from_raw(sys::Game_self(self.raw) as *mut void) }
     }
 
-    pub fn minerals<'s, 'g: 's>(&'s self) -> Box<Iterator<Item = Unit<'g>>> {
+    pub fn minerals(&self) -> Box<Iterator<Item = Unit<'g>> + 'g> {
         unsafe {
             let iter = sys::Game_getMinerals(self.raw) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
         }
     }
 
-    pub fn regions(&self) -> Box<Iterator<Item = Region>> {
+    pub fn regions(&self) -> Box<Iterator<Item = Region<'g>> + 'g> {
         unsafe {
             let iter = sys::Game_getAllRegions(self.raw) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
