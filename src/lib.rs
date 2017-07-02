@@ -15,7 +15,7 @@ pub mod region;
 
 pub mod aimodule;
 
-#[cfg(test)]
+// #[cfg(test)]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn _Unwind_Resume() -> ! {
@@ -23,7 +23,7 @@ pub extern "C" fn _Unwind_Resume() -> ! {
     process::abort();
 }
 
-#[cfg(test)]
+// #[cfg(test)]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn _Unwind_RaiseException() -> ! {

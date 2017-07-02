@@ -47,17 +47,32 @@ impl AIModule{
         }
     }
 
+    unsafe fn get_module<'a>(sys_module: *mut sys::AIModule) -> &'a mut AIModule {
+        &mut * (sys_module as *mut AIModule)
+    }
+
     unsafe fn get_handler<'a>(sys_module: *mut sys::AIModule) -> &'a mut game::EventHandler<'static> {
-        let module = sys_module as *mut AIModule;
-        &mut *(*module).handler.unwrap()
+        &mut * (Self::get_module(sys_module).handler.unwrap())
     }
 
     unsafe extern "C" fn on_start(sys_module: *mut sys::AIModule) {
+        // Allocate new handler for current game
+        let module = Self::get_module(sys_module);
+        let factory = &mut module.handler_factory;
+        let handler = factory(&mut *GAME);
+
+        module.handler = Some(Box::into_raw(handler));
         Self::get_handler(sys_module).on_start(&mut *GAME);
     }
 
     unsafe extern "C" fn on_end(sys_module: *mut sys::AIModule, is_winner: bool) {
         Self::get_handler(sys_module).on_end(&mut *GAME, is_winner);
+
+        let module = Self::get_module(sys_module);
+        let handler = module.handler.take().unwrap();
+
+        // Dispose handler from passed game
+        Box::from_raw(handler);
     }
 
     unsafe extern "C" fn on_frame(sys_module: *mut sys::AIModule) {
@@ -92,42 +107,42 @@ impl AIModule{
     }
 
     unsafe extern "C" fn on_unit_discover(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_discover(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_evade(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_evade(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_show(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_show(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_hide(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_hide(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_create(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_create(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_destroy(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_destroy(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_morph(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_morph(&mut *GAME, unit);
     }
 
     unsafe extern "C" fn on_unit_renegade(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_renegade(&mut *GAME, unit);
     }
 
@@ -140,7 +155,7 @@ impl AIModule{
     }
 
     unsafe extern "C" fn on_unit_complete(sys_module: *mut sys::AIModule, unit: *mut sys::Unit) {
-        let mut unit = Unit::from_raw(unit as *mut void);
+        let unit = Unit::from_raw(unit as *mut void);
         Self::get_handler(sys_module).on_unit_complete(&mut *GAME, unit);
     }
 }
