@@ -1,3 +1,4 @@
+extern crate bwapi;
 extern crate bwapi_sys;
 
 fn main() {

@@ -80,6 +80,7 @@ impl<'g> Game<'g> {
     }
 
     pub fn frame_count(&self) -> i32 { unsafe { sys::Game_getFrameCount(self.raw) } }
+    pub fn average_fps(&self) -> f64 { unsafe { sys::Game_getAverageFPS(self.raw) } }
 
     pub fn get_apm(&self, include_selects: bool) -> i32 {
         unsafe { sys::Game_getAPM(self.raw, include_selects) }
