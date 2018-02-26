@@ -79,6 +79,12 @@ impl Game {
         }
     }
 
+    pub fn average_fps(&self) -> f64 {
+        unsafe {
+            sys::Game_getAverageFPS(self.0)
+        }
+    }
+
     pub fn get_apm(&self, include_selects: bool) -> i32 {
         unsafe {
             sys::Game_getAPM(self.0, include_selects)
