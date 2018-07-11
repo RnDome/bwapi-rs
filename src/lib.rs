@@ -1,8 +1,5 @@
 extern crate bwapi_sys;
 
-#[cfg(test)] #[macro_use]
-extern crate assert_approx_eq;
-
 pub mod position;
 
 pub mod string;

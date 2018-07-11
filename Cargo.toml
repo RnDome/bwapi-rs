@@ -10,9 +10,6 @@ license = "Unlicense/MIT"
 [dependencies]
 bwapi-sys = "0.1.2"
 
-[dev-dependencies]
-assert_approx_eq = "*"
-
 [[example]]
 name = "dll"
 crate-type = ["cdylib"]

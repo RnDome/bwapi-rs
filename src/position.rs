@@ -207,7 +207,7 @@ mod tests {
     fn test_position_distance() {
         let p1 = Position::new(1, 2);
         let p2 = Position::new(1, 2);
-        assert_approx_eq!(0.0, p2.distance(&p1));
+        assert!(p2.distance(&p1) < 0.001);
     }
 
     #[test]
