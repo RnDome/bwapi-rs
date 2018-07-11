@@ -8,3 +8,21 @@ description = "Rust bindings to the Starcraft Broodwar game API"
 license = "Unlicense/MIT"
 
 [dependencies]
+bwapi-sys = "0.1.2"
+
+[dev-dependencies]
+assert_approx_eq = "*"
+
+[[example]]
+name = "session_lifetime"
+crate-type = ["cdylib"]
+
+[[example]]
+name = "client"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+debug = true
+panic = "abort"

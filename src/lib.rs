@@ -1,6 +1,32 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
+extern crate bwapi_sys;
+
+#[cfg(test)] #[macro_use]
+extern crate assert_approx_eq;
+
+pub mod position;
+
+pub mod string;
+pub mod iterator;
+
+pub mod player;
+pub mod game;
+pub mod unit;
+pub mod region;
+
+pub mod aimodule;
+
+// #[cfg(test)]
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn _Unwind_Resume() -> ! {
+    use std::process;
+    process::abort();
+}
+
+// #[cfg(test)]
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn _Unwind_RaiseException() -> ! {
+    use std::process;
+    process::abort();
 }
