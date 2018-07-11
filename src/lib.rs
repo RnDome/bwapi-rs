@@ -1,5 +1,6 @@
 extern crate bwapi_sys;
 
+pub mod from_raw;
 pub mod position;
 
 pub mod string;

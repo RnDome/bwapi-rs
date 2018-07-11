@@ -2,22 +2,19 @@ extern crate bwapi;
 extern crate bwapi_sys;
 
 use bwapi::aimodule::wrap_handler;
-use bwapi::game::{self, Game, CoordinateType, EventHandler};
+use bwapi::game::{Game, CoordinateType, EventHandler};
 use bwapi::unit::{Unit, UnitType};
 use bwapi::player::Player;
 use bwapi::position::Position;
-use bwapi::iterator::FromRaw;
 
 use std::os::raw::c_void as void;
-
-static mut BROODWAR: *mut bwapi_sys::Game = 0 as *mut _;
 
 #[no_mangle]
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn gameInit(game: *mut void) {
     println!("gameInit called!");
 
-    BROODWAR = game as *mut bwapi_sys::Game;
+    bwapi_sys::BWAPIC_setGame(game as *mut bwapi_sys::Game);
 }
 
 #[no_mangle]
@@ -36,16 +33,13 @@ struct ExampleAIModule {
 }
 
 impl ExampleAIModule {
-    fn game(&mut self) -> Game {
-        unsafe { game::Game::from_raw(BROODWAR as *mut void) }
-    }
     fn draw_stat(&mut self) {
-        let game = self.game();
+        let game = Game::get();
         let message = format!("Frame {}", game.frame_count());
         game.draw_text(CoordinateType::Screen, (10, 10), &message);
     }
     fn give_orders(&mut self) {
-        let player = self.game().self_player();
+        let player = Game::get().self_player();
 
         for unit in player.units() {
 
@@ -62,7 +56,7 @@ impl ExampleAIModule {
                         continue;
                     }
 
-                    if let Some(mineral) = self.game()
+                    if let Some(mineral) = Game::get()
                         .minerals()
                         .min_by_key(|m| unit.distance_to(m))
                     {
@@ -92,7 +86,7 @@ impl ExampleAIModule {
 
 impl EventHandler for ExampleAIModule {
     fn on_start(&mut self) {
-        self.game().send_text(&format!("Hello from Rust! My name is {}", self.name));
+        Game::get().send_text(&format!("Hello from Rust! My name is {}", self.name));
     }
     fn on_end(&mut self, _is_winner: bool) {}
     fn on_frame(&mut self) {

@@ -1,10 +1,11 @@
 
 use bwapi_sys as sys;
-use iterator::{BwIterator, FromRaw};
-
-pub struct Unit(*mut sys::Unit);
+use iterator::BwIterator;
+use from_raw::FromRaw;
 
 use std::os::raw::c_void as void;
+
+pub struct Unit(*mut sys::Unit);
 
 #[repr(i32)]
 #[allow(non_camel_case_types)]
@@ -254,13 +255,6 @@ impl UnitType {
     }
 }
 
-impl FromRaw for Unit {
-    unsafe fn from_raw(raw: *mut void) -> Unit {
-        assert!(!raw.is_null());
-        Unit(raw as *mut sys::Unit)
-    }
-}
-
 impl Unit {
     pub fn id(&self) -> i32 {
         unsafe {
@@ -329,7 +323,7 @@ impl Unit {
         }
     }
 
-    pub fn right_click<T>(&self, target: &T, shift_queue_command: bool) -> bool 
+    pub fn right_click<T>(&self, target: &T, shift_queue_command: bool) -> bool
         where T: RightClickable
     {
         target.dispatch_right_click(self, shift_queue_command)
@@ -377,5 +371,12 @@ impl RightClickable for sys::Position {
         unsafe {
             sys::Unit_rightClick_Position(source.0, *self, shift_queue_command)
         }
+    }
+}
+
+impl FromRaw for Unit {
+    unsafe fn from_raw(raw: *mut void) -> Unit {
+        assert!(!raw.is_null());
+        Unit(raw as *mut sys::Unit)
     }
 }

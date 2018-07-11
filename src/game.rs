@@ -1,15 +1,15 @@
 
 use bwapi_sys as sys;
 use std::ffi::CString;
-use iterator::{BwIterator, FromRaw};
-
+use iterator::BwIterator;
+use from_raw::FromRaw;
 use unit::Unit;
 use player::Player;
 use region::Region;
-
 use position::Position;
 
 use std::os::raw::c_void as void;
+
 pub trait EventHandler {
     fn on_start(&mut self);
     fn on_end(&mut self, is_winner: bool);
@@ -32,13 +32,6 @@ pub trait EventHandler {
 
 pub struct Game(*mut sys::Game);
 
-impl FromRaw for Game {
-    unsafe fn from_raw(raw: *mut void) -> Game {
-        assert!(!raw.is_null());
-        Game(raw as *mut sys::Game)
-    }
-}
-
 pub enum CoordinateType {
     None = 0,
     Screen = 1,
@@ -60,6 +53,13 @@ pub enum CommandOptLevel {
 }
 
 impl Game {
+    pub fn get() -> Game {
+        unsafe {
+            let game = sys::BWAPIC_getGame();
+            Self::from_raw(game as *mut void)
+        }
+    }
+
     pub fn enable_flag(&self, flag: CheatFlag) {
         unsafe {
             sys::Game_enableFlag(self.0, flag as i32);
@@ -130,5 +130,12 @@ impl Game {
             let iter = sys::Game_getAllRegions(self.0) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
         }
+    }
+}
+
+impl FromRaw for Game {
+    unsafe fn from_raw(raw: *mut void) -> Game {
+        assert!(!raw.is_null());
+        Game(raw as *mut sys::Game)
     }
 }

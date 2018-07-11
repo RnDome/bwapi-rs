@@ -1,19 +1,11 @@
-
 use bwapi_sys as sys;
-use iterator::{BwIterator, FromRaw};
+use iterator::BwIterator;
 use position::Position;
-
-pub struct Region(*mut sys::Region);
+use from_raw::FromRaw;
 
 use std::os::raw::c_void as void;
 
-
-impl FromRaw for Region {
-    unsafe fn from_raw(raw: *mut void) -> Region {
-        assert!(!raw.is_null());
-        Region(raw as *mut sys::Region)
-    }
-}
+pub struct Region(*mut sys::Region);
 
 impl Region {
     pub fn id(&self) -> i32 {
@@ -43,5 +35,12 @@ impl Region {
             let iter = sys::Region_getNeighbors(self.0) as *mut sys::Iterator;
             Box::new(BwIterator::from(iter))
         }
+    }
+}
+
+impl FromRaw for Region {
+    unsafe fn from_raw(raw: *mut void) -> Region {
+        assert!(!raw.is_null());
+        Region(raw as *mut sys::Region)
     }
 }

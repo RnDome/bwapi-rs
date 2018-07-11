@@ -1,23 +1,13 @@
 
 use bwapi_sys as sys;
+use from_raw::FromRaw;
 
 use std::ffi::CStr;
 use std::fmt;
 use std::ops::Deref;
-
-use iterator::FromRaw;
 use std::os::raw::c_void as void;
 
 pub struct BwString(*mut sys::BwString);
-
-impl FromRaw for BwString {
-    unsafe fn from_raw(raw: *mut void) -> BwString {
-        assert!(!raw.is_null());
-
-        // TODO Perform checks here and maintain invariant later
-        BwString(raw as *mut sys::BwString)
-    }
-}
 
 impl BwString {
     pub fn len(&self) -> i32 {
@@ -49,6 +39,15 @@ impl Clone for BwString {
 impl PartialEq for BwString {
     fn eq(&self, other: &BwString) -> bool {
         self.data() == other.data()
+    }
+}
+
+impl FromRaw for BwString {
+    unsafe fn from_raw(raw: *mut void) -> BwString {
+        assert!(!raw.is_null());
+
+        // TODO Perform checks here and maintain invariant later
+        BwString(raw as *mut sys::BwString)
     }
 }
 

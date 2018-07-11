@@ -1,18 +1,13 @@
 
 use bwapi_sys as sys;
 use string::BwString;
-use iterator::{BwIterator, FromRaw};
-use std::os::raw::c_void as void;
+use iterator::BwIterator;
 use unit::Unit;
+use from_raw::FromRaw;
+
+use std::os::raw::c_void as void;
 
 pub struct Player(*mut sys::Player);
-
-impl FromRaw for Player {
-    unsafe fn from_raw(raw: *mut void) -> Player {
-        assert!(!raw.is_null());
-        Player(raw as *mut sys::Player)
-    }
-}
 
 impl Player {
     pub fn name(&self) -> BwString {
@@ -33,5 +28,12 @@ impl Player {
         unsafe {
             sys::Player_getStartLocation(self.0)
         }
+    }
+}
+
+impl FromRaw for Player {
+    unsafe fn from_raw(raw: *mut void) -> Player {
+        assert!(!raw.is_null());
+        Player(raw as *mut sys::Player)
     }
 }
