@@ -2,6 +2,9 @@
 # Examples
 
 ```
+extern crate bwapi;
+use bwapi::position::*;
+
 let pos = Position::new(640, 480);
 
 let mulpl = &pos * 2;
@@ -11,13 +14,16 @@ assert!(mulpl.y() == 480 * 2);
 ```
 
 ```
+extern crate bwapi;
 extern crate bwapi_sys;
+
+use bwapi::position::*;
 
 let pos = Position::new(640, 480);
 let walk_pos = WalkPosition::from(pos);
 // or #![feature(type_ascription)]
 //    let walk_pos = pos.into() : WalkPosition;
-let sys_walk_pos: bwapi_sys::WalkPosition = walkpos.into();
+let sys_walk_pos: bwapi_sys::WalkPosition = walk_pos.into();
 ```
 */
 
