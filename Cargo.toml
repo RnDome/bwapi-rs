@@ -17,9 +17,5 @@ crate-type = ["cdylib"]
 [[example]]
 name = "client"
 
-[profile.dev]
-panic = "abort"
-
 [profile.release]
 debug = true
-panic = "abort"

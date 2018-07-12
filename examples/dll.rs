@@ -9,6 +9,20 @@ use bwapi::position::Position;
 
 use std::os::raw::c_void as void;
 
+#[cfg(windows)]
+#[no_mangle]
+pub extern "C" fn _Unwind_Resume() -> ! {
+    use std::process;
+    process::abort();
+}
+
+#[cfg(windows)]
+#[no_mangle]
+pub extern "C" fn _Unwind_RaiseException() -> ! {
+    use std::process;
+    process::abort();
+}
+
 #[no_mangle]
 #[allow(non_snake_case)]
 pub unsafe extern "C" fn gameInit(game: *mut void) {
