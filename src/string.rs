@@ -6,10 +6,20 @@ use std::ffi::CStr;
 use std::fmt;
 use std::ops::Deref;
 use std::os::raw::c_void as void;
+use std::slice;
 
 pub struct BwString(*mut sys::BwString);
 
 impl BwString {
+    fn as_bytes_with_nul(&self) -> &[u8] {
+        unsafe {
+            let raw = self.0;
+            let data = sys::BwString_data(raw); // data is a pointer a nul-terminated string
+            let len = sys::BwString_len(raw); // length of data without the last nul byte
+            slice::from_raw_parts(data as *const u8, len as usize + 1)
+        }
+    }
+
     pub fn len(&self) -> i32 {
         unsafe {
             sys::BwString_len(self.0)
@@ -17,11 +27,9 @@ impl BwString {
     }
 
     pub fn data(&self) -> &CStr {
+        let bytes = self.as_bytes_with_nul();
         unsafe {
-            let data = sys::BwString_data(self.0);
-
-            // TODO from_bytes_with_nul_unchecked()
-            CStr::from_ptr(data)
+            CStr::from_bytes_with_nul_unchecked(bytes)
         }
     }
 }
@@ -44,9 +52,18 @@ impl PartialEq for BwString {
 
 impl FromRaw for BwString {
     unsafe fn from_raw(raw: *mut void) -> BwString {
+        let raw = raw as *mut sys::BwString;
         assert!(!raw.is_null());
 
-        // TODO Perform checks here and maintain invariant later
+        let data = sys::BwString_data(raw); // data is a pointer a nul-terminated string
+        let len = sys::BwString_len(raw); // length of data without the last nul byte
+
+        let bytes = slice::from_raw_parts(data as *const u8, len as usize + 1);
+        let cstr = CStr::from_bytes_with_nul(bytes);
+        assert!(cstr.is_ok());
+
+        // TODO maybe we should check UTF-8?
+
         BwString(raw as *mut sys::BwString)
     }
 }
@@ -105,13 +122,26 @@ mod tests {
     use super::*;
 
     #[test]
-    #[ignore] // FIXME
+    fn create_new() {
+        unsafe {
+            let bytes = b"any";
+            let ptr = bytes.as_ptr() as *const i8;
+            let len = bytes.len() as i32;
+
+            let sys_string = sys::BwString_new(ptr, len);
+            BwString::from_raw(sys_string as *mut void);
+        }
+    }
+
+    #[test]
     fn conversions() {
         let input = "Hello world!";
 
         let string = unsafe {
-            let bytes: Vec<i8> = input.bytes().chain(Some(0)).map(|x| x as i8).collect();
-            let sys_string = sys::BwString_new(bytes.as_ptr(), input.len() as i32);
+            let ptr = input.as_ptr() as *const i8;
+            let len = input.len() as i32;
+
+            let sys_string = sys::BwString_new(ptr, len);
             BwString::from_raw(sys_string as *mut void)
         };
 
