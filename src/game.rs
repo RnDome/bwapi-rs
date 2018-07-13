@@ -7,6 +7,7 @@ use unit::Unit;
 use player::Player;
 use region::Region;
 use position::Position;
+use color::Color;
 
 use std::os::raw::c_void as void;
 
@@ -105,10 +106,10 @@ impl Game {
         }
     }
 
-    pub fn draw_line(&self, ctype: CoordinateType, first: (i32, i32), second: (i32, i32), color: sys::Color) {
+    pub fn draw_line(&self, ctype: CoordinateType, first: (i32, i32), second: (i32, i32), color: Color) {
         unsafe {
             let ctype = sys::CoordinateType { id: ctype as i32 };
-            sys::Game_drawLine(self.0, ctype, first.0, first.1, second.0, second.1, color);
+            sys::Game_drawLine(self.0, ctype, first.0, first.1, second.0, second.1, color.into());
         }
     }
 

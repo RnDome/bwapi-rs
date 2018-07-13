@@ -6,6 +6,7 @@ use bwapi::game::{Game, CoordinateType, EventHandler};
 use bwapi::unit::{Unit, UnitType};
 use bwapi::player::Player;
 use bwapi::position::Position;
+use bwapi::color::Color;
 
 use std::os::raw::c_void as void;
 
@@ -51,6 +52,7 @@ impl ExampleAIModule {
         let game = Game::get();
         let message = format!("Frame {}", game.frame_count());
         game.draw_text(CoordinateType::Screen, (10, 10), &message);
+        game.draw_line(CoordinateType::Screen, (10, 21), (40, 21), Color::Red);
     }
     fn give_orders(&mut self) {
         let player = Game::get().self_player();

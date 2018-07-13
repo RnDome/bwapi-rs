@@ -4,6 +4,7 @@ use string::BwString;
 use iterator::BwIterator;
 use unit::Unit;
 use from_raw::FromRaw;
+use color::Color;
 
 use std::os::raw::c_void as void;
 
@@ -28,6 +29,11 @@ impl Player {
         unsafe {
             sys::Player_getStartLocation(self.0)
         }
+    }
+
+    pub fn color(&self) -> Color {
+        let color = unsafe { sys::Player_getColor(self.0) };
+        color.into()
     }
 }
 

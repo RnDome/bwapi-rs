@@ -4,6 +4,7 @@ pub mod aimodule;
 pub mod from_raw;
 
 pub mod position;
+pub mod color;
 
 pub mod string;
 pub mod iterator;
