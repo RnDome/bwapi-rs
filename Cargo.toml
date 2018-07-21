@@ -8,3 +8,14 @@ description = "Rust bindings to the Starcraft Broodwar game API"
 license = "Unlicense/MIT"
 
 [dependencies]
+bwapi-sys = "0.1.2"
+
+[[example]]
+name = "dll"
+crate-type = ["cdylib"]
+
+[[example]]
+name = "client"
+
+[profile.release]
+debug = true
