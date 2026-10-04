@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <BWAPI.h>
 
 // The host resolves BWAPILIB symbols at dlopen, so the headers must match the
