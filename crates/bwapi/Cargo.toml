@@ -1,0 +1,12 @@
+[package]
+name = "bwapi"
+description = "Rust bindings to the Starcraft Broodwar game API"
+keywords = ["starcraft", "broodwar", "api", "binding"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[dependencies]
