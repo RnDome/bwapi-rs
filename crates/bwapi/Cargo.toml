@@ -8,5 +8,6 @@ rust-version.workspace = true
 authors.workspace = true
 repository.workspace = true
 license.workspace = true
+include = ["/Cargo.toml", "/src/**", "/vendor/bwapi/bwapi/include/BWAPI.h", "/vendor/bwapi/bwapi/include/BWAPI/**"]
 
 [dependencies]
