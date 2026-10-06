@@ -1,3 +1,5 @@
 target/
 **/*.rs.bk
 Cargo.lock
+examples/bot_c/*.o
+examples/bot_c/*.so

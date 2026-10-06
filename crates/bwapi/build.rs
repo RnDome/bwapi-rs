@@ -44,17 +44,6 @@ fn main() {
         println!("cargo:rerun-if-changed={BWAPILIB}");
     }
 
-    let mut check = cc::Build::new();
-    if !check.get_compiler().is_like_msvc() {
-        check.std("c11").flag("-pedantic");
-    }
-    check
-        .warnings(true)
-        .extra_warnings(true)
-        .warnings_into_errors(true)
-        .file("cpp/header_check.c")
-        .compile("bwapi_header_check");
-
     let mut glue = cc::Build::new();
     glue.cpp(true).std("c++17");
     include_bwapi(&mut glue);

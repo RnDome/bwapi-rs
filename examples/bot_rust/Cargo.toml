@@ -1,0 +1,19 @@
+[package]
+name = "bot_rust"
+description = "A minimal bwapi bot in Rust"
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+test = false
+doctest = false
+doc = false
+
+[dependencies]
+bwapi = { path = "../../crates/bwapi" }
