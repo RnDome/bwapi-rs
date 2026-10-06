@@ -28,4 +28,8 @@ impl<'game> Force<'game> {
     pub fn players(self) -> PlayerQuery<'game> {
         unsafe { PlayerQuery::from_raw(self.brand(), raw::Force_getPlayers(self.as_ptr())) }
     }
+
+    // skipped `BWAPI::ForceInterface::getClientInfo`: void* and a template over the client type
+    // skipped `BWAPI::ForceInterface::setClientInfo`: void* and a template over the client type
+    // skipped `BWAPI::ForceInterface::registerEvent`: takes std::function
 }

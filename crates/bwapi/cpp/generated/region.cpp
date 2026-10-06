@@ -6,9 +6,78 @@ int32_t Region_getID(Region* self) noexcept {
   static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getID");
   return static_cast<int32_t>(ret);
 }
+int32_t Region_getRegionGroupID(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getRegionGroupID();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getRegionGroupID");
+  return static_cast<int32_t>(ret);
+}
+Position Region_getCenter(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getCenter();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::Position>, "bwapi.api: wrong return type of getCenter");
+  return Position{ret.x, ret.y};
+}
+bool Region_isHigherGround(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->isHigherGround();
+  static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of isHigherGround");
+  return ret;
+}
+int32_t Region_getDefensePriority(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getDefensePriority();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getDefensePriority");
+  return static_cast<int32_t>(ret);
+}
+bool Region_isAccessible(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->isAccessible();
+  static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of isAccessible");
+  return ret;
+}
+const Regionset* Region_getNeighbors(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getNeighbors();
+  static_assert(std::is_lvalue_reference_v<decltype(ret)>, "bwapi.api: getNeighbors must return a set by reference");
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::Regionset>, "bwapi.api: wrong return type of getNeighbors");
+  return reinterpret_cast<const Regionset*>(&ret);
+}
+int32_t Region_getBoundsLeft(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getBoundsLeft();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getBoundsLeft");
+  return static_cast<int32_t>(ret);
+}
+int32_t Region_getBoundsTop(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getBoundsTop();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getBoundsTop");
+  return static_cast<int32_t>(ret);
+}
+int32_t Region_getBoundsRight(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getBoundsRight();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getBoundsRight");
+  return static_cast<int32_t>(ret);
+}
+int32_t Region_getBoundsBottom(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getBoundsBottom();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getBoundsBottom");
+  return static_cast<int32_t>(ret);
+}
+Region* Region_getClosestAccessibleRegion(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getClosestAccessibleRegion();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::RegionInterface*>, "bwapi.api: wrong return type of getClosestAccessibleRegion");
+  return reinterpret_cast<Region*>(ret);
+}
+Region* Region_getClosestInaccessibleRegion(Region* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getClosestInaccessibleRegion();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::RegionInterface*>, "bwapi.api: wrong return type of getClosestInaccessibleRegion");
+  return reinterpret_cast<Region*>(ret);
+}
+int32_t Region_getDistance(Region* self, Region* other) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getDistance(reinterpret_cast<BWAPI::RegionInterface*>(other));
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getDistance");
+  return static_cast<int32_t>(ret);
+}
 UnitQuery* Region_getUnits(Region* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::RegionInterface*>(self)->getUnits();
   static_assert(!std::is_reference_v<decltype(ret)>, "bwapi.api: getUnits must return a set by value");
   static_assert(bwapi_c::same_v<decltype(ret), BWAPI::Unitset>, "bwapi.api: wrong return type of getUnits");
   return reinterpret_cast<UnitQuery*>(new bwapi_c::QueryState<BWAPI::Unitset>(std::move(ret)));
 }
+// skipped BWAPI::RegionInterface::getClientInfo: void* and a template over the client type
+// skipped BWAPI::RegionInterface::setClientInfo: void* and a template over the client type
+// skipped BWAPI::RegionInterface::registerEvent: takes std::function

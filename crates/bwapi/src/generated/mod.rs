@@ -29,8 +29,68 @@ pub use game::*;
 mod unit_type;
 pub use unit_type::*;
 
+mod weapon_type;
+pub use weapon_type::*;
+
+mod tech_type;
+pub use tech_type::*;
+
+mod upgrade_type;
+pub use upgrade_type::*;
+
+mod order;
+pub use order::*;
+
+mod race;
+pub use race::*;
+
+mod player_type;
+pub use player_type::*;
+
+mod game_type;
+pub use game_type::*;
+
+mod error;
+pub use error::*;
+
+mod unit_size_type;
+pub use unit_size_type::*;
+
+mod damage_type;
+pub use damage_type::*;
+
+mod explosion_type;
+pub use explosion_type::*;
+
+mod bullet_type;
+pub use bullet_type::*;
+
+mod unit_command_type;
+pub use unit_command_type::*;
+
+mod color;
+pub use color::*;
+
+mod key;
+pub use key::*;
+
+mod mouse_button;
+pub use mouse_button::*;
+
+mod coordinate_type;
+pub use coordinate_type::*;
+
+mod text_size;
+pub use text_size::*;
+
 mod text_color;
 pub use text_color::*;
 
+mod flag;
+pub use flag::*;
+
 mod event_type;
 pub use event_type::*;
+
+mod latency;
+pub use latency::*;

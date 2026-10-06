@@ -11,3 +11,66 @@ bool Bullet_exists(Bullet* self) noexcept {
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of exists");
   return ret;
 }
+Player* Bullet_getPlayer(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getPlayer();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::PlayerInterface*>, "bwapi.api: wrong return type of getPlayer");
+  return reinterpret_cast<Player*>(ret);
+}
+BulletType Bullet_getType(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getType();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::BulletType>, "bwapi.api: wrong return type of getType");
+  return static_cast<int32_t>(ret.getID());
+}
+Unit* Bullet_getSource(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getSource();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::UnitInterface*>, "bwapi.api: wrong return type of getSource");
+  return reinterpret_cast<Unit*>(ret);
+}
+Position Bullet_getPosition(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getPosition();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::Position>, "bwapi.api: wrong return type of getPosition");
+  return Position{ret.x, ret.y};
+}
+double Bullet_getAngle(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getAngle();
+  static_assert(bwapi_c::same_v<decltype(ret), double>, "bwapi.api: wrong return type of getAngle");
+  return ret;
+}
+double Bullet_getVelocityX(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getVelocityX();
+  static_assert(bwapi_c::same_v<decltype(ret), double>, "bwapi.api: wrong return type of getVelocityX");
+  return ret;
+}
+double Bullet_getVelocityY(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getVelocityY();
+  static_assert(bwapi_c::same_v<decltype(ret), double>, "bwapi.api: wrong return type of getVelocityY");
+  return ret;
+}
+Unit* Bullet_getTarget(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getTarget();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::UnitInterface*>, "bwapi.api: wrong return type of getTarget");
+  return reinterpret_cast<Unit*>(ret);
+}
+Position Bullet_getTargetPosition(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getTargetPosition();
+  static_assert(bwapi_c::same_v<decltype(ret), BWAPI::Position>, "bwapi.api: wrong return type of getTargetPosition");
+  return Position{ret.x, ret.y};
+}
+int32_t Bullet_getRemoveTimer(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->getRemoveTimer();
+  static_assert(bwapi_c::same_v<decltype(ret), int>, "bwapi.api: wrong return type of getRemoveTimer");
+  return static_cast<int32_t>(ret);
+}
+bool Bullet_isVisible_d(Bullet* self) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->isVisible();
+  static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of isVisible");
+  return ret;
+}
+bool Bullet_isVisible(Bullet* self, Player* player) noexcept {
+  decltype(auto) ret = reinterpret_cast<BWAPI::BulletInterface*>(self)->isVisible(reinterpret_cast<BWAPI::PlayerInterface*>(player));
+  static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of isVisible");
+  return ret;
+}
+// skipped BWAPI::BulletInterface::getClientInfo: void* and a template over the client type
+// skipped BWAPI::BulletInterface::setClientInfo: void* and a template over the client type
+// skipped BWAPI::BulletInterface::registerEvent: takes std::function

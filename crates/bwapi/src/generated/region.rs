@@ -16,8 +16,88 @@ impl<'game> Region<'game> {
         unsafe { raw::Region_getID(self.as_ptr()) }
     }
 
+    /// BWAPI: `BWAPI::RegionInterface::getRegionGroupID`
+    pub fn region_group_id(self) -> i32 {
+        unsafe { raw::Region_getRegionGroupID(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getCenter`
+    pub fn center(self) -> Position {
+        let ret = unsafe { raw::Region_getCenter(self.as_ptr()) };
+        Position::from(ret)
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::isHigherGround`
+    pub fn is_higher_ground(self) -> bool {
+        unsafe { raw::Region_isHigherGround(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getDefensePriority`
+    pub fn defense_priority(self) -> i32 {
+        unsafe { raw::Region_getDefensePriority(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::isAccessible`
+    pub fn is_accessible(self) -> bool {
+        unsafe { raw::Region_isAccessible(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getNeighbors`
+    pub fn neighbors(self) -> RegionSet<'game> {
+        unsafe { RegionSet::from_raw(self.brand(), raw::Region_getNeighbors(self.as_ptr())) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getBoundsLeft`
+    pub fn bounds_left(self) -> i32 {
+        unsafe { raw::Region_getBoundsLeft(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getBoundsTop`
+    pub fn bounds_top(self) -> i32 {
+        unsafe { raw::Region_getBoundsTop(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getBoundsRight`
+    pub fn bounds_right(self) -> i32 {
+        unsafe { raw::Region_getBoundsRight(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getBoundsBottom`
+    pub fn bounds_bottom(self) -> i32 {
+        unsafe { raw::Region_getBoundsBottom(self.as_ptr()) }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getClosestAccessibleRegion`
+    pub fn closest_accessible_region(self) -> Option<Region<'game>> {
+        unsafe {
+            Region::from_raw(
+                self.brand(),
+                raw::Region_getClosestAccessibleRegion(self.as_ptr()),
+            )
+        }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getClosestInaccessibleRegion`
+    pub fn closest_inaccessible_region(self) -> Option<Region<'game>> {
+        unsafe {
+            Region::from_raw(
+                self.brand(),
+                raw::Region_getClosestInaccessibleRegion(self.as_ptr()),
+            )
+        }
+    }
+
+    /// BWAPI: `BWAPI::RegionInterface::getDistance`
+    pub fn distance(self, other: Region<'game>) -> i32 {
+        unsafe { raw::Region_getDistance(self.as_ptr(), other.as_ptr()) }
+    }
+
     /// BWAPI: `BWAPI::RegionInterface::getUnits`
     pub fn units(self) -> UnitQuery<'game> {
         unsafe { UnitQuery::from_raw(self.brand(), raw::Region_getUnits(self.as_ptr())) }
     }
+
+    // skipped `BWAPI::RegionInterface::getClientInfo`: void* and a template over the client type
+    // skipped `BWAPI::RegionInterface::setClientInfo`: void* and a template over the client type
+    // skipped `BWAPI::RegionInterface::registerEvent`: takes std::function
 }

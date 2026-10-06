@@ -17,3 +17,6 @@ PlayerQuery* Force_getPlayers(Force* self) noexcept {
   static_assert(bwapi_c::same_v<decltype(ret), BWAPI::Playerset>, "bwapi.api: wrong return type of getPlayers");
   return reinterpret_cast<PlayerQuery*>(new bwapi_c::QueryState<BWAPI::Playerset>(std::move(ret)));
 }
+// skipped BWAPI::ForceInterface::getClientInfo: void* and a template over the client type
+// skipped BWAPI::ForceInterface::setClientInfo: void* and a template over the client type
+// skipped BWAPI::ForceInterface::registerEvent: takes std::function

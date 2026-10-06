@@ -19,25 +19,1208 @@ impl UnitType {
         BwString::from_vec(unsafe { out.into_vec::<u8>() })
     }
 
+    /// BWAPI: `BWAPI::UnitType::isValid`
+    pub fn is_valid(self) -> bool {
+        unsafe { raw::UnitType_isValid(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::getRace`
+    pub fn race(self) -> Race {
+        let ret = unsafe { raw::UnitType_getRace(self.0) };
+        Race::from_id(ret)
+    }
+
     /// BWAPI: `BWAPI::UnitType::whatBuilds`
     pub fn what_builds(self) -> (UnitType, i32) {
         let ret = unsafe { raw::UnitType_whatBuilds(self.0) };
         (UnitType::from_id(ret.first), ret.second)
     }
 
+    /// BWAPI: `BWAPI::UnitType::requiredUnits`
+    pub fn required_units(self) -> Vec<(UnitType, i32)> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitType_requiredUnits(self.0, &mut out) };
+        // SAFETY: the thunk filled `out` with elements of `PairI32`.
+        unsafe { out.into_vec::<PairI32>() }
+            .into_iter()
+            .map(|e| (UnitType::from_id(e.first), e.second))
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitType::requiredTech`
+    pub fn required_tech(self) -> TechType {
+        let ret = unsafe { raw::UnitType_requiredTech(self.0) };
+        TechType::from_id(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::cloakingTech`
+    pub fn cloaking_tech(self) -> TechType {
+        let ret = unsafe { raw::UnitType_cloakingTech(self.0) };
+        TechType::from_id(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::abilities`
+    pub fn abilities(self) -> Vec<TechType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitType_abilities(self.0, &mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(TechType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitType::upgrades`
+    pub fn upgrades(self) -> Vec<UpgradeType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitType_upgrades(self.0, &mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(UpgradeType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitType::armorUpgrade`
+    pub fn armor_upgrade(self) -> UpgradeType {
+        let ret = unsafe { raw::UnitType_armorUpgrade(self.0) };
+        UpgradeType::from_id(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::maxHitPoints`
+    pub fn max_hit_points(self) -> i32 {
+        unsafe { raw::UnitType_maxHitPoints(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::maxShields`
+    pub fn max_shields(self) -> i32 {
+        unsafe { raw::UnitType_maxShields(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::maxEnergy`
+    pub fn max_energy(self) -> i32 {
+        unsafe { raw::UnitType_maxEnergy(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::armor`
+    pub fn armor(self) -> i32 {
+        unsafe { raw::UnitType_armor(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::mineralPrice`
+    pub fn mineral_price(self) -> i32 {
+        unsafe { raw::UnitType_mineralPrice(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::gasPrice`
+    pub fn gas_price(self) -> i32 {
+        unsafe { raw::UnitType_gasPrice(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::buildTime`
+    pub fn build_time(self) -> i32 {
+        unsafe { raw::UnitType_buildTime(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::supplyRequired`
+    pub fn supply_required(self) -> i32 {
+        unsafe { raw::UnitType_supplyRequired(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::supplyProvided`
+    pub fn supply_provided(self) -> i32 {
+        unsafe { raw::UnitType_supplyProvided(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::spaceRequired`
+    pub fn space_required(self) -> i32 {
+        unsafe { raw::UnitType_spaceRequired(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::spaceProvided`
+    pub fn space_provided(self) -> i32 {
+        unsafe { raw::UnitType_spaceProvided(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::buildScore`
+    pub fn build_score(self) -> i32 {
+        unsafe { raw::UnitType_buildScore(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::destroyScore`
+    pub fn destroy_score(self) -> i32 {
+        unsafe { raw::UnitType_destroyScore(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::size`
+    pub fn size(self) -> UnitSizeType {
+        let ret = unsafe { raw::UnitType_size(self.0) };
+        UnitSizeType::from_id(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::tileWidth`
+    pub fn tile_width(self) -> i32 {
+        unsafe { raw::UnitType_tileWidth(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::tileHeight`
+    pub fn tile_height(self) -> i32 {
+        unsafe { raw::UnitType_tileHeight(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::tileSize`
+    pub fn tile_size(self) -> TilePosition {
+        let ret = unsafe { raw::UnitType_tileSize(self.0) };
+        TilePosition::from(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::dimensionLeft`
+    pub fn dimension_left(self) -> i32 {
+        unsafe { raw::UnitType_dimensionLeft(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::dimensionUp`
+    pub fn dimension_up(self) -> i32 {
+        unsafe { raw::UnitType_dimensionUp(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::dimensionRight`
+    pub fn dimension_right(self) -> i32 {
+        unsafe { raw::UnitType_dimensionRight(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::dimensionDown`
+    pub fn dimension_down(self) -> i32 {
+        unsafe { raw::UnitType_dimensionDown(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::width`
+    pub fn width(self) -> i32 {
+        unsafe { raw::UnitType_width(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::height`
+    pub fn height(self) -> i32 {
+        unsafe { raw::UnitType_height(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::seekRange`
+    pub fn seek_range(self) -> i32 {
+        unsafe { raw::UnitType_seekRange(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::sightRange`
+    pub fn sight_range(self) -> i32 {
+        unsafe { raw::UnitType_sightRange(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::groundWeapon`
+    pub fn ground_weapon(self) -> WeaponType {
+        let ret = unsafe { raw::UnitType_groundWeapon(self.0) };
+        WeaponType::from_id(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::maxGroundHits`
+    pub fn max_ground_hits(self) -> i32 {
+        unsafe { raw::UnitType_maxGroundHits(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::airWeapon`
+    pub fn air_weapon(self) -> WeaponType {
+        let ret = unsafe { raw::UnitType_airWeapon(self.0) };
+        WeaponType::from_id(ret)
+    }
+
+    /// BWAPI: `BWAPI::UnitType::maxAirHits`
+    pub fn max_air_hits(self) -> i32 {
+        unsafe { raw::UnitType_maxAirHits(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::topSpeed`
+    pub fn top_speed(self) -> f64 {
+        unsafe { raw::UnitType_topSpeed(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::acceleration`
+    pub fn acceleration(self) -> i32 {
+        unsafe { raw::UnitType_acceleration(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::haltDistance`
+    pub fn halt_distance(self) -> i32 {
+        unsafe { raw::UnitType_haltDistance(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::turnRadius`
+    pub fn turn_radius(self) -> i32 {
+        unsafe { raw::UnitType_turnRadius(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::canProduce`
+    pub fn can_produce(self) -> bool {
+        unsafe { raw::UnitType_canProduce(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::canAttack`
+    pub fn can_attack(self) -> bool {
+        unsafe { raw::UnitType_canAttack(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::canMove`
+    pub fn can_move(self) -> bool {
+        unsafe { raw::UnitType_canMove(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isFlyer`
+    pub fn is_flyer(self) -> bool {
+        unsafe { raw::UnitType_isFlyer(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::regeneratesHP`
+    pub fn regenerates_hp(self) -> bool {
+        unsafe { raw::UnitType_regeneratesHP(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isSpellcaster`
+    pub fn is_spellcaster(self) -> bool {
+        unsafe { raw::UnitType_isSpellcaster(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::hasPermanentCloak`
+    pub fn has_permanent_cloak(self) -> bool {
+        unsafe { raw::UnitType_hasPermanentCloak(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isInvincible`
+    pub fn is_invincible(self) -> bool {
+        unsafe { raw::UnitType_isInvincible(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isOrganic`
+    pub fn is_organic(self) -> bool {
+        unsafe { raw::UnitType_isOrganic(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isMechanical`
+    pub fn is_mechanical(self) -> bool {
+        unsafe { raw::UnitType_isMechanical(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isRobotic`
+    pub fn is_robotic(self) -> bool {
+        unsafe { raw::UnitType_isRobotic(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isDetector`
+    pub fn is_detector(self) -> bool {
+        unsafe { raw::UnitType_isDetector(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isResourceContainer`
+    pub fn is_resource_container(self) -> bool {
+        unsafe { raw::UnitType_isResourceContainer(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isResourceDepot`
+    pub fn is_resource_depot(self) -> bool {
+        unsafe { raw::UnitType_isResourceDepot(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isRefinery`
+    pub fn is_refinery(self) -> bool {
+        unsafe { raw::UnitType_isRefinery(self.0) }
+    }
+
     /// BWAPI: `BWAPI::UnitType::isWorker`
     pub fn is_worker(self) -> bool {
         unsafe { raw::UnitType_isWorker(self.0) }
     }
+
+    /// BWAPI: `BWAPI::UnitType::requiresPsi`
+    pub fn requires_psi(self) -> bool {
+        unsafe { raw::UnitType_requiresPsi(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::requiresCreep`
+    pub fn requires_creep(self) -> bool {
+        unsafe { raw::UnitType_requiresCreep(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isTwoUnitsInOneEgg`
+    pub fn is_two_units_in_one_egg(self) -> bool {
+        unsafe { raw::UnitType_isTwoUnitsInOneEgg(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isBurrowable`
+    pub fn is_burrowable(self) -> bool {
+        unsafe { raw::UnitType_isBurrowable(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isCloakable`
+    pub fn is_cloakable(self) -> bool {
+        unsafe { raw::UnitType_isCloakable(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isBuilding`
+    pub fn is_building(self) -> bool {
+        unsafe { raw::UnitType_isBuilding(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isAddon`
+    pub fn is_addon(self) -> bool {
+        unsafe { raw::UnitType_isAddon(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isFlyingBuilding`
+    pub fn is_flying_building(self) -> bool {
+        unsafe { raw::UnitType_isFlyingBuilding(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isNeutral`
+    pub fn is_neutral(self) -> bool {
+        unsafe { raw::UnitType_isNeutral(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isHero`
+    pub fn is_hero(self) -> bool {
+        unsafe { raw::UnitType_isHero(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isPowerup`
+    pub fn is_powerup(self) -> bool {
+        unsafe { raw::UnitType_isPowerup(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isBeacon`
+    pub fn is_beacon(self) -> bool {
+        unsafe { raw::UnitType_isBeacon(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isFlagBeacon`
+    pub fn is_flag_beacon(self) -> bool {
+        unsafe { raw::UnitType_isFlagBeacon(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isSpecialBuilding`
+    pub fn is_special_building(self) -> bool {
+        unsafe { raw::UnitType_isSpecialBuilding(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isSpell`
+    pub fn is_spell(self) -> bool {
+        unsafe { raw::UnitType_isSpell(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::producesCreep`
+    pub fn produces_creep(self) -> bool {
+        unsafe { raw::UnitType_producesCreep(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::producesLarva`
+    pub fn produces_larva(self) -> bool {
+        unsafe { raw::UnitType_producesLarva(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isMineralField`
+    pub fn is_mineral_field(self) -> bool {
+        unsafe { raw::UnitType_isMineralField(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isCritter`
+    pub fn is_critter(self) -> bool {
+        unsafe { raw::UnitType_isCritter(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::canBuildAddon`
+    pub fn can_build_addon(self) -> bool {
+        unsafe { raw::UnitType_canBuildAddon(self.0) }
+    }
+
+    /// BWAPI: `BWAPI::UnitType::buildsWhat`
+    pub fn builds_what(self) -> Vec<UnitType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitType_buildsWhat(self.0, &mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(UnitType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitType::researchesWhat`
+    pub fn researches_what(self) -> Vec<TechType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitType_researchesWhat(self.0, &mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(TechType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitType::upgradesWhat`
+    pub fn upgrades_what(self) -> Vec<UpgradeType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitType_upgradesWhat(self.0, &mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(UpgradeType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitType::isSuccessorOf`
+    pub fn is_successor_of(self, unit_type: UnitType) -> bool {
+        unsafe { raw::UnitType_isSuccessorOf(self.0, unit_type.id()) }
+    }
+
+    // skipped `BWAPI::UnitType::getID`: the Rust newtype holds the id: UnitType::id
+    // skipped `BWAPI::UnitType::c_str`: duplicate of getName that returns const char*
+    // skipped `BWAPI::UnitType::toString`: duplicate of getName
 }
 
 impl UnitType {
+    /// BWAPI: `BWAPI::UnitType::getType`
+    pub fn from_name(name: &str) -> UnitType {
+        let ret = unsafe { raw::UnitType_getType(name.as_ptr(), name.len()) };
+        UnitType::from_id(ret)
+    }
+}
+
+impl UnitType {
+    /// BWAPI: `BWAPI::UnitTypes::allUnitTypes`
+    pub fn all() -> Vec<UnitType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitTypes_allUnitTypes(&mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(UnitType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitTypes::allMacroTypes`
+    pub fn all_macro() -> Vec<UnitType> {
+        let mut out = Slice::new();
+        unsafe { raw::UnitTypes_allMacroTypes(&mut out) };
+        // SAFETY: the thunk filled `out` with elements of `i32`.
+        unsafe { out.into_vec::<i32>() }
+            .into_iter()
+            .map(UnitType::from_id)
+            .collect()
+    }
+
+    /// BWAPI: `BWAPI::UnitTypes::maxUnitWidth`
+    pub fn max_unit_width() -> i32 {
+        unsafe { raw::UnitTypes_maxUnitWidth() }
+    }
+
+    /// BWAPI: `BWAPI::UnitTypes::maxUnitHeight`
+    pub fn max_unit_height() -> i32 {
+        unsafe { raw::UnitTypes_maxUnitHeight() }
+    }
+}
+
+impl UnitType {
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Marine`
+    pub const TERRAN_MARINE: UnitType = UnitType(0);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Ghost`
+    pub const TERRAN_GHOST: UnitType = UnitType(1);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Vulture`
+    pub const TERRAN_VULTURE: UnitType = UnitType(2);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Goliath`
+    pub const TERRAN_GOLIATH: UnitType = UnitType(3);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Goliath_Turret`
+    pub const TERRAN_GOLIATH_TURRET: UnitType = UnitType(4);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Siege_Tank_Tank_Mode`
+    pub const TERRAN_SIEGE_TANK_TANK_MODE: UnitType = UnitType(5);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Siege_Tank_Tank_Mode_Turret`
+    pub const TERRAN_SIEGE_TANK_TANK_MODE_TURRET: UnitType = UnitType(6);
+
     /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_SCV`
     pub const TERRAN_SCV: UnitType = UnitType(7);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Wraith`
+    pub const TERRAN_WRAITH: UnitType = UnitType(8);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Science_Vessel`
+    pub const TERRAN_SCIENCE_VESSEL: UnitType = UnitType(9);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Gui_Montag`
+    pub const HERO_GUI_MONTAG: UnitType = UnitType(10);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Dropship`
+    pub const TERRAN_DROPSHIP: UnitType = UnitType(11);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Battlecruiser`
+    pub const TERRAN_BATTLECRUISER: UnitType = UnitType(12);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Vulture_Spider_Mine`
+    pub const TERRAN_VULTURE_SPIDER_MINE: UnitType = UnitType(13);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Nuclear_Missile`
+    pub const TERRAN_NUCLEAR_MISSILE: UnitType = UnitType(14);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Civilian`
+    pub const TERRAN_CIVILIAN: UnitType = UnitType(15);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Sarah_Kerrigan`
+    pub const HERO_SARAH_KERRIGAN: UnitType = UnitType(16);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Alan_Schezar`
+    pub const HERO_ALAN_SCHEZAR: UnitType = UnitType(17);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Alan_Schezar_Turret`
+    pub const HERO_ALAN_SCHEZAR_TURRET: UnitType = UnitType(18);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Jim_Raynor_Vulture`
+    pub const HERO_JIM_RAYNOR_VULTURE: UnitType = UnitType(19);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Jim_Raynor_Marine`
+    pub const HERO_JIM_RAYNOR_MARINE: UnitType = UnitType(20);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Tom_Kazansky`
+    pub const HERO_TOM_KAZANSKY: UnitType = UnitType(21);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Magellan`
+    pub const HERO_MAGELLAN: UnitType = UnitType(22);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Edmund_Duke_Tank_Mode`
+    pub const HERO_EDMUND_DUKE_TANK_MODE: UnitType = UnitType(23);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Edmund_Duke_Tank_Mode_Turret`
+    pub const HERO_EDMUND_DUKE_TANK_MODE_TURRET: UnitType = UnitType(24);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Edmund_Duke_Siege_Mode`
+    pub const HERO_EDMUND_DUKE_SIEGE_MODE: UnitType = UnitType(25);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Edmund_Duke_Siege_Mode_Turret`
+    pub const HERO_EDMUND_DUKE_SIEGE_MODE_TURRET: UnitType = UnitType(26);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Arcturus_Mengsk`
+    pub const HERO_ARCTURUS_MENGSK: UnitType = UnitType(27);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Hyperion`
+    pub const HERO_HYPERION: UnitType = UnitType(28);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Norad_II`
+    pub const HERO_NORAD_II: UnitType = UnitType(29);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Siege_Tank_Siege_Mode`
+    pub const TERRAN_SIEGE_TANK_SIEGE_MODE: UnitType = UnitType(30);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Siege_Tank_Siege_Mode_Turret`
+    pub const TERRAN_SIEGE_TANK_SIEGE_MODE_TURRET: UnitType = UnitType(31);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Firebat`
+    pub const TERRAN_FIREBAT: UnitType = UnitType(32);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Spell_Scanner_Sweep`
+    pub const SPELL_SCANNER_SWEEP: UnitType = UnitType(33);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Medic`
+    pub const TERRAN_MEDIC: UnitType = UnitType(34);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Larva`
+    pub const ZERG_LARVA: UnitType = UnitType(35);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Egg`
+    pub const ZERG_EGG: UnitType = UnitType(36);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Zergling`
+    pub const ZERG_ZERGLING: UnitType = UnitType(37);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Hydralisk`
+    pub const ZERG_HYDRALISK: UnitType = UnitType(38);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Ultralisk`
+    pub const ZERG_ULTRALISK: UnitType = UnitType(39);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Broodling`
+    pub const ZERG_BROODLING: UnitType = UnitType(40);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Drone`
+    pub const ZERG_DRONE: UnitType = UnitType(41);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Overlord`
+    pub const ZERG_OVERLORD: UnitType = UnitType(42);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Mutalisk`
+    pub const ZERG_MUTALISK: UnitType = UnitType(43);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Guardian`
+    pub const ZERG_GUARDIAN: UnitType = UnitType(44);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Queen`
+    pub const ZERG_QUEEN: UnitType = UnitType(45);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Defiler`
+    pub const ZERG_DEFILER: UnitType = UnitType(46);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Scourge`
+    pub const ZERG_SCOURGE: UnitType = UnitType(47);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Torrasque`
+    pub const HERO_TORRASQUE: UnitType = UnitType(48);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Matriarch`
+    pub const HERO_MATRIARCH: UnitType = UnitType(49);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Infested_Terran`
+    pub const ZERG_INFESTED_TERRAN: UnitType = UnitType(50);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Infested_Kerrigan`
+    pub const HERO_INFESTED_KERRIGAN: UnitType = UnitType(51);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Unclean_One`
+    pub const HERO_UNCLEAN_ONE: UnitType = UnitType(52);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Hunter_Killer`
+    pub const HERO_HUNTER_KILLER: UnitType = UnitType(53);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Devouring_One`
+    pub const HERO_DEVOURING_ONE: UnitType = UnitType(54);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Kukulza_Mutalisk`
+    pub const HERO_KUKULZA_MUTALISK: UnitType = UnitType(55);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Kukulza_Guardian`
+    pub const HERO_KUKULZA_GUARDIAN: UnitType = UnitType(56);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Yggdrasill`
+    pub const HERO_YGGDRASILL: UnitType = UnitType(57);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Valkyrie`
+    pub const TERRAN_VALKYRIE: UnitType = UnitType(58);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Cocoon`
+    pub const ZERG_COCOON: UnitType = UnitType(59);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Corsair`
+    pub const PROTOSS_CORSAIR: UnitType = UnitType(60);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Dark_Templar`
+    pub const PROTOSS_DARK_TEMPLAR: UnitType = UnitType(61);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Devourer`
+    pub const ZERG_DEVOURER: UnitType = UnitType(62);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Dark_Archon`
+    pub const PROTOSS_DARK_ARCHON: UnitType = UnitType(63);
 
     /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Probe`
     pub const PROTOSS_PROBE: UnitType = UnitType(64);
 
-    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Drone`
-    pub const ZERG_DRONE: UnitType = UnitType(41);
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Zealot`
+    pub const PROTOSS_ZEALOT: UnitType = UnitType(65);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Dragoon`
+    pub const PROTOSS_DRAGOON: UnitType = UnitType(66);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_High_Templar`
+    pub const PROTOSS_HIGH_TEMPLAR: UnitType = UnitType(67);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Archon`
+    pub const PROTOSS_ARCHON: UnitType = UnitType(68);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Shuttle`
+    pub const PROTOSS_SHUTTLE: UnitType = UnitType(69);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Scout`
+    pub const PROTOSS_SCOUT: UnitType = UnitType(70);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Arbiter`
+    pub const PROTOSS_ARBITER: UnitType = UnitType(71);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Carrier`
+    pub const PROTOSS_CARRIER: UnitType = UnitType(72);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Interceptor`
+    pub const PROTOSS_INTERCEPTOR: UnitType = UnitType(73);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Dark_Templar`
+    pub const HERO_DARK_TEMPLAR: UnitType = UnitType(74);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Zeratul`
+    pub const HERO_ZERATUL: UnitType = UnitType(75);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Tassadar_Zeratul_Archon`
+    pub const HERO_TASSADAR_ZERATUL_ARCHON: UnitType = UnitType(76);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Fenix_Zealot`
+    pub const HERO_FENIX_ZEALOT: UnitType = UnitType(77);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Fenix_Dragoon`
+    pub const HERO_FENIX_DRAGOON: UnitType = UnitType(78);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Tassadar`
+    pub const HERO_TASSADAR: UnitType = UnitType(79);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Mojo`
+    pub const HERO_MOJO: UnitType = UnitType(80);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Warbringer`
+    pub const HERO_WARBRINGER: UnitType = UnitType(81);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Gantrithor`
+    pub const HERO_GANTRITHOR: UnitType = UnitType(82);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Reaver`
+    pub const PROTOSS_REAVER: UnitType = UnitType(83);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Observer`
+    pub const PROTOSS_OBSERVER: UnitType = UnitType(84);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Scarab`
+    pub const PROTOSS_SCARAB: UnitType = UnitType(85);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Danimoth`
+    pub const HERO_DANIMOTH: UnitType = UnitType(86);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Aldaris`
+    pub const HERO_ALDARIS: UnitType = UnitType(87);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Artanis`
+    pub const HERO_ARTANIS: UnitType = UnitType(88);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Critter_Rhynadon`
+    pub const CRITTER_RHYNADON: UnitType = UnitType(89);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Critter_Bengalaas`
+    pub const CRITTER_BENGALAAS: UnitType = UnitType(90);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Cargo_Ship`
+    pub const SPECIAL_CARGO_SHIP: UnitType = UnitType(91);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Mercenary_Gunship`
+    pub const SPECIAL_MERCENARY_GUNSHIP: UnitType = UnitType(92);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Critter_Scantid`
+    pub const CRITTER_SCANTID: UnitType = UnitType(93);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Critter_Kakaru`
+    pub const CRITTER_KAKARU: UnitType = UnitType(94);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Critter_Ragnasaur`
+    pub const CRITTER_RAGNASAUR: UnitType = UnitType(95);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Critter_Ursadon`
+    pub const CRITTER_URSADON: UnitType = UnitType(96);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Lurker_Egg`
+    pub const ZERG_LURKER_EGG: UnitType = UnitType(97);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Raszagal`
+    pub const HERO_RASZAGAL: UnitType = UnitType(98);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Samir_Duran`
+    pub const HERO_SAMIR_DURAN: UnitType = UnitType(99);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Alexei_Stukov`
+    pub const HERO_ALEXEI_STUKOV: UnitType = UnitType(100);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Map_Revealer`
+    pub const SPECIAL_MAP_REVEALER: UnitType = UnitType(101);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Gerard_DuGalle`
+    pub const HERO_GERARD_DU_GALLE: UnitType = UnitType(102);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Lurker`
+    pub const ZERG_LURKER: UnitType = UnitType(103);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Hero_Infested_Duran`
+    pub const HERO_INFESTED_DURAN: UnitType = UnitType(104);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Spell_Disruption_Web`
+    pub const SPELL_DISRUPTION_WEB: UnitType = UnitType(105);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Command_Center`
+    pub const TERRAN_COMMAND_CENTER: UnitType = UnitType(106);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Comsat_Station`
+    pub const TERRAN_COMSAT_STATION: UnitType = UnitType(107);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Nuclear_Silo`
+    pub const TERRAN_NUCLEAR_SILO: UnitType = UnitType(108);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Supply_Depot`
+    pub const TERRAN_SUPPLY_DEPOT: UnitType = UnitType(109);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Refinery`
+    pub const TERRAN_REFINERY: UnitType = UnitType(110);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Barracks`
+    pub const TERRAN_BARRACKS: UnitType = UnitType(111);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Academy`
+    pub const TERRAN_ACADEMY: UnitType = UnitType(112);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Factory`
+    pub const TERRAN_FACTORY: UnitType = UnitType(113);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Starport`
+    pub const TERRAN_STARPORT: UnitType = UnitType(114);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Control_Tower`
+    pub const TERRAN_CONTROL_TOWER: UnitType = UnitType(115);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Science_Facility`
+    pub const TERRAN_SCIENCE_FACILITY: UnitType = UnitType(116);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Covert_Ops`
+    pub const TERRAN_COVERT_OPS: UnitType = UnitType(117);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Physics_Lab`
+    pub const TERRAN_PHYSICS_LAB: UnitType = UnitType(118);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Terran1`
+    pub const UNUSED_TERRAN1: UnitType = UnitType(119);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Machine_Shop`
+    pub const TERRAN_MACHINE_SHOP: UnitType = UnitType(120);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Terran2`
+    pub const UNUSED_TERRAN2: UnitType = UnitType(121);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Engineering_Bay`
+    pub const TERRAN_ENGINEERING_BAY: UnitType = UnitType(122);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Armory`
+    pub const TERRAN_ARMORY: UnitType = UnitType(123);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Missile_Turret`
+    pub const TERRAN_MISSILE_TURRET: UnitType = UnitType(124);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Terran_Bunker`
+    pub const TERRAN_BUNKER: UnitType = UnitType(125);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Crashed_Norad_II`
+    pub const SPECIAL_CRASHED_NORAD_II: UnitType = UnitType(126);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Ion_Cannon`
+    pub const SPECIAL_ION_CANNON: UnitType = UnitType(127);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Uraj_Crystal`
+    pub const POWERUP_URAJ_CRYSTAL: UnitType = UnitType(128);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Khalis_Crystal`
+    pub const POWERUP_KHALIS_CRYSTAL: UnitType = UnitType(129);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Infested_Command_Center`
+    pub const ZERG_INFESTED_COMMAND_CENTER: UnitType = UnitType(130);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Hatchery`
+    pub const ZERG_HATCHERY: UnitType = UnitType(131);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Lair`
+    pub const ZERG_LAIR: UnitType = UnitType(132);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Hive`
+    pub const ZERG_HIVE: UnitType = UnitType(133);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Nydus_Canal`
+    pub const ZERG_NYDUS_CANAL: UnitType = UnitType(134);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Hydralisk_Den`
+    pub const ZERG_HYDRALISK_DEN: UnitType = UnitType(135);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Defiler_Mound`
+    pub const ZERG_DEFILER_MOUND: UnitType = UnitType(136);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Greater_Spire`
+    pub const ZERG_GREATER_SPIRE: UnitType = UnitType(137);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Queens_Nest`
+    pub const ZERG_QUEENS_NEST: UnitType = UnitType(138);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Evolution_Chamber`
+    pub const ZERG_EVOLUTION_CHAMBER: UnitType = UnitType(139);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Ultralisk_Cavern`
+    pub const ZERG_ULTRALISK_CAVERN: UnitType = UnitType(140);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Spire`
+    pub const ZERG_SPIRE: UnitType = UnitType(141);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Spawning_Pool`
+    pub const ZERG_SPAWNING_POOL: UnitType = UnitType(142);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Creep_Colony`
+    pub const ZERG_CREEP_COLONY: UnitType = UnitType(143);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Spore_Colony`
+    pub const ZERG_SPORE_COLONY: UnitType = UnitType(144);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Zerg1`
+    pub const UNUSED_ZERG1: UnitType = UnitType(145);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Sunken_Colony`
+    pub const ZERG_SUNKEN_COLONY: UnitType = UnitType(146);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Overmind_With_Shell`
+    pub const SPECIAL_OVERMIND_WITH_SHELL: UnitType = UnitType(147);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Overmind`
+    pub const SPECIAL_OVERMIND: UnitType = UnitType(148);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Zerg_Extractor`
+    pub const ZERG_EXTRACTOR: UnitType = UnitType(149);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Mature_Chrysalis`
+    pub const SPECIAL_MATURE_CHRYSALIS: UnitType = UnitType(150);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Cerebrate`
+    pub const SPECIAL_CEREBRATE: UnitType = UnitType(151);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Cerebrate_Daggoth`
+    pub const SPECIAL_CEREBRATE_DAGGOTH: UnitType = UnitType(152);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Zerg2`
+    pub const UNUSED_ZERG2: UnitType = UnitType(153);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Nexus`
+    pub const PROTOSS_NEXUS: UnitType = UnitType(154);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Robotics_Facility`
+    pub const PROTOSS_ROBOTICS_FACILITY: UnitType = UnitType(155);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Pylon`
+    pub const PROTOSS_PYLON: UnitType = UnitType(156);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Assimilator`
+    pub const PROTOSS_ASSIMILATOR: UnitType = UnitType(157);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Protoss1`
+    pub const UNUSED_PROTOSS1: UnitType = UnitType(158);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Observatory`
+    pub const PROTOSS_OBSERVATORY: UnitType = UnitType(159);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Gateway`
+    pub const PROTOSS_GATEWAY: UnitType = UnitType(160);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Protoss2`
+    pub const UNUSED_PROTOSS2: UnitType = UnitType(161);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Photon_Cannon`
+    pub const PROTOSS_PHOTON_CANNON: UnitType = UnitType(162);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Citadel_of_Adun`
+    pub const PROTOSS_CITADEL_OF_ADUN: UnitType = UnitType(163);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Cybernetics_Core`
+    pub const PROTOSS_CYBERNETICS_CORE: UnitType = UnitType(164);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Templar_Archives`
+    pub const PROTOSS_TEMPLAR_ARCHIVES: UnitType = UnitType(165);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Forge`
+    pub const PROTOSS_FORGE: UnitType = UnitType(166);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Stargate`
+    pub const PROTOSS_STARGATE: UnitType = UnitType(167);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Stasis_Cell_Prison`
+    pub const SPECIAL_STASIS_CELL_PRISON: UnitType = UnitType(168);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Fleet_Beacon`
+    pub const PROTOSS_FLEET_BEACON: UnitType = UnitType(169);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Arbiter_Tribunal`
+    pub const PROTOSS_ARBITER_TRIBUNAL: UnitType = UnitType(170);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Robotics_Support_Bay`
+    pub const PROTOSS_ROBOTICS_SUPPORT_BAY: UnitType = UnitType(171);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Protoss_Shield_Battery`
+    pub const PROTOSS_SHIELD_BATTERY: UnitType = UnitType(172);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Khaydarin_Crystal_Form`
+    pub const SPECIAL_KHAYDARIN_CRYSTAL_FORM: UnitType = UnitType(173);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Protoss_Temple`
+    pub const SPECIAL_PROTOSS_TEMPLE: UnitType = UnitType(174);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_XelNaga_Temple`
+    pub const SPECIAL_XEL_NAGA_TEMPLE: UnitType = UnitType(175);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Resource_Mineral_Field`
+    pub const RESOURCE_MINERAL_FIELD: UnitType = UnitType(176);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Resource_Mineral_Field_Type_2`
+    pub const RESOURCE_MINERAL_FIELD_TYPE_2: UnitType = UnitType(177);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Resource_Mineral_Field_Type_3`
+    pub const RESOURCE_MINERAL_FIELD_TYPE_3: UnitType = UnitType(178);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Cave`
+    pub const UNUSED_CAVE: UnitType = UnitType(179);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Cave_In`
+    pub const UNUSED_CAVE_IN: UnitType = UnitType(180);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Cantina`
+    pub const UNUSED_CANTINA: UnitType = UnitType(181);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Mining_Platform`
+    pub const UNUSED_MINING_PLATFORM: UnitType = UnitType(182);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Independant_Command_Center`
+    pub const UNUSED_INDEPENDANT_COMMAND_CENTER: UnitType = UnitType(183);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Independant_Starport`
+    pub const SPECIAL_INDEPENDANT_STARPORT: UnitType = UnitType(184);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Independant_Jump_Gate`
+    pub const UNUSED_INDEPENDANT_JUMP_GATE: UnitType = UnitType(185);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Ruins`
+    pub const UNUSED_RUINS: UnitType = UnitType(186);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Khaydarin_Crystal_Formation`
+    pub const UNUSED_KHAYDARIN_CRYSTAL_FORMATION: UnitType = UnitType(187);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Resource_Vespene_Geyser`
+    pub const RESOURCE_VESPENE_GEYSER: UnitType = UnitType(188);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Warp_Gate`
+    pub const SPECIAL_WARP_GATE: UnitType = UnitType(189);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Psi_Disrupter`
+    pub const SPECIAL_PSI_DISRUPTER: UnitType = UnitType(190);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Zerg_Marker`
+    pub const UNUSED_ZERG_MARKER: UnitType = UnitType(191);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Terran_Marker`
+    pub const UNUSED_TERRAN_MARKER: UnitType = UnitType(192);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unused_Protoss_Marker`
+    pub const UNUSED_PROTOSS_MARKER: UnitType = UnitType(193);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Zerg_Beacon`
+    pub const SPECIAL_ZERG_BEACON: UnitType = UnitType(194);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Terran_Beacon`
+    pub const SPECIAL_TERRAN_BEACON: UnitType = UnitType(195);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Protoss_Beacon`
+    pub const SPECIAL_PROTOSS_BEACON: UnitType = UnitType(196);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Zerg_Flag_Beacon`
+    pub const SPECIAL_ZERG_FLAG_BEACON: UnitType = UnitType(197);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Terran_Flag_Beacon`
+    pub const SPECIAL_TERRAN_FLAG_BEACON: UnitType = UnitType(198);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Protoss_Flag_Beacon`
+    pub const SPECIAL_PROTOSS_FLAG_BEACON: UnitType = UnitType(199);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Power_Generator`
+    pub const SPECIAL_POWER_GENERATOR: UnitType = UnitType(200);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Overmind_Cocoon`
+    pub const SPECIAL_OVERMIND_COCOON: UnitType = UnitType(201);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Spell_Dark_Swarm`
+    pub const SPELL_DARK_SWARM: UnitType = UnitType(202);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Floor_Missile_Trap`
+    pub const SPECIAL_FLOOR_MISSILE_TRAP: UnitType = UnitType(203);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Floor_Hatch`
+    pub const SPECIAL_FLOOR_HATCH: UnitType = UnitType(204);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Upper_Level_Door`
+    pub const SPECIAL_UPPER_LEVEL_DOOR: UnitType = UnitType(205);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Right_Upper_Level_Door`
+    pub const SPECIAL_RIGHT_UPPER_LEVEL_DOOR: UnitType = UnitType(206);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Pit_Door`
+    pub const SPECIAL_PIT_DOOR: UnitType = UnitType(207);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Right_Pit_Door`
+    pub const SPECIAL_RIGHT_PIT_DOOR: UnitType = UnitType(208);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Floor_Gun_Trap`
+    pub const SPECIAL_FLOOR_GUN_TRAP: UnitType = UnitType(209);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Wall_Missile_Trap`
+    pub const SPECIAL_WALL_MISSILE_TRAP: UnitType = UnitType(210);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Wall_Flame_Trap`
+    pub const SPECIAL_WALL_FLAME_TRAP: UnitType = UnitType(211);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Right_Wall_Missile_Trap`
+    pub const SPECIAL_RIGHT_WALL_MISSILE_TRAP: UnitType = UnitType(212);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Right_Wall_Flame_Trap`
+    pub const SPECIAL_RIGHT_WALL_FLAME_TRAP: UnitType = UnitType(213);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Special_Start_Location`
+    pub const SPECIAL_START_LOCATION: UnitType = UnitType(214);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Flag`
+    pub const POWERUP_FLAG: UnitType = UnitType(215);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Young_Chrysalis`
+    pub const POWERUP_YOUNG_CHRYSALIS: UnitType = UnitType(216);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Psi_Emitter`
+    pub const POWERUP_PSI_EMITTER: UnitType = UnitType(217);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Data_Disk`
+    pub const POWERUP_DATA_DISK: UnitType = UnitType(218);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Khaydarin_Crystal`
+    pub const POWERUP_KHAYDARIN_CRYSTAL: UnitType = UnitType(219);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Mineral_Cluster_Type_1`
+    pub const POWERUP_MINERAL_CLUSTER_TYPE_1: UnitType = UnitType(220);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Mineral_Cluster_Type_2`
+    pub const POWERUP_MINERAL_CLUSTER_TYPE_2: UnitType = UnitType(221);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Protoss_Gas_Orb_Type_1`
+    pub const POWERUP_PROTOSS_GAS_ORB_TYPE_1: UnitType = UnitType(222);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Protoss_Gas_Orb_Type_2`
+    pub const POWERUP_PROTOSS_GAS_ORB_TYPE_2: UnitType = UnitType(223);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Zerg_Gas_Sac_Type_1`
+    pub const POWERUP_ZERG_GAS_SAC_TYPE_1: UnitType = UnitType(224);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Zerg_Gas_Sac_Type_2`
+    pub const POWERUP_ZERG_GAS_SAC_TYPE_2: UnitType = UnitType(225);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Terran_Gas_Tank_Type_1`
+    pub const POWERUP_TERRAN_GAS_TANK_TYPE_1: UnitType = UnitType(226);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Powerup_Terran_Gas_Tank_Type_2`
+    pub const POWERUP_TERRAN_GAS_TANK_TYPE_2: UnitType = UnitType(227);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::None`
+    pub const NONE: UnitType = UnitType(228);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::AllUnits`
+    pub const ALL_UNITS: UnitType = UnitType(229);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Men`
+    pub const MEN: UnitType = UnitType(230);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Buildings`
+    pub const BUILDINGS: UnitType = UnitType(231);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Factories`
+    pub const FACTORIES: UnitType = UnitType(232);
+
+    /// BWAPI: `BWAPI::UnitTypes::Enum::Unknown`
+    pub const UNKNOWN: UnitType = UnitType(233);
 }
