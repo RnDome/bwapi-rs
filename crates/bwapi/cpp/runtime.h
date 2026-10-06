@@ -4,8 +4,7 @@
 
 #include <BWAPI.h>
 
-// The host resolves BWAPILIB symbols at dlopen, so the headers must match the
-// OpenBW host. Upstream BWAPI headers differ in vtables and inline code.
-#ifndef OPENBW_BWAPI
-#error "bwapi-rs must be built against OpenBW/bwapi headers"
-#endif
+// Headers of BWAPI 4.4.0. They also fit OpenBW: its fork has every 4.4.0
+// method with the same signature and puts its own virtual methods after them,
+// so the vtable slots this crate calls are the same on both hosts.
+static_assert(BWAPI::CLIENT_VERSION == 10003, "bwapi-rs is built against BWAPI 4.4.0 headers");

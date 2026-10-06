@@ -1,4 +1,5 @@
 [submodule "crates/bwapi/vendor/bwapi"]
 	path = crates/bwapi/vendor/bwapi
-	url = https://github.com/OpenBW/bwapi.git
-	branch = develop-openbw
+	url = https://github.com/bwapi/bwapi.git
+	shallow = true
+	ignore = dirty
