@@ -1,0 +1,10 @@
+error: lifetime may not live long enough
+  --> tests/ui/set_iter_in_bot.rs:16:9
+   |
+10 | impl<'game> Bot<'game> for MyBot<'game> {
+   |      ----- lifetime `'game` defined here
+...
+15 |     fn on_frame(&mut self, cx: Context<'_, 'game>) {
+   |                            -- has type `bwapi::Context<'1, '_>`
+16 |         self.iter = Some(self.set.iter(cx));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assignment requires that `'1` must outlive `'game`

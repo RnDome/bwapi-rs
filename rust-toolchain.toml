@@ -1,0 +1,5 @@
+# One compiler for everyone: the compile-fail snapshots, clippy and rustfmt
+# depend on its version. rust-src: compiler messages quote std sources with it.
+[toolchain]
+channel = "1.88"
+components = ["rust-src", "clippy", "rustfmt"]

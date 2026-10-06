@@ -1,0 +1,74 @@
+error[E0277]: `NonNull<bwapi::generated::raw::Unit>` cannot be sent between threads safely
+ --> tests/ui/send_to_thread.rs:6:24
+  |
+6 |     std::thread::spawn(move || unit.id());
+  |     ------------------ -------^^^^^^^^^^
+  |     |                  |
+  |     |                  `NonNull<bwapi::generated::raw::Unit>` cannot be sent between threads safely
+  |     |                  within this `{closure@$DIR/tests/ui/send_to_thread.rs:6:24: 6:31}`
+  |     required by a bound introduced by this call
+  |
+  = help: within `{closure@$DIR/tests/ui/send_to_thread.rs:6:24: 6:31}`, the trait `Send` is not implemented for `NonNull<bwapi::generated::raw::Unit>`
+note: required because it appears within the type `Unit<'static>`
+ --> src/generated/unit.rs
+  |
+  | crate::runtime::types::handle!(Unit, "BWAPI::UnitInterface");
+  |                                ^^^^
+note: required because it's used within this closure
+ --> tests/ui/send_to_thread.rs:6:24
+  |
+6 |     std::thread::spawn(move || unit.id());
+  |                        ^^^^^^^
+note: required by a bound in `std::thread::spawn`
+ --> $RUST/std/src/thread/mod.rs
+  |
+  | pub fn spawn<F, T>(f: F) -> JoinHandle<T>
+  |        ----- required by a bound in this function
+...
+  |     F: Send + 'static,
+  |        ^^^^ required by this bound in `spawn`
+
+error[E0277]: `*mut ()` cannot be sent between threads safely
+ --> tests/ui/send_to_thread.rs:6:24
+  |
+6 |     std::thread::spawn(move || unit.id());
+  |     ------------------ -------^^^^^^^^^^
+  |     |                  |
+  |     |                  `*mut ()` cannot be sent between threads safely
+  |     |                  within this `{closure@$DIR/tests/ui/send_to_thread.rs:6:24: 6:31}`
+  |     required by a bound introduced by this call
+  |
+  = help: within `{closure@$DIR/tests/ui/send_to_thread.rs:6:24: 6:31}`, the trait `Send` is not implemented for `*mut ()`
+note: required because it appears within the type `PhantomData<*mut ()>`
+ --> $RUST/core/src/marker.rs
+  |
+  | pub struct PhantomData<T: ?Sized>;
+  |            ^^^^^^^^^^^
+note: required because it appears within the type `bwapi::session::brand::NotSendSync`
+ --> src/session/brand.rs
+  |
+  | pub(crate) struct NotSendSync(PhantomData<*mut ()>);
+  |                   ^^^^^^^^^^^
+note: required because it appears within the type `bwapi::session::brand::Brand<'static>`
+ --> src/session/brand.rs
+  |
+  | pub(crate) struct Brand<'game> {
+  |                   ^^^^^
+note: required because it appears within the type `Unit<'static>`
+ --> src/generated/unit.rs
+  |
+  | crate::runtime::types::handle!(Unit, "BWAPI::UnitInterface");
+  |                                ^^^^
+note: required because it's used within this closure
+ --> tests/ui/send_to_thread.rs:6:24
+  |
+6 |     std::thread::spawn(move || unit.id());
+  |                        ^^^^^^^
+note: required by a bound in `std::thread::spawn`
+ --> $RUST/std/src/thread/mod.rs
+  |
+  | pub fn spawn<F, T>(f: F) -> JoinHandle<T>
+  |        ----- required by a bound in this function
+...
+  |     F: Send + 'static,
+  |        ^^^^ required by this bound in `spawn`

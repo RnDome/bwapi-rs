@@ -1,0 +1,11 @@
+error: lifetime may not live long enough
+ --> tests/ui/extend_frame.rs:6:5
+  |
+5 | fn leak<'frame, 'game>(cx: Context<'frame, 'game>, set: UnitSet<'game>) -> UnitSetIter<'game, 'game> {
+  |         ------  ----- lifetime `'game` defined here
+  |         |
+  |         lifetime `'frame` defined here
+6 |     set.iter(cx)
+  |     ^^^^^^^^^^^^ function was supposed to return data with lifetime `'game` but it is returning data with lifetime `'frame`
+  |
+  = help: consider adding the following bound: `'frame: 'game`

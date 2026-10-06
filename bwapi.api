@@ -1,0 +1,158 @@
+// The Rust API of the bwapi crate: `cargo xtask generate` turns it into the C API
+// (crates/bwapi/cpp/include/bwapi_c.h), the C++ thunks implementing it
+// (crates/bwapi/cpp/generated) and Rust (crates/bwapi/src/generated).
+//
+// Not Rust: crates/codegen parses it with syn. Types are markers of how a value
+// crosses the boundary. A declaration is `fn rust_name(args) -> Marker = cppName;`:
+// the Rust name on the left, the C++ name on the right. The C++ compiler checks
+// every declaration against the pinned BWAPI headers.
+
+bwapi_api! {
+    // ------------------------------------------------------------------- Unit
+
+    #[set = "BWAPI::Unitset"]
+    handle Unit = "BWAPI::UnitInterface" {
+        fn id() -> i32 = getID;
+        fn exists() -> bool = exists;
+
+        #[non_null = "an inaccessible unit belongs to the neutral player, never to null"]
+        fn player() -> NonNull<Player> = getPlayer;
+
+        fn unit_type() -> UnitType = getType;
+        fn position() -> Position = getPosition;
+        fn is_idle() -> bool = isIdle;
+        fn units_in_radius(radius: i32, pred: UnitFilter = "nullptr") -> Query<Unit> = getUnitsInRadius;
+
+        fn attack_unit(target: Unit, #[default] shift_queue_command: bool) -> bool = attack;
+        fn gather(target: Unit, #[default] shift_queue_command: bool) -> bool = gather;
+    }
+
+    // ----------------------------------------------------------------- Player
+
+    #[set = "BWAPI::Playerset"]
+    handle Player = "BWAPI::PlayerInterface" {
+        fn id() -> i32 = getID;
+        fn name() -> CxxString = getName;
+
+        #[stable_address = "PlayerImpl::units: a member of a player that lives the whole match, updated in place"]
+        fn units() -> Set<Unit> = getUnits;
+    }
+
+    // ------------------------------------------------------------------ Force
+
+    #[set = "BWAPI::Forceset"]
+    handle Force = "BWAPI::ForceInterface" {
+        fn id() -> i32 = getID;
+        fn name() -> CxxString = getName;
+        fn players() -> Query<Player> = getPlayers;
+    }
+
+    // ----------------------------------------------------------------- Bullet
+
+    #[set = "BWAPI::Bulletset"]
+    handle Bullet = "BWAPI::BulletInterface" {
+        fn id() -> i32 = getID;
+        fn exists() -> bool = exists;
+    }
+
+    // ----------------------------------------------------------------- Region
+
+    #[set = "BWAPI::Regionset"]
+    handle Region = "BWAPI::RegionInterface" {
+        fn id() -> i32 = getID;
+        fn units(pred: UnitFilter = "nullptr") -> Query<Unit> = getUnits;
+    }
+
+    // ------------------------------------------------------------------- Game
+
+    handle Game = "BWAPI::Game" {
+        #[stable_address = "GameImpl::forces: a member of the game"]
+        fn forces() -> Set<Force> = getForces;
+        #[stable_address = "GameImpl::playerSet: a member of the game"]
+        fn players() -> Set<Player> = getPlayers;
+        #[stable_address = "GameImpl::accessibleUnits: a member of the game, updated in place between frames"]
+        fn all_units() -> Set<Unit> = getAllUnits;
+        #[stable_address = "GameImpl::minerals: a member of the game, updated in place between frames"]
+        fn minerals() -> Set<Unit> = getMinerals;
+        #[stable_address = "GameImpl::bullets: a member of the game, updated in place between frames"]
+        fn bullets() -> Set<Bullet> = getBullets;
+        #[stable_address = "GameImpl::regionsList: filled once when the match starts"]
+        fn all_regions() -> Set<Region> = getAllRegions;
+
+        fn frame_count() -> i32 = getFrameCount;
+        fn start_locations() -> Vec<TilePosition> = getStartLocations;
+        fn self_player() -> Option<Player> = self;
+        fn send_text(text: Fmt) = sendText;
+        fn draw_text_screen(position: Position, text: Fmt) = drawTextScreen;
+    }
+
+    // --------------------------------------------------------------- UnitType
+
+    typeid UnitType = "BWAPI::UnitType" {
+        fn name() -> CxxString = getName;
+        fn what_builds() -> (UnitType, i32) = whatBuilds;
+        fn is_worker() -> bool = isWorker;
+    }
+
+    static UnitType = "BWAPI::UnitTypes::Enum" {
+        const Terran_SCV = 7;
+        const Protoss_Probe = 64;
+        const Zerg_Drone = 41;
+    }
+
+    // ------------------------------------------------------------------ Enums
+
+    // Control bytes inside strings: `format!("{}text", TextColor::Green)`.
+    enum TextColor = "BWAPI::Text::Enum" {
+        const Previous = Previous = 1;
+        const Default = Default = 2;
+        const Yellow = Yellow = 3;
+        const White = White = 4;
+        const Grey = Grey = 5;
+        const Red = Red = 6;
+        const Green = Green = 7;
+        const BrightRed = BrightRed = 8;
+        const Invisible = Invisible = 11;
+        const Blue = Blue = 14;
+        const Teal = Teal = 15;
+        const Purple = Purple = 16;
+        const Orange = Orange = 17;
+        const AlignRight = Align_Right = 18;
+        const AlignCenter = Align_Center = 19;
+        const Invisible2 = Invisible2 = 20;
+        const Brown = Brown = 21;
+        const PlayerWhite = PlayerWhite = 22;
+        const PlayerYellow = PlayerYellow = 23;
+        const DarkGreen = DarkGreen = 24;
+        const LightYellow = LightYellow = 25;
+        const Cyan = Cyan = 26;
+        const Tan = Tan = 27;
+        const GreyBlue = GreyBlue = 28;
+        const GreyGreen = GreyGreen = 29;
+        const GreyCyan = GreyCyan = 30;
+        const Turquoise = Turquoise = 31;
+    }
+
+    // The kinds of BWAPI callbacks; the session reads them from the C++ module.
+    enum EventType = "BWAPI::EventType::Enum" {
+        const MatchStart = MatchStart = 0;
+        const MatchEnd = MatchEnd = 1;
+        const MatchFrame = MatchFrame = 2;
+        const MenuFrame = MenuFrame = 3;
+        const SendText = SendText = 4;
+        const ReceiveText = ReceiveText = 5;
+        const PlayerLeft = PlayerLeft = 6;
+        const NukeDetect = NukeDetect = 7;
+        const UnitDiscover = UnitDiscover = 8;
+        const UnitEvade = UnitEvade = 9;
+        const UnitShow = UnitShow = 10;
+        const UnitHide = UnitHide = 11;
+        const UnitCreate = UnitCreate = 12;
+        const UnitDestroy = UnitDestroy = 13;
+        const UnitMorph = UnitMorph = 14;
+        const UnitRenegade = UnitRenegade = 15;
+        const SaveGame = SaveGame = 16;
+        const UnitComplete = UnitComplete = 17;
+        const None = None = 18;
+    }
+}

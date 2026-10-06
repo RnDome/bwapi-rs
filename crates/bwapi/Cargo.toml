@@ -8,10 +8,31 @@ rust-version.workspace = true
 authors.workspace = true
 repository.workspace = true
 license.workspace = true
-include = ["/Cargo.toml", "/build.rs", "/cpp/**", "/src/**", "/vendor/bwapi/bwapi/include/BWAPI.h", "/vendor/bwapi/bwapi/include/BWAPI/**"]
+include = [
+    "/Cargo.toml",
+    "/build.rs",
+    "/cpp/**",
+    "/src/**",
+    "/vendor/bwapi/bwapi/include/BWAPI.h",
+    "/vendor/bwapi/bwapi/include/BWAPI/**",
+    "/vendor/bwapi/bwapi/include/Debug.h",
+    "/vendor/bwapi/bwapi/include/starcraftver.h",
+    "/vendor/bwapi/bwapi/BWAPILIB/Source/**",
+    "/vendor/bwapi/bwapi/BWAPILIB/UnitCommand.cpp",
+]
 links = "bwapi"
 
+# The thunks call BWAPI objects that exist only inside a running game, and on
+# Linux even BWAPILIB comes from the host at load time: unit tests and doctests
+# have nothing to run against.
+[lib]
+test = false
+doctest = false
+
 [dependencies]
+
+[dev-dependencies]
+trybuild = "1"
 
 [build-dependencies]
 cc = "1.2"

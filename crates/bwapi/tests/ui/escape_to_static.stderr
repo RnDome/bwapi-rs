@@ -1,0 +1,12 @@
+error: lifetime may not live long enough
+  --> tests/ui/escape_to_static.rs:15:18
+   |
+9  | impl<'game> Bot<'game> for MyBot {
+   |      ----- lifetime `'game` defined here
+...
+15 |         unsafe { LEAKED = Some(unit) };
+   |                  ^^^^^^^^^^^^^^^^^^^ assignment requires that `'game` must outlive `'static`
+   |
+   = note: requirement occurs because of the type `Unit<'_>`, which makes the generic argument `'_` invariant
+   = note: the struct `Unit<'game>` is invariant over the parameter `'game`
+   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
