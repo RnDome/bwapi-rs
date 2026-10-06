@@ -1,0 +1,8 @@
+error[E0277]: `UnitSet<'_>` is not an iterator
+ --> tests/ui/iterate_set_without_context.rs:6:18
+  |
+6 |     for _unit in set {}
+  |                  ^^^ `UnitSet<'_>` is not an iterator
+  |
+  = help: the trait `Iterator` is not implemented for `UnitSet<'_>`
+  = note: required for `UnitSet<'_>` to implement `IntoIterator`

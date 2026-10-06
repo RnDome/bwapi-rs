@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [master, new_design]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - run: cargo build --workspace --all-targets
+      - run: cargo test --workspace
+
+  bot_c:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - run: make -C examples/bot_c
+
+  generated:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: cargo xtask generate
+      - run: git diff --exit-code
+
+  clippy:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+
+  fmt:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: cargo fmt --all --check

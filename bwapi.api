@@ -1,0 +1,2298 @@
+// The Rust API of the bwapi crate: `cargo xtask generate` turns it into the C API
+// (crates/bwapi/cpp/include/bwapi_c.h), the C++ thunks implementing it
+// (crates/bwapi/cpp/generated) and Rust (crates/bwapi/src/generated).
+//
+// Not Rust: crates/codegen parses it with syn. Types are markers of how a value
+// crosses the boundary. A declaration is `fn rust_name(args) -> Marker = cppName;`:
+// the Rust name on the left, the C++ name on the right. The C++ compiler checks
+// every declaration against the pinned BWAPI headers.
+//
+// Every public method of the BWAPI headers is either bound here or marked
+// `#[skip = "reason"]`.
+//
+// Naming of overloads with a target: `attack_position` / `attack_unit` for
+// commands; `can_x_at` (one kind of target) or `can_x_at_position` /
+// `can_x_at_unit` (two kinds) for the `can*` checks; `_type` when the overload
+// takes the type to build, train or research.
+
+bwapi_api! {
+    // ------------------------------------------------------------------- Unit
+
+    #[set = "BWAPI::Unitset"]
+    handle Unit = "BWAPI::UnitInterface" {
+        fn id() -> i32 = getID;
+        fn exists() -> bool = exists;
+        fn replay_id() -> i32 = getReplayID;
+
+        #[non_null = "an inaccessible unit belongs to the neutral player, never to null"]
+        fn player() -> NonNull<Player> = getPlayer;
+
+        fn unit_type() -> UnitType = getType;
+        fn position() -> Position = getPosition;
+        fn tile_position() -> TilePosition = getTilePosition;
+        fn angle() -> f64 = getAngle;
+        fn velocity_x() -> f64 = getVelocityX;
+        fn velocity_y() -> f64 = getVelocityY;
+        fn region() -> Option<Region> = getRegion;
+        fn left() -> i32 = getLeft;
+        fn top() -> i32 = getTop;
+        fn right() -> i32 = getRight;
+        fn bottom() -> i32 = getBottom;
+        fn hit_points() -> i32 = getHitPoints;
+        fn shields() -> i32 = getShields;
+        fn energy() -> i32 = getEnergy;
+        fn resources() -> i32 = getResources;
+        fn resource_group() -> i32 = getResourceGroup;
+        fn distance_to_position(target: Position) -> i32 = getDistance;
+        fn distance_to_unit(target: Unit) -> i32 = getDistance;
+        fn has_path_to_position(target: Position) -> bool = hasPath;
+        fn has_path_to_unit(target: Unit) -> bool = hasPath;
+        fn last_command_frame() -> i32 = getLastCommandFrame;
+
+        #[skip = "returns the UnitCommand struct; every command has its own method"]
+        fn last_command = getLastCommand;
+
+        fn last_attacking_player() -> Option<Player> = getLastAttackingPlayer;
+        fn initial_type() -> UnitType = getInitialType;
+        fn initial_position() -> Position = getInitialPosition;
+        fn initial_tile_position() -> TilePosition = getInitialTilePosition;
+        fn initial_hit_points() -> i32 = getInitialHitPoints;
+        fn initial_resources() -> i32 = getInitialResources;
+        fn kill_count() -> i32 = getKillCount;
+        fn acid_spore_count() -> i32 = getAcidSporeCount;
+        fn interceptor_count() -> i32 = getInterceptorCount;
+        fn scarab_count() -> i32 = getScarabCount;
+        fn spider_mine_count() -> i32 = getSpiderMineCount;
+        fn ground_weapon_cooldown() -> i32 = getGroundWeaponCooldown;
+        fn air_weapon_cooldown() -> i32 = getAirWeaponCooldown;
+        fn spell_cooldown() -> i32 = getSpellCooldown;
+        fn defense_matrix_points() -> i32 = getDefenseMatrixPoints;
+        fn defense_matrix_timer() -> i32 = getDefenseMatrixTimer;
+        fn ensnare_timer() -> i32 = getEnsnareTimer;
+        fn irradiate_timer() -> i32 = getIrradiateTimer;
+        fn lockdown_timer() -> i32 = getLockdownTimer;
+        fn maelstrom_timer() -> i32 = getMaelstromTimer;
+        fn order_timer() -> i32 = getOrderTimer;
+        fn plague_timer() -> i32 = getPlagueTimer;
+        fn remove_timer() -> i32 = getRemoveTimer;
+        fn stasis_timer() -> i32 = getStasisTimer;
+        fn stim_timer() -> i32 = getStimTimer;
+        fn build_type() -> UnitType = getBuildType;
+        fn training_queue() -> Vec<UnitType> = getTrainingQueue;
+        fn tech_type() -> TechType = getTech;
+        fn upgrade_type() -> UpgradeType = getUpgrade;
+        fn remaining_build_time() -> i32 = getRemainingBuildTime;
+        fn remaining_train_time() -> i32 = getRemainingTrainTime;
+        fn remaining_research_time() -> i32 = getRemainingResearchTime;
+        fn remaining_upgrade_time() -> i32 = getRemainingUpgradeTime;
+        fn build_unit() -> Option<Unit> = getBuildUnit;
+        fn target() -> Option<Unit> = getTarget;
+        fn target_position() -> Position = getTargetPosition;
+        fn order() -> Order = getOrder;
+        fn secondary_order() -> Order = getSecondaryOrder;
+        fn order_target() -> Option<Unit> = getOrderTarget;
+        fn order_target_position() -> Position = getOrderTargetPosition;
+        fn rally_position() -> Position = getRallyPosition;
+        fn rally_unit() -> Option<Unit> = getRallyUnit;
+        fn addon() -> Option<Unit> = getAddon;
+        fn nydus_exit() -> Option<Unit> = getNydusExit;
+        fn power_up() -> Option<Unit> = getPowerUp;
+        fn transport() -> Option<Unit> = getTransport;
+        fn loaded_units() -> Query<Unit> = getLoadedUnits;
+        fn space_remaining() -> i32 = getSpaceRemaining;
+        fn carrier() -> Option<Unit> = getCarrier;
+        fn interceptors() -> Query<Unit> = getInterceptors;
+        fn hatchery() -> Option<Unit> = getHatchery;
+        fn larva() -> Query<Unit> = getLarva;
+        fn units_in_radius(radius: i32, pred: UnitFilter = "nullptr") -> Query<Unit> = getUnitsInRadius;
+        fn units_in_weapon_range(weapon: WeaponType, pred: UnitFilter = "nullptr") -> Query<Unit> = getUnitsInWeaponRange;
+        fn closest_unit(pred: UnitFilter = "nullptr", #[default] radius: i32) -> Option<Unit> = getClosestUnit;
+
+        fn has_nuke() -> bool = hasNuke;
+        fn is_accelerating() -> bool = isAccelerating;
+        fn is_attacking() -> bool = isAttacking;
+        fn is_attack_frame() -> bool = isAttackFrame;
+        fn is_being_constructed() -> bool = isBeingConstructed;
+        fn is_being_gathered() -> bool = isBeingGathered;
+        fn is_being_healed() -> bool = isBeingHealed;
+        fn is_blind() -> bool = isBlind;
+        fn is_braking() -> bool = isBraking;
+        fn is_burrowed() -> bool = isBurrowed;
+        fn is_carrying_gas() -> bool = isCarryingGas;
+        fn is_carrying_minerals() -> bool = isCarryingMinerals;
+        fn is_cloaked() -> bool = isCloaked;
+        fn is_completed() -> bool = isCompleted;
+        fn is_constructing() -> bool = isConstructing;
+        fn is_defense_matrixed() -> bool = isDefenseMatrixed;
+        fn is_detected() -> bool = isDetected;
+        fn is_ensnared() -> bool = isEnsnared;
+        fn is_flying() -> bool = isFlying;
+        fn is_following() -> bool = isFollowing;
+        fn is_gathering_gas() -> bool = isGatheringGas;
+        fn is_gathering_minerals() -> bool = isGatheringMinerals;
+        fn is_hallucination() -> bool = isHallucination;
+        fn is_holding_position() -> bool = isHoldingPosition;
+        fn is_idle() -> bool = isIdle;
+        fn is_interruptible() -> bool = isInterruptible;
+        fn is_invincible() -> bool = isInvincible;
+        fn is_in_weapon_range(target: Unit) -> bool = isInWeaponRange;
+        fn is_irradiated() -> bool = isIrradiated;
+        fn is_lifted() -> bool = isLifted;
+        fn is_loaded() -> bool = isLoaded;
+        fn is_locked_down() -> bool = isLockedDown;
+        fn is_maelstrommed() -> bool = isMaelstrommed;
+        fn is_morphing() -> bool = isMorphing;
+        fn is_moving() -> bool = isMoving;
+        fn is_parasited() -> bool = isParasited;
+        fn is_patrolling() -> bool = isPatrolling;
+        fn is_plagued() -> bool = isPlagued;
+        fn is_repairing() -> bool = isRepairing;
+        fn is_researching() -> bool = isResearching;
+        fn is_selected() -> bool = isSelected;
+        fn is_sieged() -> bool = isSieged;
+        fn is_starting_attack() -> bool = isStartingAttack;
+        fn is_stasised() -> bool = isStasised;
+        fn is_stimmed() -> bool = isStimmed;
+        fn is_stuck() -> bool = isStuck;
+        fn is_training() -> bool = isTraining;
+        fn is_under_attack() -> bool = isUnderAttack;
+        fn is_under_dark_swarm() -> bool = isUnderDarkSwarm;
+        fn is_under_disruption_web() -> bool = isUnderDisruptionWeb;
+        fn is_under_storm() -> bool = isUnderStorm;
+        fn is_powered() -> bool = isPowered;
+        fn is_upgrading() -> bool = isUpgrading;
+        fn is_visible(#[default] player: Option<Player>) -> bool = isVisible;
+        fn is_targetable() -> bool = isTargetable;
+
+        // Commands.
+        #[skip = "takes the UnitCommand struct; every command has its own method"]
+        fn issue_command = issueCommand;
+        fn attack_position(target: Position, #[default] shift_queue_command: bool) -> bool = attack;
+        fn attack_unit(target: Unit, #[default] shift_queue_command: bool) -> bool = attack;
+        fn build(unit_type: UnitType, target: TilePosition) -> bool = build;
+        fn build_addon(unit_type: UnitType) -> bool = buildAddon;
+        fn train(unit_type: UnitType) -> bool = train;
+        fn morph(unit_type: UnitType) -> bool = morph;
+        fn research(tech: TechType) -> bool = research;
+        fn upgrade(upgrade: UpgradeType) -> bool = upgrade;
+        fn set_rally_point_position(target: Position) -> bool = setRallyPoint;
+        fn set_rally_point_unit(target: Unit) -> bool = setRallyPoint;
+        fn move_to(target: Position, #[default] shift_queue_command: bool) -> bool = move;
+        fn patrol(target: Position, #[default] shift_queue_command: bool) -> bool = patrol;
+        fn hold_position(#[default] shift_queue_command: bool) -> bool = holdPosition;
+        fn stop(#[default] shift_queue_command: bool) -> bool = stop;
+        fn follow(target: Unit, #[default] shift_queue_command: bool) -> bool = follow;
+        fn gather(target: Unit, #[default] shift_queue_command: bool) -> bool = gather;
+        fn return_cargo(#[default] shift_queue_command: bool) -> bool = returnCargo;
+        fn repair(target: Unit, #[default] shift_queue_command: bool) -> bool = repair;
+        fn burrow() -> bool = burrow;
+        fn unburrow() -> bool = unburrow;
+        fn cloak() -> bool = cloak;
+        fn decloak() -> bool = decloak;
+        fn siege() -> bool = siege;
+        fn unsiege() -> bool = unsiege;
+        fn lift() -> bool = lift;
+        fn land(target: TilePosition) -> bool = land;
+        fn load(target: Unit, #[default] shift_queue_command: bool) -> bool = load;
+        fn unload(target: Unit) -> bool = unload;
+        fn unload_all(#[default] shift_queue_command: bool) -> bool = unloadAll;
+        fn unload_all_position(target: Position, #[default] shift_queue_command: bool) -> bool = unloadAll;
+        fn right_click_position(target: Position, #[default] shift_queue_command: bool) -> bool = rightClick;
+        fn right_click_unit(target: Unit, #[default] shift_queue_command: bool) -> bool = rightClick;
+        fn halt_construction() -> bool = haltConstruction;
+        fn cancel_construction() -> bool = cancelConstruction;
+        fn cancel_addon() -> bool = cancelAddon;
+        fn cancel_train(#[default] slot: i32) -> bool = cancelTrain;
+        fn cancel_morph() -> bool = cancelMorph;
+        fn cancel_research() -> bool = cancelResearch;
+        fn cancel_upgrade() -> bool = cancelUpgrade;
+        fn use_tech_position(tech: TechType, target: Position) -> bool = useTech;
+        fn use_tech_unit(tech: TechType, #[default] target: Option<Unit>) -> bool = useTech;
+        fn place_cop(target: TilePosition) -> bool = placeCOP;
+
+        // Command checks.
+        #[skip = "takes the UnitCommand struct; every command has its own check"]
+        fn can_issue_command = canIssueCommand;
+        #[skip = "takes the UnitCommand struct; every command has its own check"]
+        fn can_issue_command_grouped = canIssueCommandGrouped;
+        // Every check flag defaults to true: `can_x(…)` runs all checks, `can_x_with(…)`
+        // can skip the ones the caller has already done.
+        fn can_command() -> bool = canCommand;
+        fn can_command_grouped(#[default] check_commandibility: bool) -> bool = canCommandGrouped;
+        fn can_issue_command_type(command_type: UnitCommandType, #[default] check_commandibility: bool) -> bool = canIssueCommandType;
+        fn can_issue_command_type_grouped(command_type: UnitCommandType, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canIssueCommandTypeGrouped;
+        fn can_target_unit(target: Unit, #[default] check_commandibility: bool) -> bool = canTargetUnit;
+        fn can_attack(#[default] check_commandibility: bool) -> bool = canAttack;
+        fn can_attack_at_position(target: Position, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canAttack;
+        fn can_attack_at_unit(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canAttack;
+        fn can_attack_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canAttackGrouped;
+        fn can_attack_grouped_at_position(target: Position, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canAttackGrouped;
+        fn can_attack_grouped_at_unit(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canAttackGrouped;
+        fn can_attack_move(#[default] check_commandibility: bool) -> bool = canAttackMove;
+        fn can_attack_move_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canAttackMoveGrouped;
+        fn can_attack_unit(#[default] check_commandibility: bool) -> bool = canAttackUnit;
+        fn can_attack_unit_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canAttackUnit;
+        fn can_attack_unit_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canAttackUnitGrouped;
+        fn can_attack_unit_grouped_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canAttackUnitGrouped;
+        fn can_build(#[default] check_commandibility: bool) -> bool = canBuild;
+        fn can_build_type(unit_type: UnitType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canBuild;
+        fn can_build_at(unit_type: UnitType, target: TilePosition, #[default] check_target_unit_type: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canBuild;
+        fn can_build_addon(#[default] check_commandibility: bool) -> bool = canBuildAddon;
+        fn can_build_addon_type(unit_type: UnitType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canBuildAddon;
+        fn can_train(#[default] check_commandibility: bool) -> bool = canTrain;
+        fn can_train_type(unit_type: UnitType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canTrain;
+        fn can_morph(#[default] check_commandibility: bool) -> bool = canMorph;
+        fn can_morph_type(unit_type: UnitType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canMorph;
+        fn can_research(#[default] check_commandibility: bool) -> bool = canResearch;
+        fn can_research_type(tech: TechType, #[default] check_can_issue_command_type: bool) -> bool = canResearch;
+        fn can_upgrade(#[default] check_commandibility: bool) -> bool = canUpgrade;
+        fn can_upgrade_type(upgrade: UpgradeType, #[default] check_can_issue_command_type: bool) -> bool = canUpgrade;
+        fn can_set_rally_point(#[default] check_commandibility: bool) -> bool = canSetRallyPoint;
+        fn can_set_rally_point_at_position(target: Position, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canSetRallyPoint;
+        fn can_set_rally_point_at_unit(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canSetRallyPoint;
+        fn can_set_rally_position(#[default] check_commandibility: bool) -> bool = canSetRallyPosition;
+        fn can_set_rally_unit(#[default] check_commandibility: bool) -> bool = canSetRallyUnit;
+        fn can_set_rally_unit_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canSetRallyUnit;
+        fn can_move(#[default] check_commandibility: bool) -> bool = canMove;
+        fn can_move_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canMoveGrouped;
+        fn can_patrol(#[default] check_commandibility: bool) -> bool = canPatrol;
+        fn can_patrol_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canPatrolGrouped;
+        fn can_follow(#[default] check_commandibility: bool) -> bool = canFollow;
+        fn can_follow_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canFollow;
+        fn can_gather(#[default] check_commandibility: bool) -> bool = canGather;
+        fn can_gather_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canGather;
+        fn can_return_cargo(#[default] check_commandibility: bool) -> bool = canReturnCargo;
+        fn can_hold_position(#[default] check_commandibility: bool) -> bool = canHoldPosition;
+        fn can_stop(#[default] check_commandibility: bool) -> bool = canStop;
+        fn can_repair(#[default] check_commandibility: bool) -> bool = canRepair;
+        fn can_repair_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canRepair;
+        fn can_burrow(#[default] check_commandibility: bool) -> bool = canBurrow;
+        fn can_unburrow(#[default] check_commandibility: bool) -> bool = canUnburrow;
+        fn can_cloak(#[default] check_commandibility: bool) -> bool = canCloak;
+        fn can_decloak(#[default] check_commandibility: bool) -> bool = canDecloak;
+        fn can_siege(#[default] check_commandibility: bool) -> bool = canSiege;
+        fn can_unsiege(#[default] check_commandibility: bool) -> bool = canUnsiege;
+        fn can_lift(#[default] check_commandibility: bool) -> bool = canLift;
+        fn can_land(#[default] check_commandibility: bool) -> bool = canLand;
+        fn can_land_at(target: TilePosition, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canLand;
+        fn can_load(#[default] check_commandibility: bool) -> bool = canLoad;
+        fn can_load_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canLoad;
+        fn can_unload_with_or_without_target(#[default] check_commandibility: bool) -> bool = canUnloadWithOrWithoutTarget;
+        fn can_unload_at_position(target: Position, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUnloadAtPosition;
+        fn can_unload(#[default] check_commandibility: bool) -> bool = canUnload;
+        fn can_unload_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_position: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUnload;
+        fn can_unload_all(#[default] check_commandibility: bool) -> bool = canUnloadAll;
+        fn can_unload_all_position(#[default] check_commandibility: bool) -> bool = canUnloadAllPosition;
+        fn can_unload_all_position_at(target: Position, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUnloadAllPosition;
+        fn can_right_click(#[default] check_commandibility: bool) -> bool = canRightClick;
+        fn can_right_click_at_position(target: Position, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canRightClick;
+        fn can_right_click_at_unit(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canRightClick;
+        fn can_right_click_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canRightClickGrouped;
+        fn can_right_click_grouped_at_position(target: Position, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canRightClickGrouped;
+        fn can_right_click_grouped_at_unit(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canRightClickGrouped;
+        fn can_right_click_position(#[default] check_commandibility: bool) -> bool = canRightClickPosition;
+        fn can_right_click_position_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canRightClickPositionGrouped;
+        fn can_right_click_unit(#[default] check_commandibility: bool) -> bool = canRightClickUnit;
+        fn can_right_click_unit_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canRightClickUnit;
+        fn can_right_click_unit_grouped(#[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canRightClickUnitGrouped;
+        fn can_right_click_unit_grouped_at(target: Unit, #[default] check_can_target_unit: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility_grouped: bool, #[default] check_commandibility: bool) -> bool = canRightClickUnitGrouped;
+        fn can_halt_construction(#[default] check_commandibility: bool) -> bool = canHaltConstruction;
+        fn can_cancel_construction(#[default] check_commandibility: bool) -> bool = canCancelConstruction;
+        fn can_cancel_addon(#[default] check_commandibility: bool) -> bool = canCancelAddon;
+        fn can_cancel_train(#[default] check_commandibility: bool) -> bool = canCancelTrain;
+        fn can_cancel_train_slot(#[default] check_commandibility: bool) -> bool = canCancelTrainSlot;
+        fn can_cancel_train_slot_at(slot: i32, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canCancelTrainSlot;
+        fn can_cancel_morph(#[default] check_commandibility: bool) -> bool = canCancelMorph;
+        fn can_cancel_research(#[default] check_commandibility: bool) -> bool = canCancelResearch;
+        fn can_cancel_upgrade(#[default] check_commandibility: bool) -> bool = canCancelUpgrade;
+        fn can_use_tech_with_or_without_target(#[default] check_commandibility: bool) -> bool = canUseTechWithOrWithoutTarget;
+        fn can_use_tech_with_or_without_target_type(tech: TechType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTechWithOrWithoutTarget;
+        fn can_use_tech_at_position(tech: TechType, target: Position, #[default] check_can_target_unit: bool, #[default] check_targets_type: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTech;
+        fn can_use_tech_at_unit(tech: TechType, #[default] target: Option<Unit>, #[default] check_can_target_unit: bool, #[default] check_targets_type: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTech;
+        fn can_use_tech_without_target(tech: TechType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTechWithoutTarget;
+        fn can_use_tech_unit(tech: TechType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTechUnit;
+        fn can_use_tech_unit_at(tech: TechType, target: Unit, #[default] check_can_target_unit: bool, #[default] check_targets_units: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTechUnit;
+        fn can_use_tech_position(tech: TechType, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTechPosition;
+        fn can_use_tech_position_at(tech: TechType, target: Position, #[default] check_targets_positions: bool, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canUseTechPosition;
+        fn can_place_cop(#[default] check_commandibility: bool) -> bool = canPlaceCOP;
+        fn can_place_cop_at(target: TilePosition, #[default] check_can_issue_command_type: bool, #[default] check_commandibility: bool) -> bool = canPlaceCOP;
+
+        #[skip = "void* and a template over the client type"]
+        fn client_info = getClientInfo;
+        #[skip = "void* and a template over the client type"]
+        fn set_client_info = setClientInfo;
+        #[skip = "takes std::function"]
+        fn register_event = registerEvent;
+    }
+
+    // ----------------------------------------------------------------- Player
+
+    #[set = "BWAPI::Playerset"]
+    handle Player = "BWAPI::PlayerInterface" {
+        fn id() -> i32 = getID;
+        fn name() -> CxxString = getName;
+
+        #[stable_address = "PlayerImpl::units: a member of a player that lives the whole match, updated in place"]
+        fn units() -> Set<Unit> = getUnits;
+
+        fn race() -> Race = getRace;
+        fn player_type() -> PlayerType = getType;
+        fn force() -> Option<Force> = getForce;
+        fn is_ally(player: Player) -> bool = isAlly;
+        fn is_enemy(player: Player) -> bool = isEnemy;
+        fn is_neutral() -> bool = isNeutral;
+        fn start_location() -> TilePosition = getStartLocation;
+        fn is_victorious() -> bool = isVictorious;
+        fn is_defeated() -> bool = isDefeated;
+        fn left_game() -> bool = leftGame;
+        fn minerals() -> i32 = minerals;
+        fn gas() -> i32 = gas;
+        fn gathered_minerals() -> i32 = gatheredMinerals;
+        fn gathered_gas() -> i32 = gatheredGas;
+        fn repaired_minerals() -> i32 = repairedMinerals;
+        fn repaired_gas() -> i32 = repairedGas;
+        fn refunded_minerals() -> i32 = refundedMinerals;
+        fn refunded_gas() -> i32 = refundedGas;
+        fn spent_minerals() -> i32 = spentMinerals;
+        fn spent_gas() -> i32 = spentGas;
+        fn supply_total(#[default] race: Race) -> i32 = supplyTotal;
+        fn supply_used(#[default] race: Race) -> i32 = supplyUsed;
+        fn all_unit_count(#[default] unit_type: UnitType) -> i32 = allUnitCount;
+        fn visible_unit_count(#[default] unit_type: UnitType) -> i32 = visibleUnitCount;
+        fn completed_unit_count(#[default] unit_type: UnitType) -> i32 = completedUnitCount;
+        fn incomplete_unit_count(#[default] unit_type: UnitType) -> i32 = incompleteUnitCount;
+        fn dead_unit_count(#[default] unit_type: UnitType) -> i32 = deadUnitCount;
+        fn killed_unit_count(#[default] unit_type: UnitType) -> i32 = killedUnitCount;
+        fn upgrade_level(upgrade: UpgradeType) -> i32 = getUpgradeLevel;
+        fn has_researched(tech: TechType) -> bool = hasResearched;
+        fn is_researching(tech: TechType) -> bool = isResearching;
+        fn is_upgrading(upgrade: UpgradeType) -> bool = isUpgrading;
+        fn color() -> Color = getColor;
+
+        #[skip = "TODO: returns char, a Text::Enum control byte; no marker for char"]
+        fn text_color = getTextColor;
+
+        fn max_energy(unit_type: UnitType) -> i32 = maxEnergy;
+        fn top_speed(unit_type: UnitType) -> f64 = topSpeed;
+        fn weapon_max_range(weapon: WeaponType) -> i32 = weaponMaxRange;
+        fn sight_range(unit_type: UnitType) -> i32 = sightRange;
+        fn weapon_damage_cooldown(unit_type: UnitType) -> i32 = weaponDamageCooldown;
+        fn armor(unit_type: UnitType) -> i32 = armor;
+        fn damage(weapon: WeaponType) -> i32 = damage;
+        fn unit_score() -> i32 = getUnitScore;
+        fn kill_score() -> i32 = getKillScore;
+        fn building_score() -> i32 = getBuildingScore;
+        fn razing_score() -> i32 = getRazingScore;
+        fn custom_score() -> i32 = getCustomScore;
+        fn is_observer() -> bool = isObserver;
+        fn max_upgrade_level(upgrade: UpgradeType) -> i32 = getMaxUpgradeLevel;
+        fn is_research_available(tech: TechType) -> bool = isResearchAvailable;
+        fn is_unit_available(unit_type: UnitType) -> bool = isUnitAvailable;
+        fn has_unit_type_requirement(unit_type: UnitType, #[default] amount: i32) -> bool = hasUnitTypeRequirement;
+
+        #[skip = "void* and a template over the client type"]
+        fn client_info = getClientInfo;
+        #[skip = "void* and a template over the client type"]
+        fn set_client_info = setClientInfo;
+        #[skip = "takes std::function"]
+        fn register_event = registerEvent;
+    }
+
+    // ------------------------------------------------------------------ Force
+
+    #[set = "BWAPI::Forceset"]
+    handle Force = "BWAPI::ForceInterface" {
+        fn id() -> i32 = getID;
+        fn name() -> CxxString = getName;
+        fn players() -> Query<Player> = getPlayers;
+
+        #[skip = "void* and a template over the client type"]
+        fn client_info = getClientInfo;
+        #[skip = "void* and a template over the client type"]
+        fn set_client_info = setClientInfo;
+        #[skip = "takes std::function"]
+        fn register_event = registerEvent;
+    }
+
+    // ----------------------------------------------------------------- Bullet
+
+    #[set = "BWAPI::Bulletset"]
+    handle Bullet = "BWAPI::BulletInterface" {
+        fn id() -> i32 = getID;
+        fn exists() -> bool = exists;
+        fn player() -> Option<Player> = getPlayer;
+        fn bullet_type() -> BulletType = getType;
+        fn source() -> Option<Unit> = getSource;
+        fn position() -> Position = getPosition;
+        fn angle() -> f64 = getAngle;
+        fn velocity_x() -> f64 = getVelocityX;
+        fn velocity_y() -> f64 = getVelocityY;
+        fn target() -> Option<Unit> = getTarget;
+        fn target_position() -> Position = getTargetPosition;
+        fn remove_timer() -> i32 = getRemoveTimer;
+        fn is_visible(#[default] player: Option<Player>) -> bool = isVisible;
+
+        #[skip = "void* and a template over the client type"]
+        fn client_info = getClientInfo;
+        #[skip = "void* and a template over the client type"]
+        fn set_client_info = setClientInfo;
+        #[skip = "takes std::function"]
+        fn register_event = registerEvent;
+    }
+
+    // ----------------------------------------------------------------- Region
+
+    #[set = "BWAPI::Regionset"]
+    handle Region = "BWAPI::RegionInterface" {
+        fn id() -> i32 = getID;
+        fn region_group_id() -> i32 = getRegionGroupID;
+        fn center() -> Position = getCenter;
+        fn is_higher_ground() -> bool = isHigherGround;
+        fn defense_priority() -> i32 = getDefensePriority;
+        fn is_accessible() -> bool = isAccessible;
+
+        #[stable_address = "RegionImpl::neighbors: filled once when the match starts"]
+        fn neighbors() -> Set<Region> = getNeighbors;
+
+        fn bounds_left() -> i32 = getBoundsLeft;
+        fn bounds_top() -> i32 = getBoundsTop;
+        fn bounds_right() -> i32 = getBoundsRight;
+        fn bounds_bottom() -> i32 = getBoundsBottom;
+        fn closest_accessible_region() -> Option<Region> = getClosestAccessibleRegion;
+        fn closest_inaccessible_region() -> Option<Region> = getClosestInaccessibleRegion;
+        fn distance(other: Region) -> i32 = getDistance;
+        fn units(pred: UnitFilter = "nullptr") -> Query<Unit> = getUnits;
+
+        #[skip = "void* and a template over the client type"]
+        fn client_info = getClientInfo;
+        #[skip = "void* and a template over the client type"]
+        fn set_client_info = setClientInfo;
+        #[skip = "takes std::function"]
+        fn register_event = registerEvent;
+    }
+
+    // ------------------------------------------------------------------- Game
+
+    handle Game = "BWAPI::Game" {
+        #[stable_address = "GameImpl::forces: a member of the game"]
+        fn forces() -> Set<Force> = getForces;
+        #[stable_address = "GameImpl::playerSet: a member of the game"]
+        fn players() -> Set<Player> = getPlayers;
+        #[stable_address = "GameImpl::accessibleUnits: a member of the game, updated in place between frames"]
+        fn all_units() -> Set<Unit> = getAllUnits;
+        #[stable_address = "GameImpl::minerals: a member of the game, updated in place between frames"]
+        fn minerals() -> Set<Unit> = getMinerals;
+        #[stable_address = "GameImpl::geysers: a member of the game, updated in place between frames"]
+        fn geysers() -> Set<Unit> = getGeysers;
+        #[stable_address = "GameImpl::neutralUnits: a member of the game, updated in place between frames"]
+        fn neutral_units() -> Set<Unit> = getNeutralUnits;
+        #[stable_address = "GameImpl::staticMinerals: a member of the game, filled when the match starts"]
+        fn static_minerals() -> Set<Unit> = getStaticMinerals;
+        #[stable_address = "GameImpl::staticGeysers: a member of the game, filled when the match starts"]
+        fn static_geysers() -> Set<Unit> = getStaticGeysers;
+        #[stable_address = "GameImpl::staticNeutralUnits: a member of the game, filled when the match starts"]
+        fn static_neutral_units() -> Set<Unit> = getStaticNeutralUnits;
+        #[stable_address = "GameImpl::bullets: a member of the game, updated in place between frames"]
+        fn bullets() -> Set<Bullet> = getBullets;
+        fn nuke_dots() -> Vec<Position> = getNukeDots;
+
+        #[skip = "events arrive through the Bot callbacks"]
+        fn events = getEvents;
+
+        fn force(force_id: i32) -> Option<Force> = getForce;
+        fn player(player_id: i32) -> Option<Player> = getPlayer;
+        fn unit(unit_id: i32) -> Option<Unit> = getUnit;
+        fn index_to_unit(unit_index: i32) -> Option<Unit> = indexToUnit;
+        fn region(region_id: i32) -> Option<Region> = getRegion;
+        fn game_type() -> GameType = getGameType;
+        fn latency() -> i32 = getLatency;
+        fn frame_count() -> i32 = getFrameCount;
+        fn replay_frame_count() -> i32 = getReplayFrameCount;
+        fn fps() -> i32 = getFPS;
+        fn average_fps() -> f64 = getAverageFPS;
+        fn mouse_position() -> Position = getMousePosition;
+        fn mouse_state(button: MouseButton) -> bool = getMouseState;
+        fn key_state(key: Key) -> bool = getKeyState;
+        fn screen_position() -> Position = getScreenPosition;
+        fn set_screen_position(position: Position) = setScreenPosition;
+        fn ping_minimap(position: Position) = pingMinimap;
+        fn is_flag_enabled(flag: Flag) -> bool = isFlagEnabled;
+        fn enable_flag(flag: Flag) = enableFlag;
+        fn units_on_tile(tile: TilePosition, pred: UnitFilter = "nullptr") -> Query<Unit> = getUnitsOnTile;
+        fn units_in_rectangle(top_left: Position, bottom_right: Position, pred: UnitFilter = "nullptr") -> Query<Unit> = getUnitsInRectangle;
+        fn units_in_radius(center: Position, radius: i32, pred: UnitFilter = "nullptr") -> Query<Unit> = getUnitsInRadius;
+        fn closest_unit(center: Position, pred: UnitFilter = "nullptr", #[default] radius: i32) -> Option<Unit> = getClosestUnit;
+        fn closest_unit_in_rectangle(center: Position, pred: UnitFilter = "nullptr", #[default] left: i32, #[default] top: i32, #[default] right: i32, #[default] bottom: i32) -> Option<Unit> = getClosestUnitInRectangle;
+
+        #[skip = "BestUnitFilter cannot be passed from Rust yet"]
+        fn best_unit = getBestUnit;
+
+        fn last_error() -> Error = getLastError;
+        fn set_last_error(#[default] error: Error) -> bool = setLastError;
+        fn map_width() -> i32 = mapWidth;
+        fn map_height() -> i32 = mapHeight;
+        fn map_file_name() -> CxxString = mapFileName;
+        fn map_path_name() -> CxxString = mapPathName;
+        fn map_name() -> CxxString = mapName;
+        fn map_hash() -> CxxString = mapHash;
+        fn is_walkable(position: WalkPosition) -> bool = isWalkable;
+        fn ground_height(position: TilePosition) -> i32 = getGroundHeight;
+        fn is_buildable(position: TilePosition, #[default] include_buildings: bool) -> bool = isBuildable;
+        fn is_visible(position: TilePosition) -> bool = isVisible;
+        fn is_explored(position: TilePosition) -> bool = isExplored;
+        fn has_creep(position: TilePosition) -> bool = hasCreep;
+        fn has_power_precise(position: Position, #[default] unit_type: UnitType) -> bool = hasPowerPrecise;
+        fn has_power(position: TilePosition, #[default] unit_type: UnitType) -> bool = hasPower;
+        fn has_power_area(position: TilePosition, tile_width: i32, tile_height: i32, #[default] unit_type: UnitType) -> bool = hasPower;
+        fn can_build_here(position: TilePosition, unit_type: UnitType, #[default] builder: Option<Unit>, #[default] check_explored: bool) -> bool = canBuildHere;
+        fn can_make(unit_type: UnitType, #[default] builder: Option<Unit>) -> bool = canMake;
+        fn can_research(tech: TechType, #[default] unit: Option<Unit>, #[default] check_can_issue_command_type: bool) -> bool = canResearch;
+        fn can_upgrade(upgrade: UpgradeType, #[default] unit: Option<Unit>, #[default] check_can_issue_command_type: bool) -> bool = canUpgrade;
+        fn start_locations() -> Vec<TilePosition> = getStartLocations;
+
+        fn print(text: Fmt) = printf;
+        fn send_text(text: Fmt) = sendText;
+        fn send_text_ex(to_allies: bool, text: Fmt) = sendTextEx;
+
+        fn is_in_game() -> bool = isInGame;
+        fn is_multiplayer() -> bool = isMultiplayer;
+        fn is_battle_net() -> bool = isBattleNet;
+        fn is_paused() -> bool = isPaused;
+        fn is_replay() -> bool = isReplay;
+        fn pause_game() = pauseGame;
+        fn resume_game() = resumeGame;
+        fn leave_game() = leaveGame;
+        fn restart_game() = restartGame;
+        fn set_local_speed(speed: i32) = setLocalSpeed;
+
+        #[skip = "takes a Unitset argument and the UnitCommand struct"]
+        fn issue_command = issueCommand;
+        #[skip = "the address changes with the UserInput flag; needed only with UserInput"]
+        fn selected_units = getSelectedUnits;
+
+        fn self_player() -> Option<Player> = self;
+        fn enemy() -> Option<Player> = enemy;
+        fn neutral() -> Option<Player> = neutral;
+        #[stable_address = "GameImpl::_allies: a member of the game"]
+        fn allies() -> Set<Player> = allies;
+        #[stable_address = "GameImpl::_enemies: a member of the game"]
+        fn enemies() -> Set<Player> = enemies;
+        #[stable_address = "GameImpl::_observers: a member of the game"]
+        fn observers() -> Set<Player> = observers;
+
+        // Drawing. The overloads taking (int x, int y) duplicate the ones taking
+        // a Position; the generic ones take a CoordinateType.
+        fn set_text_size(#[default] size: TextSize) = setTextSize;
+        fn draw_text(ctype: CoordinateType, x: i32, y: i32, text: Fmt) = drawText;
+        fn draw_text_map(position: Position, text: Fmt) = drawTextMap;
+        fn draw_text_mouse(position: Position, text: Fmt) = drawTextMouse;
+        fn draw_text_screen(position: Position, text: Fmt) = drawTextScreen;
+        fn draw_box(ctype: CoordinateType, left: i32, top: i32, right: i32, bottom: i32, color: Color, #[default] is_solid: bool) = drawBox;
+        fn draw_box_map(left_top: Position, right_bottom: Position, color: Color, #[default] is_solid: bool) = drawBoxMap;
+        fn draw_box_mouse(left_top: Position, right_bottom: Position, color: Color, #[default] is_solid: bool) = drawBoxMouse;
+        fn draw_box_screen(left_top: Position, right_bottom: Position, color: Color, #[default] is_solid: bool) = drawBoxScreen;
+        fn draw_triangle(ctype: CoordinateType, ax: i32, ay: i32, bx: i32, by: i32, cx: i32, cy: i32, color: Color, #[default] is_solid: bool) = drawTriangle;
+        fn draw_triangle_map(a: Position, b: Position, c: Position, color: Color, #[default] is_solid: bool) = drawTriangleMap;
+        fn draw_triangle_mouse(a: Position, b: Position, c: Position, color: Color, #[default] is_solid: bool) = drawTriangleMouse;
+        fn draw_triangle_screen(a: Position, b: Position, c: Position, color: Color, #[default] is_solid: bool) = drawTriangleScreen;
+        fn draw_circle(ctype: CoordinateType, x: i32, y: i32, radius: i32, color: Color, #[default] is_solid: bool) = drawCircle;
+        fn draw_circle_map(position: Position, radius: i32, color: Color, #[default] is_solid: bool) = drawCircleMap;
+        fn draw_circle_mouse(position: Position, radius: i32, color: Color, #[default] is_solid: bool) = drawCircleMouse;
+        fn draw_circle_screen(position: Position, radius: i32, color: Color, #[default] is_solid: bool) = drawCircleScreen;
+        fn draw_ellipse(ctype: CoordinateType, x: i32, y: i32, xrad: i32, yrad: i32, color: Color, #[default] is_solid: bool) = drawEllipse;
+        fn draw_ellipse_map(position: Position, xrad: i32, yrad: i32, color: Color, #[default] is_solid: bool) = drawEllipseMap;
+        fn draw_ellipse_mouse(position: Position, xrad: i32, yrad: i32, color: Color, #[default] is_solid: bool) = drawEllipseMouse;
+        fn draw_ellipse_screen(position: Position, xrad: i32, yrad: i32, color: Color, #[default] is_solid: bool) = drawEllipseScreen;
+        fn draw_dot(ctype: CoordinateType, x: i32, y: i32, color: Color) = drawDot;
+        fn draw_dot_map(position: Position, color: Color) = drawDotMap;
+        fn draw_dot_mouse(position: Position, color: Color) = drawDotMouse;
+        fn draw_dot_screen(position: Position, color: Color) = drawDotScreen;
+        fn draw_line(ctype: CoordinateType, x1: i32, y1: i32, x2: i32, y2: i32, color: Color) = drawLine;
+        fn draw_line_map(a: Position, b: Position, color: Color) = drawLineMap;
+        fn draw_line_mouse(a: Position, b: Position, color: Color) = drawLineMouse;
+        fn draw_line_screen(a: Position, b: Position, color: Color) = drawLineScreen;
+
+        fn latency_frames() -> i32 = getLatencyFrames;
+        fn latency_time() -> i32 = getLatencyTime;
+        fn remaining_latency_frames() -> i32 = getRemainingLatencyFrames;
+        fn remaining_latency_time() -> i32 = getRemainingLatencyTime;
+        fn revision() -> i32 = getRevision;
+        fn client_version() -> i32 = getClientVersion;
+        fn is_debug() -> bool = isDebug;
+        fn is_lat_com_enabled() -> bool = isLatComEnabled;
+        fn set_lat_com(is_enabled: bool) = setLatCom;
+        fn is_gui_enabled() -> bool = isGUIEnabled;
+        fn set_gui(enabled: bool) = setGUI;
+        fn instance_number() -> i32 = getInstanceNumber;
+        fn apm(#[default] include_selects: bool) -> i32 = getAPM;
+        fn set_map(map_file_name: CStr) -> bool = setMap;
+        fn set_frame_skip(frame_skip: i32) = setFrameSkip;
+        fn has_path(source: Position, destination: Position) -> bool = hasPath;
+        fn set_alliance(player: Player, #[default] allied: bool, #[default] allied_victory: bool) -> bool = setAlliance;
+        fn set_vision(player: Player, #[default] enabled: bool) -> bool = setVision;
+        fn elapsed_time() -> i32 = elapsedTime;
+        fn set_command_optimization_level(level: i32) = setCommandOptimizationLevel;
+        fn countdown_timer() -> i32 = countdownTimer;
+
+        #[stable_address = "GameImpl::regionsList: filled once when the match starts"]
+        fn all_regions() -> Set<Region> = getAllRegions;
+
+        fn region_at(position: Position) -> Option<Region> = getRegionAt;
+        fn last_event_time() -> i32 = getLastEventTime;
+        fn set_reveal_all(#[default] reveal: bool) -> bool = setRevealAll;
+        fn build_location(unit_type: UnitType, desired_position: TilePosition, #[default] max_range: i32, #[default] creep: bool) -> TilePosition = getBuildLocation;
+        fn damage_from(from_type: UnitType, to_type: UnitType, #[default] from_player: Option<Player>, #[default] to_player: Option<Player>) -> i32 = getDamageFrom;
+        fn damage_to(to_type: UnitType, from_type: UnitType, #[default] to_player: Option<Player>, #[default] from_player: Option<Player>) -> i32 = getDamageTo;
+        fn random_seed() -> u32 = getRandomSeed;
+
+        #[skip = "duplicate of the Position overload"]
+        fn set_screen_position_xy = setScreenPosition;
+        #[skip = "duplicate of the Position overload"]
+        fn ping_minimap_xy = pingMinimap;
+        #[skip = "duplicate of the TilePosition overload"]
+        fn units_on_tile_xy = getUnitsOnTile;
+        #[skip = "duplicate of the Position overload"]
+        fn units_in_rectangle_xy = getUnitsInRectangle;
+        #[skip = "duplicate of the Position overload"]
+        fn units_in_radius_xy = getUnitsInRadius;
+        #[skip = "duplicate of the WalkPosition overload"]
+        fn is_walkable_xy = isWalkable;
+        #[skip = "duplicate of the TilePosition overload"]
+        fn ground_height_xy = getGroundHeight;
+        #[skip = "duplicate of the TilePosition overload"]
+        fn is_buildable_xy = isBuildable;
+        #[skip = "duplicate of the TilePosition overload"]
+        fn is_visible_xy = isVisible;
+        #[skip = "duplicate of the TilePosition overload"]
+        fn is_explored_xy = isExplored;
+        #[skip = "duplicate of the TilePosition overload"]
+        fn has_creep_xy = hasCreep;
+        #[skip = "duplicate of the Position overload"]
+        fn has_power_precise_xy = hasPowerPrecise;
+        #[skip = "duplicate of the TilePosition overloads"]
+        fn has_power_xy = hasPower;
+        #[skip = "duplicate of the Position overload"]
+        fn region_at_xy = getRegionAt;
+        #[skip = "duplicate of the const char* overload"]
+        fn set_map_string = setMap;
+        #[skip = "duplicates of the Position overloads: drawTextMap, drawBoxMap, … with (int x, int y)"]
+        fn draw_xy = drawTextMap;
+        #[skip = "va_list; the printf-like methods are bound with Fmt"]
+        fn v_printf = vPrintf;
+        #[skip = "va_list; the printf-like methods are bound with Fmt"]
+        fn v_send_text = vSendText;
+        #[skip = "va_list; the printf-like methods are bound with Fmt"]
+        fn v_send_text_ex = vSendTextEx;
+        #[skip = "va_list; the printf-like methods are bound with Fmt"]
+        fn v_draw_text = vDrawText;
+        #[skip = "void* and a template over the client type"]
+        fn client_info = getClientInfo;
+        #[skip = "void* and a template over the client type"]
+        fn set_client_info = setClientInfo;
+        #[skip = "takes std::function"]
+        fn register_event = registerEvent;
+    }
+
+    // ---------------------------------------------------------------- typeids
+
+    typeid UnitType = "BWAPI::UnitType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+        fn race() -> Race = getRace;
+        fn what_builds() -> (UnitType, i32) = whatBuilds;
+        fn required_units() -> Vec<(UnitType, i32)> = requiredUnits;
+        fn required_tech() -> TechType = requiredTech;
+        fn cloaking_tech() -> TechType = cloakingTech;
+        fn abilities() -> Vec<TechType> = abilities;
+        fn upgrades() -> Vec<UpgradeType> = upgrades;
+        fn armor_upgrade() -> UpgradeType = armorUpgrade;
+        fn max_hit_points() -> i32 = maxHitPoints;
+        fn max_shields() -> i32 = maxShields;
+        fn max_energy() -> i32 = maxEnergy;
+        fn armor() -> i32 = armor;
+        fn mineral_price() -> i32 = mineralPrice;
+        fn gas_price() -> i32 = gasPrice;
+        fn build_time() -> i32 = buildTime;
+        fn supply_required() -> i32 = supplyRequired;
+        fn supply_provided() -> i32 = supplyProvided;
+        fn space_required() -> i32 = spaceRequired;
+        fn space_provided() -> i32 = spaceProvided;
+        fn build_score() -> i32 = buildScore;
+        fn destroy_score() -> i32 = destroyScore;
+        fn size() -> UnitSizeType = size;
+        fn tile_width() -> i32 = tileWidth;
+        fn tile_height() -> i32 = tileHeight;
+        fn tile_size() -> TilePosition = tileSize;
+        fn dimension_left() -> i32 = dimensionLeft;
+        fn dimension_up() -> i32 = dimensionUp;
+        fn dimension_right() -> i32 = dimensionRight;
+        fn dimension_down() -> i32 = dimensionDown;
+        fn width() -> i32 = width;
+        fn height() -> i32 = height;
+        fn seek_range() -> i32 = seekRange;
+        fn sight_range() -> i32 = sightRange;
+        fn ground_weapon() -> WeaponType = groundWeapon;
+        fn max_ground_hits() -> i32 = maxGroundHits;
+        fn air_weapon() -> WeaponType = airWeapon;
+        fn max_air_hits() -> i32 = maxAirHits;
+        fn top_speed() -> f64 = topSpeed;
+        fn acceleration() -> i32 = acceleration;
+        fn halt_distance() -> i32 = haltDistance;
+        fn turn_radius() -> i32 = turnRadius;
+        fn can_produce() -> bool = canProduce;
+        fn can_attack() -> bool = canAttack;
+        fn can_move() -> bool = canMove;
+        fn is_flyer() -> bool = isFlyer;
+        fn regenerates_hp() -> bool = regeneratesHP;
+        fn is_spellcaster() -> bool = isSpellcaster;
+        fn has_permanent_cloak() -> bool = hasPermanentCloak;
+        fn is_invincible() -> bool = isInvincible;
+        fn is_organic() -> bool = isOrganic;
+        fn is_mechanical() -> bool = isMechanical;
+        fn is_robotic() -> bool = isRobotic;
+        fn is_detector() -> bool = isDetector;
+        fn is_resource_container() -> bool = isResourceContainer;
+        fn is_resource_depot() -> bool = isResourceDepot;
+        fn is_refinery() -> bool = isRefinery;
+        fn is_worker() -> bool = isWorker;
+        fn requires_psi() -> bool = requiresPsi;
+        fn requires_creep() -> bool = requiresCreep;
+        fn is_two_units_in_one_egg() -> bool = isTwoUnitsInOneEgg;
+        fn is_burrowable() -> bool = isBurrowable;
+        fn is_cloakable() -> bool = isCloakable;
+        fn is_building() -> bool = isBuilding;
+        fn is_addon() -> bool = isAddon;
+        fn is_flying_building() -> bool = isFlyingBuilding;
+        fn is_neutral() -> bool = isNeutral;
+        fn is_hero() -> bool = isHero;
+        fn is_powerup() -> bool = isPowerup;
+        fn is_beacon() -> bool = isBeacon;
+        fn is_flag_beacon() -> bool = isFlagBeacon;
+        fn is_special_building() -> bool = isSpecialBuilding;
+        fn is_spell() -> bool = isSpell;
+        fn produces_creep() -> bool = producesCreep;
+        fn produces_larva() -> bool = producesLarva;
+        fn is_mineral_field() -> bool = isMineralField;
+        fn is_critter() -> bool = isCritter;
+        fn can_build_addon() -> bool = canBuildAddon;
+        fn builds_what() -> Vec<UnitType> = buildsWhat;
+        fn researches_what() -> Vec<TechType> = researchesWhat;
+        fn upgrades_what() -> Vec<UpgradeType> = upgradesWhat;
+        fn is_successor_of(unit_type: UnitType) -> bool = isSuccessorOf;
+
+        #[skip = "the Rust newtype holds the id: UnitType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static UnitType = "BWAPI::UnitType" {
+        fn from_name(name: CxxString) -> UnitType = getType;
+    }
+
+    static UnitType = "BWAPI::UnitTypes" {
+        fn all() -> Vec<UnitType> = allUnitTypes;
+        fn all_macro() -> Vec<UnitType> = allMacroTypes;
+        fn max_unit_width() -> i32 = maxUnitWidth;
+        fn max_unit_height() -> i32 = maxUnitHeight;
+    }
+
+    static UnitType = "BWAPI::UnitTypes::Enum" {
+        const Terran_Marine = 0;
+        const Terran_Ghost = 1;
+        const Terran_Vulture = 2;
+        const Terran_Goliath = 3;
+        const Terran_Goliath_Turret = 4;
+        const Terran_Siege_Tank_Tank_Mode = 5;
+        const Terran_Siege_Tank_Tank_Mode_Turret = 6;
+        const Terran_SCV = 7;
+        const Terran_Wraith = 8;
+        const Terran_Science_Vessel = 9;
+        const Hero_Gui_Montag = 10;
+        const Terran_Dropship = 11;
+        const Terran_Battlecruiser = 12;
+        const Terran_Vulture_Spider_Mine = 13;
+        const Terran_Nuclear_Missile = 14;
+        const Terran_Civilian = 15;
+        const Hero_Sarah_Kerrigan = 16;
+        const Hero_Alan_Schezar = 17;
+        const Hero_Alan_Schezar_Turret = 18;
+        const Hero_Jim_Raynor_Vulture = 19;
+        const Hero_Jim_Raynor_Marine = 20;
+        const Hero_Tom_Kazansky = 21;
+        const Hero_Magellan = 22;
+        const Hero_Edmund_Duke_Tank_Mode = 23;
+        const Hero_Edmund_Duke_Tank_Mode_Turret = 24;
+        const Hero_Edmund_Duke_Siege_Mode = 25;
+        const Hero_Edmund_Duke_Siege_Mode_Turret = 26;
+        const Hero_Arcturus_Mengsk = 27;
+        const Hero_Hyperion = 28;
+        const Hero_Norad_II = 29;
+        const Terran_Siege_Tank_Siege_Mode = 30;
+        const Terran_Siege_Tank_Siege_Mode_Turret = 31;
+        const Terran_Firebat = 32;
+        const Spell_Scanner_Sweep = 33;
+        const Terran_Medic = 34;
+        const Zerg_Larva = 35;
+        const Zerg_Egg = 36;
+        const Zerg_Zergling = 37;
+        const Zerg_Hydralisk = 38;
+        const Zerg_Ultralisk = 39;
+        const Zerg_Broodling = 40;
+        const Zerg_Drone = 41;
+        const Zerg_Overlord = 42;
+        const Zerg_Mutalisk = 43;
+        const Zerg_Guardian = 44;
+        const Zerg_Queen = 45;
+        const Zerg_Defiler = 46;
+        const Zerg_Scourge = 47;
+        const Hero_Torrasque = 48;
+        const Hero_Matriarch = 49;
+        const Zerg_Infested_Terran = 50;
+        const Hero_Infested_Kerrigan = 51;
+        const Hero_Unclean_One = 52;
+        const Hero_Hunter_Killer = 53;
+        const Hero_Devouring_One = 54;
+        const Hero_Kukulza_Mutalisk = 55;
+        const Hero_Kukulza_Guardian = 56;
+        const Hero_Yggdrasill = 57;
+        const Terran_Valkyrie = 58;
+        const Zerg_Cocoon = 59;
+        const Protoss_Corsair = 60;
+        const Protoss_Dark_Templar = 61;
+        const Zerg_Devourer = 62;
+        const Protoss_Dark_Archon = 63;
+        const Protoss_Probe = 64;
+        const Protoss_Zealot = 65;
+        const Protoss_Dragoon = 66;
+        const Protoss_High_Templar = 67;
+        const Protoss_Archon = 68;
+        const Protoss_Shuttle = 69;
+        const Protoss_Scout = 70;
+        const Protoss_Arbiter = 71;
+        const Protoss_Carrier = 72;
+        const Protoss_Interceptor = 73;
+        const Hero_Dark_Templar = 74;
+        const Hero_Zeratul = 75;
+        const Hero_Tassadar_Zeratul_Archon = 76;
+        const Hero_Fenix_Zealot = 77;
+        const Hero_Fenix_Dragoon = 78;
+        const Hero_Tassadar = 79;
+        const Hero_Mojo = 80;
+        const Hero_Warbringer = 81;
+        const Hero_Gantrithor = 82;
+        const Protoss_Reaver = 83;
+        const Protoss_Observer = 84;
+        const Protoss_Scarab = 85;
+        const Hero_Danimoth = 86;
+        const Hero_Aldaris = 87;
+        const Hero_Artanis = 88;
+        const Critter_Rhynadon = 89;
+        const Critter_Bengalaas = 90;
+        const Special_Cargo_Ship = 91;
+        const Special_Mercenary_Gunship = 92;
+        const Critter_Scantid = 93;
+        const Critter_Kakaru = 94;
+        const Critter_Ragnasaur = 95;
+        const Critter_Ursadon = 96;
+        const Zerg_Lurker_Egg = 97;
+        const Hero_Raszagal = 98;
+        const Hero_Samir_Duran = 99;
+        const Hero_Alexei_Stukov = 100;
+        const Special_Map_Revealer = 101;
+        const Hero_Gerard_DuGalle = 102;
+        const Zerg_Lurker = 103;
+        const Hero_Infested_Duran = 104;
+        const Spell_Disruption_Web = 105;
+        const Terran_Command_Center = 106;
+        const Terran_Comsat_Station = 107;
+        const Terran_Nuclear_Silo = 108;
+        const Terran_Supply_Depot = 109;
+        const Terran_Refinery = 110;
+        const Terran_Barracks = 111;
+        const Terran_Academy = 112;
+        const Terran_Factory = 113;
+        const Terran_Starport = 114;
+        const Terran_Control_Tower = 115;
+        const Terran_Science_Facility = 116;
+        const Terran_Covert_Ops = 117;
+        const Terran_Physics_Lab = 118;
+        const Unused_Terran1 = 119;
+        const Terran_Machine_Shop = 120;
+        const Unused_Terran2 = 121;
+        const Terran_Engineering_Bay = 122;
+        const Terran_Armory = 123;
+        const Terran_Missile_Turret = 124;
+        const Terran_Bunker = 125;
+        const Special_Crashed_Norad_II = 126;
+        const Special_Ion_Cannon = 127;
+        const Powerup_Uraj_Crystal = 128;
+        const Powerup_Khalis_Crystal = 129;
+        const Zerg_Infested_Command_Center = 130;
+        const Zerg_Hatchery = 131;
+        const Zerg_Lair = 132;
+        const Zerg_Hive = 133;
+        const Zerg_Nydus_Canal = 134;
+        const Zerg_Hydralisk_Den = 135;
+        const Zerg_Defiler_Mound = 136;
+        const Zerg_Greater_Spire = 137;
+        const Zerg_Queens_Nest = 138;
+        const Zerg_Evolution_Chamber = 139;
+        const Zerg_Ultralisk_Cavern = 140;
+        const Zerg_Spire = 141;
+        const Zerg_Spawning_Pool = 142;
+        const Zerg_Creep_Colony = 143;
+        const Zerg_Spore_Colony = 144;
+        const Unused_Zerg1 = 145;
+        const Zerg_Sunken_Colony = 146;
+        const Special_Overmind_With_Shell = 147;
+        const Special_Overmind = 148;
+        const Zerg_Extractor = 149;
+        const Special_Mature_Chrysalis = 150;
+        const Special_Cerebrate = 151;
+        const Special_Cerebrate_Daggoth = 152;
+        const Unused_Zerg2 = 153;
+        const Protoss_Nexus = 154;
+        const Protoss_Robotics_Facility = 155;
+        const Protoss_Pylon = 156;
+        const Protoss_Assimilator = 157;
+        const Unused_Protoss1 = 158;
+        const Protoss_Observatory = 159;
+        const Protoss_Gateway = 160;
+        const Unused_Protoss2 = 161;
+        const Protoss_Photon_Cannon = 162;
+        const Protoss_Citadel_of_Adun = 163;
+        const Protoss_Cybernetics_Core = 164;
+        const Protoss_Templar_Archives = 165;
+        const Protoss_Forge = 166;
+        const Protoss_Stargate = 167;
+        const Special_Stasis_Cell_Prison = 168;
+        const Protoss_Fleet_Beacon = 169;
+        const Protoss_Arbiter_Tribunal = 170;
+        const Protoss_Robotics_Support_Bay = 171;
+        const Protoss_Shield_Battery = 172;
+        const Special_Khaydarin_Crystal_Form = 173;
+        const Special_Protoss_Temple = 174;
+        const Special_XelNaga_Temple = 175;
+        const Resource_Mineral_Field = 176;
+        const Resource_Mineral_Field_Type_2 = 177;
+        const Resource_Mineral_Field_Type_3 = 178;
+        const Unused_Cave = 179;
+        const Unused_Cave_In = 180;
+        const Unused_Cantina = 181;
+        const Unused_Mining_Platform = 182;
+        const Unused_Independant_Command_Center = 183;
+        const Special_Independant_Starport = 184;
+        const Unused_Independant_Jump_Gate = 185;
+        const Unused_Ruins = 186;
+        const Unused_Khaydarin_Crystal_Formation = 187;
+        const Resource_Vespene_Geyser = 188;
+        const Special_Warp_Gate = 189;
+        const Special_Psi_Disrupter = 190;
+        const Unused_Zerg_Marker = 191;
+        const Unused_Terran_Marker = 192;
+        const Unused_Protoss_Marker = 193;
+        const Special_Zerg_Beacon = 194;
+        const Special_Terran_Beacon = 195;
+        const Special_Protoss_Beacon = 196;
+        const Special_Zerg_Flag_Beacon = 197;
+        const Special_Terran_Flag_Beacon = 198;
+        const Special_Protoss_Flag_Beacon = 199;
+        const Special_Power_Generator = 200;
+        const Special_Overmind_Cocoon = 201;
+        const Spell_Dark_Swarm = 202;
+        const Special_Floor_Missile_Trap = 203;
+        const Special_Floor_Hatch = 204;
+        const Special_Upper_Level_Door = 205;
+        const Special_Right_Upper_Level_Door = 206;
+        const Special_Pit_Door = 207;
+        const Special_Right_Pit_Door = 208;
+        const Special_Floor_Gun_Trap = 209;
+        const Special_Wall_Missile_Trap = 210;
+        const Special_Wall_Flame_Trap = 211;
+        const Special_Right_Wall_Missile_Trap = 212;
+        const Special_Right_Wall_Flame_Trap = 213;
+        const Special_Start_Location = 214;
+        const Powerup_Flag = 215;
+        const Powerup_Young_Chrysalis = 216;
+        const Powerup_Psi_Emitter = 217;
+        const Powerup_Data_Disk = 218;
+        const Powerup_Khaydarin_Crystal = 219;
+        const Powerup_Mineral_Cluster_Type_1 = 220;
+        const Powerup_Mineral_Cluster_Type_2 = 221;
+        const Powerup_Protoss_Gas_Orb_Type_1 = 222;
+        const Powerup_Protoss_Gas_Orb_Type_2 = 223;
+        const Powerup_Zerg_Gas_Sac_Type_1 = 224;
+        const Powerup_Zerg_Gas_Sac_Type_2 = 225;
+        const Powerup_Terran_Gas_Tank_Type_1 = 226;
+        const Powerup_Terran_Gas_Tank_Type_2 = 227;
+        const None = 228;
+        const AllUnits = 229;
+        const Men = 230;
+        const Buildings = 231;
+        const Factories = 232;
+        const Unknown = 233;
+    }
+
+    typeid WeaponType = "BWAPI::WeaponType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+        fn tech() -> TechType = getTech;
+        fn what_uses() -> UnitType = whatUses;
+        fn damage_amount() -> i32 = damageAmount;
+        fn damage_bonus() -> i32 = damageBonus;
+        fn damage_cooldown() -> i32 = damageCooldown;
+        fn damage_factor() -> i32 = damageFactor;
+        fn upgrade_type() -> UpgradeType = upgradeType;
+        fn damage_type() -> DamageType = damageType;
+        fn explosion_type() -> ExplosionType = explosionType;
+        fn min_range() -> i32 = minRange;
+        fn max_range() -> i32 = maxRange;
+        fn inner_splash_radius() -> i32 = innerSplashRadius;
+        fn median_splash_radius() -> i32 = medianSplashRadius;
+        fn outer_splash_radius() -> i32 = outerSplashRadius;
+        fn targets_air() -> bool = targetsAir;
+        fn targets_ground() -> bool = targetsGround;
+        fn targets_mechanical() -> bool = targetsMechanical;
+        fn targets_organic() -> bool = targetsOrganic;
+        fn targets_non_building() -> bool = targetsNonBuilding;
+        fn targets_non_robotic() -> bool = targetsNonRobotic;
+        fn targets_terrain() -> bool = targetsTerrain;
+        fn targets_org_or_mech() -> bool = targetsOrgOrMech;
+        fn targets_own() -> bool = targetsOwn;
+
+        #[skip = "the Rust newtype holds the id: WeaponType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static WeaponType = "BWAPI::WeaponType" {
+        fn from_name(name: CxxString) -> WeaponType = getType;
+    }
+
+    static WeaponType = "BWAPI::WeaponTypes" {
+        fn all() -> Vec<WeaponType> = allWeaponTypes;
+        fn normal() -> Vec<WeaponType> = normalWeaponTypes;
+        fn special() -> Vec<WeaponType> = specialWeaponTypes;
+    }
+
+    static WeaponType = "BWAPI::WeaponTypes::Enum" {
+        const Gauss_Rifle = 0;
+        const Gauss_Rifle_Jim_Raynor = 1;
+        const C_10_Canister_Rifle = 2;
+        const C_10_Canister_Rifle_Sarah_Kerrigan = 3;
+        const Fragmentation_Grenade = 4;
+        const Fragmentation_Grenade_Jim_Raynor = 5;
+        const Spider_Mines = 6;
+        const Twin_Autocannons = 7;
+        const Hellfire_Missile_Pack = 8;
+        const Twin_Autocannons_Alan_Schezar = 9;
+        const Hellfire_Missile_Pack_Alan_Schezar = 10;
+        const Arclite_Cannon = 11;
+        const Arclite_Cannon_Edmund_Duke = 12;
+        const Fusion_Cutter = 13;
+        const Gemini_Missiles = 15;
+        const Burst_Lasers = 16;
+        const Gemini_Missiles_Tom_Kazansky = 17;
+        const Burst_Lasers_Tom_Kazansky = 18;
+        const ATS_Laser_Battery = 19;
+        const ATA_Laser_Battery = 20;
+        const ATS_Laser_Battery_Hero = 21;
+        const ATA_Laser_Battery_Hero = 22;
+        const ATS_Laser_Battery_Hyperion = 23;
+        const ATA_Laser_Battery_Hyperion = 24;
+        const Flame_Thrower = 25;
+        const Flame_Thrower_Gui_Montag = 26;
+        const Arclite_Shock_Cannon = 27;
+        const Arclite_Shock_Cannon_Edmund_Duke = 28;
+        const Longbolt_Missile = 29;
+        const Yamato_Gun = 30;
+        const Nuclear_Strike = 31;
+        const Lockdown = 32;
+        const EMP_Shockwave = 33;
+        const Irradiate = 34;
+        const Claws = 35;
+        const Claws_Devouring_One = 36;
+        const Claws_Infested_Kerrigan = 37;
+        const Needle_Spines = 38;
+        const Needle_Spines_Hunter_Killer = 39;
+        const Kaiser_Blades = 40;
+        const Kaiser_Blades_Torrasque = 41;
+        const Toxic_Spores = 42;
+        const Spines = 43;
+        const Acid_Spore = 46;
+        const Acid_Spore_Kukulza = 47;
+        const Glave_Wurm = 48;
+        const Glave_Wurm_Kukulza = 49;
+        const Seeker_Spores = 52;
+        const Subterranean_Tentacle = 53;
+        const Suicide_Infested_Terran = 54;
+        const Suicide_Scourge = 55;
+        const Parasite = 56;
+        const Spawn_Broodlings = 57;
+        const Ensnare = 58;
+        const Dark_Swarm = 59;
+        const Plague = 60;
+        const Consume = 61;
+        const Particle_Beam = 62;
+        const Psi_Blades = 64;
+        const Psi_Blades_Fenix = 65;
+        const Phase_Disruptor = 66;
+        const Phase_Disruptor_Fenix = 67;
+        const Psi_Assault = 69;
+        const Psionic_Shockwave = 70;
+        const Psionic_Shockwave_TZ_Archon = 71;
+        const Dual_Photon_Blasters = 73;
+        const Anti_Matter_Missiles = 74;
+        const Dual_Photon_Blasters_Mojo = 75;
+        const Anti_Matter_Missiles_Mojo = 76;
+        const Phase_Disruptor_Cannon = 77;
+        const Phase_Disruptor_Cannon_Danimoth = 78;
+        const Pulse_Cannon = 79;
+        const STS_Photon_Cannon = 80;
+        const STA_Photon_Cannon = 81;
+        const Scarab = 82;
+        const Stasis_Field = 83;
+        const Psionic_Storm = 84;
+        const Warp_Blades_Zeratul = 85;
+        const Warp_Blades_Hero = 86;
+        const Platform_Laser_Battery = 92;
+        const Independant_Laser_Battery = 93;
+        const Twin_Autocannons_Floor_Trap = 96;
+        const Hellfire_Missile_Pack_Wall_Trap = 97;
+        const Flame_Thrower_Wall_Trap = 98;
+        const Hellfire_Missile_Pack_Floor_Trap = 99;
+        const Neutron_Flare = 100;
+        const Disruption_Web = 101;
+        const Restoration = 102;
+        const Halo_Rockets = 103;
+        const Corrosive_Acid = 104;
+        const Mind_Control = 105;
+        const Feedback = 106;
+        const Optical_Flare = 107;
+        const Maelstrom = 108;
+        const Subterranean_Spines = 109;
+        const Warp_Blades = 111;
+        const C_10_Canister_Rifle_Samir_Duran = 112;
+        const C_10_Canister_Rifle_Infested_Duran = 113;
+        const Dual_Photon_Blasters_Artanis = 114;
+        const Anti_Matter_Missiles_Artanis = 115;
+        const C_10_Canister_Rifle_Alexei_Stukov = 116;
+        const None = 130;
+        const Unknown = 131;
+    }
+
+    typeid TechType = "BWAPI::TechType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+        fn race() -> Race = getRace;
+        fn mineral_price() -> i32 = mineralPrice;
+        fn gas_price() -> i32 = gasPrice;
+        fn research_time() -> i32 = researchTime;
+        fn energy_cost() -> i32 = energyCost;
+        fn what_researches() -> UnitType = whatResearches;
+        fn weapon() -> WeaponType = getWeapon;
+        fn targets_unit() -> bool = targetsUnit;
+        fn targets_position() -> bool = targetsPosition;
+        fn what_uses() -> Vec<UnitType> = whatUses;
+        fn order() -> Order = getOrder;
+        fn required_unit() -> UnitType = requiredUnit;
+
+        #[skip = "the Rust newtype holds the id: TechType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static TechType = "BWAPI::TechType" {
+        fn from_name(name: CxxString) -> TechType = getType;
+    }
+
+    static TechType = "BWAPI::TechTypes" {
+        fn all() -> Vec<TechType> = allTechTypes;
+    }
+
+    static TechType = "BWAPI::TechTypes::Enum" {
+        const Stim_Packs = 0;
+        const Lockdown = 1;
+        const EMP_Shockwave = 2;
+        const Spider_Mines = 3;
+        const Scanner_Sweep = 4;
+        const Tank_Siege_Mode = 5;
+        const Defensive_Matrix = 6;
+        const Irradiate = 7;
+        const Yamato_Gun = 8;
+        const Cloaking_Field = 9;
+        const Personnel_Cloaking = 10;
+        const Burrowing = 11;
+        const Infestation = 12;
+        const Spawn_Broodlings = 13;
+        const Dark_Swarm = 14;
+        const Plague = 15;
+        const Consume = 16;
+        const Ensnare = 17;
+        const Parasite = 18;
+        const Psionic_Storm = 19;
+        const Hallucination = 20;
+        const Recall = 21;
+        const Stasis_Field = 22;
+        const Archon_Warp = 23;
+        const Restoration = 24;
+        const Disruption_Web = 25;
+        const Unused_26 = 26;
+        const Mind_Control = 27;
+        const Dark_Archon_Meld = 28;
+        const Feedback = 29;
+        const Optical_Flare = 30;
+        const Maelstrom = 31;
+        const Lurker_Aspect = 32;
+        const Unused_33 = 33;
+        const Healing = 34;
+        const None = 44;
+        const Nuclear_Strike = 45;
+        const Unknown = 46;
+    }
+
+    typeid UpgradeType = "BWAPI::UpgradeType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+        fn race() -> Race = getRace;
+        fn mineral_price(#[default] level: i32) -> i32 = mineralPrice;
+        fn mineral_price_factor() -> i32 = mineralPriceFactor;
+        fn gas_price(#[default] level: i32) -> i32 = gasPrice;
+        fn gas_price_factor() -> i32 = gasPriceFactor;
+        fn upgrade_time(#[default] level: i32) -> i32 = upgradeTime;
+        fn upgrade_time_factor() -> i32 = upgradeTimeFactor;
+        fn max_repeats() -> i32 = maxRepeats;
+        fn what_upgrades() -> UnitType = whatUpgrades;
+        fn whats_required(#[default] level: i32) -> UnitType = whatsRequired;
+        fn what_uses() -> Vec<UnitType> = whatUses;
+
+        #[skip = "the Rust newtype holds the id: UpgradeType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static UpgradeType = "BWAPI::UpgradeType" {
+        fn from_name(name: CxxString) -> UpgradeType = getType;
+    }
+
+    static UpgradeType = "BWAPI::UpgradeTypes" {
+        fn all() -> Vec<UpgradeType> = allUpgradeTypes;
+    }
+
+    static UpgradeType = "BWAPI::UpgradeTypes::Enum" {
+        const Terran_Infantry_Armor = 0;
+        const Terran_Vehicle_Plating = 1;
+        const Terran_Ship_Plating = 2;
+        const Zerg_Carapace = 3;
+        const Zerg_Flyer_Carapace = 4;
+        const Protoss_Ground_Armor = 5;
+        const Protoss_Air_Armor = 6;
+        const Terran_Infantry_Weapons = 7;
+        const Terran_Vehicle_Weapons = 8;
+        const Terran_Ship_Weapons = 9;
+        const Zerg_Melee_Attacks = 10;
+        const Zerg_Missile_Attacks = 11;
+        const Zerg_Flyer_Attacks = 12;
+        const Protoss_Ground_Weapons = 13;
+        const Protoss_Air_Weapons = 14;
+        const Protoss_Plasma_Shields = 15;
+        const U_238_Shells = 16;
+        const Ion_Thrusters = 17;
+        const Titan_Reactor = 19;
+        const Ocular_Implants = 20;
+        const Moebius_Reactor = 21;
+        const Apollo_Reactor = 22;
+        const Colossus_Reactor = 23;
+        const Ventral_Sacs = 24;
+        const Antennae = 25;
+        const Pneumatized_Carapace = 26;
+        const Metabolic_Boost = 27;
+        const Adrenal_Glands = 28;
+        const Muscular_Augments = 29;
+        const Grooved_Spines = 30;
+        const Gamete_Meiosis = 31;
+        const Metasynaptic_Node = 32;
+        const Singularity_Charge = 33;
+        const Leg_Enhancements = 34;
+        const Scarab_Damage = 35;
+        const Reaver_Capacity = 36;
+        const Gravitic_Drive = 37;
+        const Sensor_Array = 38;
+        const Gravitic_Boosters = 39;
+        const Khaydarin_Amulet = 40;
+        const Apial_Sensors = 41;
+        const Gravitic_Thrusters = 42;
+        const Carrier_Capacity = 43;
+        const Khaydarin_Core = 44;
+        const Argus_Jewel = 47;
+        const Argus_Talisman = 49;
+        const Caduceus_Reactor = 51;
+        const Chitinous_Plating = 52;
+        const Anabolic_Synthesis = 53;
+        const Charon_Boosters = 54;
+        const Upgrade_60 = 60;
+        const None = 61;
+        const Unknown = 62;
+    }
+
+    typeid Order = "BWAPI::Order" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: Order::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static Order = "BWAPI::Order" {
+        fn from_name(name: CxxString) -> Order = getType;
+    }
+
+    static Order = "BWAPI::Orders" {
+        fn all() -> Vec<Order> = allOrders;
+    }
+
+    static Order = "BWAPI::Orders::Enum" {
+        const Die = 0;
+        const Stop = 1;
+        const Guard = 2;
+        const PlayerGuard = 3;
+        const TurretGuard = 4;
+        const BunkerGuard = 5;
+        const Move = 6;
+        const ReaverStop = 7;
+        const Attack1 = 8;
+        const Attack2 = 9;
+        const AttackUnit = 10;
+        const AttackFixedRange = 11;
+        const AttackTile = 12;
+        const Hover = 13;
+        const AttackMove = 14;
+        const InfestedCommandCenter = 15;
+        const UnusedNothing = 16;
+        const UnusedPowerup = 17;
+        const TowerGuard = 18;
+        const TowerAttack = 19;
+        const VultureMine = 20;
+        const StayInRange = 21;
+        const TurretAttack = 22;
+        const Nothing = 23;
+        const Unused_24 = 24;
+        const DroneStartBuild = 25;
+        const DroneBuild = 26;
+        const CastInfestation = 27;
+        const MoveToInfest = 28;
+        const InfestingCommandCenter = 29;
+        const PlaceBuilding = 30;
+        const PlaceProtossBuilding = 31;
+        const CreateProtossBuilding = 32;
+        const ConstructingBuilding = 33;
+        const Repair = 34;
+        const MoveToRepair = 35;
+        const PlaceAddon = 36;
+        const BuildAddon = 37;
+        const Train = 38;
+        const RallyPointUnit = 39;
+        const RallyPointTile = 40;
+        const ZergBirth = 41;
+        const ZergUnitMorph = 42;
+        const ZergBuildingMorph = 43;
+        const IncompleteBuilding = 44;
+        const IncompleteMorphing = 45;
+        const BuildNydusExit = 46;
+        const EnterNydusCanal = 47;
+        const IncompleteWarping = 48;
+        const Follow = 49;
+        const Carrier = 50;
+        const ReaverCarrierMove = 51;
+        const CarrierStop = 52;
+        const CarrierAttack = 53;
+        const CarrierMoveToAttack = 54;
+        const CarrierIgnore2 = 55;
+        const CarrierFight = 56;
+        const CarrierHoldPosition = 57;
+        const Reaver = 58;
+        const ReaverAttack = 59;
+        const ReaverMoveToAttack = 60;
+        const ReaverFight = 61;
+        const ReaverHoldPosition = 62;
+        const TrainFighter = 63;
+        const InterceptorAttack = 64;
+        const ScarabAttack = 65;
+        const RechargeShieldsUnit = 66;
+        const RechargeShieldsBattery = 67;
+        const ShieldBattery = 68;
+        const InterceptorReturn = 69;
+        const DroneLand = 70;
+        const BuildingLand = 71;
+        const BuildingLiftOff = 72;
+        const DroneLiftOff = 73;
+        const LiftingOff = 74;
+        const ResearchTech = 75;
+        const Upgrade = 76;
+        const Larva = 77;
+        const SpawningLarva = 78;
+        const Harvest1 = 79;
+        const Harvest2 = 80;
+        const MoveToGas = 81;
+        const WaitForGas = 82;
+        const HarvestGas = 83;
+        const ReturnGas = 84;
+        const MoveToMinerals = 85;
+        const WaitForMinerals = 86;
+        const MiningMinerals = 87;
+        const Harvest3 = 88;
+        const Harvest4 = 89;
+        const ReturnMinerals = 90;
+        const Interrupted = 91;
+        const EnterTransport = 92;
+        const PickupIdle = 93;
+        const PickupTransport = 94;
+        const PickupBunker = 95;
+        const Pickup4 = 96;
+        const PowerupIdle = 97;
+        const Sieging = 98;
+        const Unsieging = 99;
+        const WatchTarget = 100;
+        const InitCreepGrowth = 101;
+        const SpreadCreep = 102;
+        const StoppingCreepGrowth = 103;
+        const GuardianAspect = 104;
+        const ArchonWarp = 105;
+        const CompletingArchonSummon = 106;
+        const HoldPosition = 107;
+        const QueenHoldPosition = 108;
+        const Cloak = 109;
+        const Decloak = 110;
+        const Unload = 111;
+        const MoveUnload = 112;
+        const FireYamatoGun = 113;
+        const MoveToFireYamatoGun = 114;
+        const CastLockdown = 115;
+        const Burrowing = 116;
+        const Burrowed = 117;
+        const Unburrowing = 118;
+        const CastDarkSwarm = 119;
+        const CastParasite = 120;
+        const CastSpawnBroodlings = 121;
+        const CastEMPShockwave = 122;
+        const NukeWait = 123;
+        const NukeTrain = 124;
+        const NukeLaunch = 125;
+        const NukePaint = 126;
+        const NukeUnit = 127;
+        const CastNuclearStrike = 128;
+        const NukeTrack = 129;
+        const InitializeArbiter = 130;
+        const CloakNearbyUnits = 131;
+        const PlaceMine = 132;
+        const RightClickAction = 133;
+        const SuicideUnit = 134;
+        const SuicideLocation = 135;
+        const SuicideHoldPosition = 136;
+        const CastRecall = 137;
+        const Teleport = 138;
+        const CastScannerSweep = 139;
+        const Scanner = 140;
+        const CastDefensiveMatrix = 141;
+        const CastPsionicStorm = 142;
+        const CastIrradiate = 143;
+        const CastPlague = 144;
+        const CastConsume = 145;
+        const CastEnsnare = 146;
+        const CastStasisField = 147;
+        const CastHallucination = 148;
+        const Hallucination2 = 149;
+        const ResetCollision = 150;
+        const ResetHarvestCollision = 151;
+        const Patrol = 152;
+        const CTFCOPInit = 153;
+        const CTFCOPStarted = 154;
+        const CTFCOP2 = 155;
+        const ComputerAI = 156;
+        const AtkMoveEP = 157;
+        const HarassMove = 158;
+        const AIPatrol = 159;
+        const GuardPost = 160;
+        const RescuePassive = 161;
+        const Neutral = 162;
+        const ComputerReturn = 163;
+        const InitializePsiProvider = 164;
+        const SelfDestructing = 165;
+        const Critter = 166;
+        const HiddenGun = 167;
+        const OpenDoor = 168;
+        const CloseDoor = 169;
+        const HideTrap = 170;
+        const RevealTrap = 171;
+        const EnableDoodad = 172;
+        const DisableDoodad = 173;
+        const WarpIn = 174;
+        const Medic = 175;
+        const MedicHeal = 176;
+        const HealMove = 177;
+        const MedicHoldPosition = 178;
+        const MedicHealToIdle = 179;
+        const CastRestoration = 180;
+        const CastDisruptionWeb = 181;
+        const CastMindControl = 182;
+        const DarkArchonMeld = 183;
+        const CastFeedback = 184;
+        const CastOpticalFlare = 185;
+        const CastMaelstrom = 186;
+        const JunkYardDog = 187;
+        const Fatal = 188;
+        const None = 189;
+        const Unknown = 190;
+    }
+
+    typeid Race = "BWAPI::Race" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+        fn worker() -> UnitType = getWorker;
+        fn resource_depot() -> UnitType = getResourceDepot;
+        fn refinery() -> UnitType = getRefinery;
+        fn transport() -> UnitType = getTransport;
+        fn supply_provider() -> UnitType = getSupplyProvider;
+
+        #[skip = "deprecated: renamed to getResourceDepot"]
+        fn center = getCenter;
+        #[skip = "the Rust newtype holds the id: Race::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static Race = "BWAPI::Race" {
+        fn from_name(name: CxxString) -> Race = getType;
+    }
+
+    static Race = "BWAPI::Races" {
+        fn all() -> Vec<Race> = allRaces;
+    }
+
+    static Race = "BWAPI::Races::Enum" {
+        const Zerg = 0;
+        const Terran = 1;
+        const Protoss = 2;
+        const Other = 3;
+        const Unused = 4;
+        const Select = 5;
+        const Random = 6;
+        const None = 7;
+        const Unknown = 8;
+    }
+
+    typeid PlayerType = "BWAPI::PlayerType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+        fn is_lobby_type() -> bool = isLobbyType;
+        fn is_game_type() -> bool = isGameType;
+
+        #[skip = "the Rust newtype holds the id: PlayerType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static PlayerType = "BWAPI::PlayerType" {
+        fn from_name(name: CxxString) -> PlayerType = getType;
+    }
+
+    static PlayerType = "BWAPI::PlayerTypes" {
+        fn all() -> Vec<PlayerType> = allPlayerTypes;
+    }
+
+    static PlayerType = "BWAPI::PlayerTypes::Enum" {
+        const None = 0;
+        const Computer = 1;
+        const Player = 2;
+        const RescuePassive = 3;
+        const RescueActive = 4;
+        const EitherPreferComputer = 5;
+        const EitherPreferHuman = 6;
+        const Neutral = 7;
+        const Closed = 8;
+        const Observer = 9;
+        const PlayerLeft = 10;
+        const ComputerLeft = 11;
+        const Unknown = 12;
+    }
+
+    typeid GameType = "BWAPI::GameType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: GameType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static GameType = "BWAPI::GameType" {
+        fn from_name(name: CxxString) -> GameType = getType;
+    }
+
+    static GameType = "BWAPI::GameTypes" {
+        fn all() -> Vec<GameType> = allGameTypes;
+    }
+
+    static GameType = "BWAPI::GameTypes::Enum" {
+        const None = 0;
+        const Custom = 1;
+        const Melee = 2;
+        const Free_For_All = 3;
+        const One_on_One = 4;
+        const Capture_The_Flag = 5;
+        const Greed = 6;
+        const Slaughter = 7;
+        const Sudden_Death = 8;
+        const Ladder = 9;
+        const Use_Map_Settings = 10;
+        const Team_Melee = 11;
+        const Team_Free_For_All = 12;
+        const Team_Capture_The_Flag = 13;
+        const Unknown_0x0E = 14;
+        const Top_vs_Bottom = 15;
+        const Iron_Man_Ladder = 16;
+        const Pro_Gamer_League = 32;
+        const Unknown = 33;
+    }
+
+    typeid Error = "BWAPI::Error" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: Error::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static Error = "BWAPI::Error" {
+        fn from_name(name: CxxString) -> Error = getType;
+    }
+
+    static Error = "BWAPI::Errors" {
+        fn all() -> Vec<Error> = allErrors;
+    }
+
+    static Error = "BWAPI::Errors::Enum" {
+        const Unit_Does_Not_Exist = 0;
+        const Unit_Not_Visible = 1;
+        const Unit_Not_Owned = 2;
+        const Unit_Busy = 3;
+        const Incompatible_UnitType = 4;
+        const Incompatible_TechType = 5;
+        const Incompatible_State = 6;
+        const Already_Researched = 7;
+        const Fully_Upgraded = 8;
+        const Currently_Researching = 9;
+        const Currently_Upgrading = 10;
+        const Insufficient_Minerals = 11;
+        const Insufficient_Gas = 12;
+        const Insufficient_Supply = 13;
+        const Insufficient_Energy = 14;
+        const Insufficient_Tech = 15;
+        const Insufficient_Ammo = 16;
+        const Insufficient_Space = 17;
+        const Invalid_Tile_Position = 18;
+        const Unbuildable_Location = 19;
+        const Unreachable_Location = 20;
+        const Out_Of_Range = 21;
+        const Unable_To_Hit = 22;
+        const Access_Denied = 23;
+        const File_Not_Found = 24;
+        const Invalid_Parameter = 25;
+        const None = 26;
+        const Unknown = 27;
+    }
+
+    typeid UnitSizeType = "BWAPI::UnitSizeType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: UnitSizeType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static UnitSizeType = "BWAPI::UnitSizeType" {
+        fn from_name(name: CxxString) -> UnitSizeType = getType;
+    }
+
+    static UnitSizeType = "BWAPI::UnitSizeTypes" {
+        fn all() -> Vec<UnitSizeType> = allUnitSizeTypes;
+    }
+
+    static UnitSizeType = "BWAPI::UnitSizeTypes::Enum" {
+        const Independent = 0;
+        const Small = 1;
+        const Medium = 2;
+        const Large = 3;
+        const None = 4;
+        const Unknown = 5;
+    }
+
+    typeid DamageType = "BWAPI::DamageType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: DamageType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static DamageType = "BWAPI::DamageType" {
+        fn from_name(name: CxxString) -> DamageType = getType;
+    }
+
+    static DamageType = "BWAPI::DamageTypes" {
+        fn all() -> Vec<DamageType> = allDamageTypes;
+    }
+
+    static DamageType = "BWAPI::DamageTypes::Enum" {
+        const Independent = 0;
+        const Explosive = 1;
+        const Concussive = 2;
+        const Normal = 3;
+        const Ignore_Armor = 4;
+        const None = 5;
+        const Unknown = 6;
+    }
+
+    typeid ExplosionType = "BWAPI::ExplosionType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: ExplosionType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static ExplosionType = "BWAPI::ExplosionType" {
+        fn from_name(name: CxxString) -> ExplosionType = getType;
+    }
+
+    static ExplosionType = "BWAPI::ExplosionTypes" {
+        fn all() -> Vec<ExplosionType> = allExplosionTypes;
+    }
+
+    static ExplosionType = "BWAPI::ExplosionTypes::Enum" {
+        const None = 0;
+        const Normal = 1;
+        const Radial_Splash = 2;
+        const Enemy_Splash = 3;
+        const Lockdown = 4;
+        const Nuclear_Missile = 5;
+        const Parasite = 6;
+        const Broodlings = 7;
+        const EMP_Shockwave = 8;
+        const Irradiate = 9;
+        const Ensnare = 10;
+        const Plague = 11;
+        const Stasis_Field = 12;
+        const Dark_Swarm = 13;
+        const Consume = 14;
+        const Yamato_Gun = 15;
+        const Restoration = 16;
+        const Disruption_Web = 17;
+        const Corrosive_Acid = 18;
+        const Mind_Control = 19;
+        const Feedback = 20;
+        const Optical_Flare = 21;
+        const Maelstrom = 22;
+        const Unused = 23;
+        const Air_Splash = 24;
+        const Unknown = 25;
+    }
+
+    typeid BulletType = "BWAPI::BulletType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: BulletType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static BulletType = "BWAPI::BulletType" {
+        fn from_name(name: CxxString) -> BulletType = getType;
+    }
+
+    static BulletType = "BWAPI::BulletTypes" {
+        fn all() -> Vec<BulletType> = allBulletTypes;
+    }
+
+    static BulletType = "BWAPI::BulletTypes::Enum" {
+        const Melee = 0;
+        const Fusion_Cutter_Hit = 141;
+        const Gauss_Rifle_Hit = 142;
+        const C_10_Canister_Rifle_Hit = 143;
+        const Gemini_Missiles = 144;
+        const Fragmentation_Grenade = 145;
+        const Longbolt_Missile = 146;
+        const Unused_Lockdown = 147;
+        const ATS_ATA_Laser_Battery = 148;
+        const Burst_Lasers = 149;
+        const Arclite_Shock_Cannon_Hit = 150;
+        const EMP_Missile = 151;
+        const Dual_Photon_Blasters_Hit = 152;
+        const Particle_Beam_Hit = 153;
+        const Anti_Matter_Missile = 154;
+        const Pulse_Cannon = 155;
+        const Psionic_Shockwave_Hit = 156;
+        const Psionic_Storm = 157;
+        const Yamato_Gun = 158;
+        const Phase_Disruptor = 159;
+        const STA_STS_Cannon_Overlay = 160;
+        const Sunken_Colony_Tentacle = 161;
+        const Venom_Unused = 162;
+        const Acid_Spore = 163;
+        const Plasma_Drip_Unused = 164;
+        const Glave_Wurm = 165;
+        const Seeker_Spores = 166;
+        const Queen_Spell_Carrier = 167;
+        const Plague_Cloud = 168;
+        const Consume = 169;
+        const Ensnare = 170;
+        const Needle_Spine_Hit = 171;
+        const Invisible = 172;
+        const Optical_Flare_Grenade = 201;
+        const Halo_Rockets = 202;
+        const Subterranean_Spines = 203;
+        const Corrosive_Acid_Shot = 204;
+        const Corrosive_Acid_Hit = 205;
+        const Neutron_Flare = 206;
+        const None = 209;
+        const Unknown = 210;
+    }
+
+    typeid UnitCommandType = "BWAPI::UnitCommandType" {
+        fn name() -> CxxString = getName;
+        fn is_valid() -> bool = isValid;
+
+        #[skip = "the Rust newtype holds the id: UnitCommandType::id"]
+        fn get_id = getID;
+        #[skip = "duplicate of getName that returns const char*"]
+        fn c_str = c_str;
+        #[skip = "duplicate of getName"]
+        fn to_string = toString;
+    }
+
+    static UnitCommandType = "BWAPI::UnitCommandType" {
+        fn from_name(name: CxxString) -> UnitCommandType = getType;
+    }
+
+    static UnitCommandType = "BWAPI::UnitCommandTypes" {
+        fn all() -> Vec<UnitCommandType> = allUnitCommandTypes;
+    }
+
+    static UnitCommandType = "BWAPI::UnitCommandTypes::Enum" {
+        const Attack_Move = 0;
+        const Attack_Unit = 1;
+        const Build = 2;
+        const Build_Addon = 3;
+        const Train = 4;
+        const Morph = 5;
+        const Research = 6;
+        const Upgrade = 7;
+        const Set_Rally_Position = 8;
+        const Set_Rally_Unit = 9;
+        const Move = 10;
+        const Patrol = 11;
+        const Hold_Position = 12;
+        const Stop = 13;
+        const Follow = 14;
+        const Gather = 15;
+        const Return_Cargo = 16;
+        const Repair = 17;
+        const Burrow = 18;
+        const Unburrow = 19;
+        const Cloak = 20;
+        const Decloak = 21;
+        const Siege = 22;
+        const Unsiege = 23;
+        const Lift = 24;
+        const Land = 25;
+        const Load = 26;
+        const Unload = 27;
+        const Unload_All = 28;
+        const Unload_All_Position = 29;
+        const Right_Click_Position = 30;
+        const Right_Click_Unit = 31;
+        const Halt_Construction = 32;
+        const Cancel_Construction = 33;
+        const Cancel_Addon = 34;
+        const Cancel_Train = 35;
+        const Cancel_Train_Slot = 36;
+        const Cancel_Morph = 37;
+        const Cancel_Research = 38;
+        const Cancel_Upgrade = 39;
+        const Use_Tech = 40;
+        const Use_Tech_Position = 41;
+        const Use_Tech_Unit = 42;
+        const Place_COP = 43;
+        const None = 44;
+        const Unknown = 45;
+    }
+
+    typeid Color = "BWAPI::Color" {
+        fn red() -> i32 = red;
+        fn green() -> i32 = green;
+        fn blue() -> i32 = blue;
+
+        #[skip = "the Rust newtype holds the id: Color::id"]
+        fn get_id = getID;
+        #[skip = "the palette index has no name: Type<Color>::getName is empty"]
+        fn get_name = getName;
+        #[skip = "the palette index has no name"]
+        fn c_str = c_str;
+        #[skip = "the palette index has no name"]
+        fn to_string = toString;
+    }
+
+    // The constructor Color(int, int, int) picks the nearest palette entry.
+    static Color = "BWAPI" {
+        fn from_rgb(red: i32, green: i32, blue: i32) -> Color = Color;
+    }
+
+    static Color = "BWAPI::Colors" {
+        const Red = 111;
+        const Blue = 165;
+        const Teal = 159;
+        const Purple = 164;
+        const Orange = 156;
+        const Brown = 19;
+        const White = 255;
+        const Yellow = 135;
+        const Green = 117;
+        const Cyan = 128;
+        const Black = 0;
+        const Grey = 74;
+    }
+
+    // ------------------------------------------------------------------ enums
+    // C++ enums whose values come from the user: Rust `#[repr(i32)] enum`.
+    // `const RustVariant = CppName = value;`
+
+    enum Key = "BWAPI::Key" {
+        const LButton = K_LBUTTON = 1;
+        const RButton = K_RBUTTON = 2;
+        const Cancel = K_CANCEL = 3;
+        const MButton = K_MBUTTON = 4;
+        const XButton1 = K_XBUTTON1 = 5;
+        const XButton2 = K_XBUTTON2 = 6;
+        const Back = K_BACK = 8;
+        const Tab = K_TAB = 9;
+        const Clear = K_CLEAR = 12;
+        const Return = K_RETURN = 13;
+        const Shift = K_SHIFT = 16;
+        const Control = K_CONTROL = 17;
+        const Menu = K_MENU = 18;
+        const Pause = K_PAUSE = 19;
+        const Capital = K_CAPITAL = 20;
+        const Kana = K_KANA = 21;
+        const Junja = K_JUNJA = 23;
+        const Final = K_FINAL = 24;
+        const Kanji = K_KANJI = 25;
+        const Escape = K_ESCAPE = 27;
+        const Convert = K_CONVERT = 28;
+        const Nonconvert = K_NONCONVERT = 29;
+        const Accept = K_ACCEPT = 30;
+        const Modechange = K_MODECHANGE = 31;
+        const Space = K_SPACE = 32;
+        const Prior = K_PRIOR = 33;
+        const Next = K_NEXT = 34;
+        const End = K_END = 35;
+        const Home = K_HOME = 36;
+        const Left = K_LEFT = 37;
+        const Up = K_UP = 38;
+        const Right = K_RIGHT = 39;
+        const Down = K_DOWN = 40;
+        const Select = K_SELECT = 41;
+        const Print = K_PRINT = 42;
+        const Execute = K_EXECUTE = 43;
+        const Snapshot = K_SNAPSHOT = 44;
+        const Insert = K_INSERT = 45;
+        const Delete = K_DELETE = 46;
+        const Help = K_HELP = 47;
+        const Digit0 = K_0 = 48;
+        const Digit1 = K_1 = 49;
+        const Digit2 = K_2 = 50;
+        const Digit3 = K_3 = 51;
+        const Digit4 = K_4 = 52;
+        const Digit5 = K_5 = 53;
+        const Digit6 = K_6 = 54;
+        const Digit7 = K_7 = 55;
+        const Digit8 = K_8 = 56;
+        const Digit9 = K_9 = 57;
+        const A = K_A = 65;
+        const B = K_B = 66;
+        const C = K_C = 67;
+        const D = K_D = 68;
+        const E = K_E = 69;
+        const F = K_F = 70;
+        const G = K_G = 71;
+        const H = K_H = 72;
+        const I = K_I = 73;
+        const J = K_J = 74;
+        const K = K_K = 75;
+        const L = K_L = 76;
+        const M = K_M = 77;
+        const N = K_N = 78;
+        const O = K_O = 79;
+        const P = K_P = 80;
+        const Q = K_Q = 81;
+        const R = K_R = 82;
+        const S = K_S = 83;
+        const T = K_T = 84;
+        const U = K_U = 85;
+        const V = K_V = 86;
+        const W = K_W = 87;
+        const X = K_X = 88;
+        const Y = K_Y = 89;
+        const Z = K_Z = 90;
+        const LWin = K_LWIN = 91;
+        const RWin = K_RWIN = 92;
+        const Apps = K_APPS = 93;
+        const Sleep = K_SLEEP = 95;
+        const Numpad0 = K_NUMPAD0 = 96;
+        const Numpad1 = K_NUMPAD1 = 97;
+        const Numpad2 = K_NUMPAD2 = 98;
+        const Numpad3 = K_NUMPAD3 = 99;
+        const Numpad4 = K_NUMPAD4 = 100;
+        const Numpad5 = K_NUMPAD5 = 101;
+        const Numpad6 = K_NUMPAD6 = 102;
+        const Numpad7 = K_NUMPAD7 = 103;
+        const Numpad8 = K_NUMPAD8 = 104;
+        const Numpad9 = K_NUMPAD9 = 105;
+        const Multiply = K_MULTIPLY = 106;
+        const Add = K_ADD = 107;
+        const Separator = K_SEPARATOR = 108;
+        const Subtract = K_SUBTRACT = 109;
+        const Decimal = K_DECIMAL = 110;
+        const Divide = K_DIVIDE = 111;
+        const F1 = K_F1 = 112;
+        const F2 = K_F2 = 113;
+        const F3 = K_F3 = 114;
+        const F4 = K_F4 = 115;
+        const F5 = K_F5 = 116;
+        const F6 = K_F6 = 117;
+        const F7 = K_F7 = 118;
+        const F8 = K_F8 = 119;
+        const F9 = K_F9 = 120;
+        const F10 = K_F10 = 121;
+        const F11 = K_F11 = 122;
+        const F12 = K_F12 = 123;
+        const F13 = K_F13 = 124;
+        const F14 = K_F14 = 125;
+        const F15 = K_F15 = 126;
+        const F16 = K_F16 = 127;
+        const F17 = K_F17 = 128;
+        const F18 = K_F18 = 129;
+        const F19 = K_F19 = 130;
+        const F20 = K_F20 = 131;
+        const F21 = K_F21 = 132;
+        const F22 = K_F22 = 133;
+        const F23 = K_F23 = 134;
+        const F24 = K_F24 = 135;
+        const Numlock = K_NUMLOCK = 144;
+        const Scroll = K_SCROLL = 145;
+        const OemNecEqual = K_OEM_NEC_EQUAL = 146;
+        const OemFjJisho = K_OEM_FJ_JISHO = 147;
+        const OemFjMasshou = K_OEM_FJ_MASSHOU = 148;
+        const OemFjTouroku = K_OEM_FJ_TOUROKU = 149;
+        const OemFjLoya = K_OEM_FJ_LOYA = 150;
+        const LShift = K_LSHIFT = 160;
+        const RShift = K_RSHIFT = 161;
+        const LControl = K_LCONTROL = 162;
+        const RControl = K_RCONTROL = 163;
+        const LMenu = K_LMENU = 164;
+        const RMenu = K_RMENU = 165;
+        const BrowserBack = K_BROWSER_BACK = 166;
+        const BrowserForward = K_BROWSER_FORWARD = 167;
+        const BrowserRefresh = K_BROWSER_REFRESH = 168;
+        const BrowserStop = K_BROWSER_STOP = 169;
+        const BrowserSearch = K_BROWSER_SEARCH = 170;
+        const BrowserFavorites = K_BROWSER_FAVORITES = 171;
+        const BrowserHome = K_BROWSER_HOME = 172;
+        const VolumeMute = K_VOLUME_MUTE = 173;
+        const VolumeDown = K_VOLUME_DOWN = 174;
+        const VolumeUp = K_VOLUME_UP = 175;
+        const MediaNextTrack = K_MEDIA_NEXT_TRACK = 176;
+        const MediaPrevTrack = K_MEDIA_PREV_TRACK = 177;
+        const MediaStop = K_MEDIA_STOP = 178;
+        const MediaPlayPause = K_MEDIA_PLAY_PAUSE = 179;
+        const LaunchMail = K_LAUNCH_MAIL = 180;
+        const LaunchMediaSelect = K_LAUNCH_MEDIA_SELECT = 181;
+        const LaunchApp1 = K_LAUNCH_APP1 = 182;
+        const LaunchApp2 = K_LAUNCH_APP2 = 183;
+        const Oem1 = K_OEM_1 = 186;
+        const OemPlus = K_OEM_PLUS = 187;
+        const OemComma = K_OEM_COMMA = 188;
+        const OemMinus = K_OEM_MINUS = 189;
+        const OemPeriod = K_OEM_PERIOD = 190;
+        const Oem2 = K_OEM_2 = 191;
+        const Oem3 = K_OEM_3 = 192;
+        const Oem4 = K_OEM_4 = 219;
+        const Oem5 = K_OEM_5 = 220;
+        const Oem6 = K_OEM_6 = 221;
+        const Oem7 = K_OEM_7 = 222;
+        const Oem8 = K_OEM_8 = 223;
+        const OemAx = K_OEM_AX = 225;
+        const Oem102 = K_OEM_102 = 226;
+        const IcoHelp = K_ICO_HELP = 227;
+        const Ico00 = K_ICO_00 = 228;
+        const Processkey = K_PROCESSKEY = 229;
+        const IcoClear = K_ICO_CLEAR = 230;
+        const Packet = K_PACKET = 231;
+        const OemReset = K_OEM_RESET = 233;
+        const OemJump = K_OEM_JUMP = 234;
+        const OemPa1 = K_OEM_PA1 = 235;
+        const OemPa2 = K_OEM_PA2 = 236;
+        const OemPa3 = K_OEM_PA3 = 237;
+        const OemWsctrl = K_OEM_WSCTRL = 238;
+        const OemCusel = K_OEM_CUSEL = 239;
+        const OemAttn = K_OEM_ATTN = 240;
+        const OemFinish = K_OEM_FINISH = 241;
+        const OemCopy = K_OEM_COPY = 242;
+        const OemAuto = K_OEM_AUTO = 243;
+        const OemEnlw = K_OEM_ENLW = 244;
+        const OemBacktab = K_OEM_BACKTAB = 245;
+        const Attn = K_ATTN = 246;
+        const Crsel = K_CRSEL = 247;
+        const Exsel = K_EXSEL = 248;
+        const Ereof = K_EREOF = 249;
+        const Play = K_PLAY = 250;
+        const Zoom = K_ZOOM = 251;
+        const Noname = K_NONAME = 252;
+        const Pa1 = K_PA1 = 253;
+        const OemClear = K_OEM_CLEAR = 254;
+    }
+
+    enum MouseButton = "BWAPI::MouseButton" {
+        const Left = M_LEFT = 0;
+        const Right = M_RIGHT = 1;
+        const Middle = M_MIDDLE = 2;
+    }
+
+    enum CoordinateType = "BWAPI::CoordinateType::Enum" {
+        const None = None = 0;
+        const Screen = Screen = 1;
+        const Map = Map = 2;
+        const Mouse = Mouse = 3;
+    }
+
+    enum TextSize = "BWAPI::Text::Size::Enum" {
+        const Small = Small = 0;
+        const Default = Default = 1;
+        const Large = Large = 2;
+        const Huge = Huge = 3;
+    }
+
+    // Control bytes inside strings: `format!("{}text", TextColor::Green)`.
+    enum TextColor = "BWAPI::Text::Enum" {
+        const Previous = Previous = 1;
+        const Default = Default = 2;
+        const Yellow = Yellow = 3;
+        const White = White = 4;
+        const Grey = Grey = 5;
+        const Red = Red = 6;
+        const Green = Green = 7;
+        const BrightRed = BrightRed = 8;
+        const Invisible = Invisible = 11;
+        const Blue = Blue = 14;
+        const Teal = Teal = 15;
+        const Purple = Purple = 16;
+        const Orange = Orange = 17;
+        const AlignRight = Align_Right = 18;
+        const AlignCenter = Align_Center = 19;
+        const Invisible2 = Invisible2 = 20;
+        const Brown = Brown = 21;
+        const PlayerWhite = PlayerWhite = 22;
+        const PlayerYellow = PlayerYellow = 23;
+        const DarkGreen = DarkGreen = 24;
+        const LightYellow = LightYellow = 25;
+        const Cyan = Cyan = 26;
+        const Tan = Tan = 27;
+        const GreyBlue = GreyBlue = 28;
+        const GreyGreen = GreyGreen = 29;
+        const GreyCyan = GreyCyan = 30;
+        const Turquoise = Turquoise = 31;
+    }
+
+    enum Flag = "BWAPI::Flag::Enum" {
+        const CompleteMapInformation = CompleteMapInformation = 0;
+        const UserInput = UserInput = 1;
+    }
+
+    // The kinds of BWAPI callbacks; the session reads them from the C++ module.
+    enum EventType = "BWAPI::EventType::Enum" {
+        const MatchStart = MatchStart = 0;
+        const MatchEnd = MatchEnd = 1;
+        const MatchFrame = MatchFrame = 2;
+        const MenuFrame = MenuFrame = 3;
+        const SendText = SendText = 4;
+        const ReceiveText = ReceiveText = 5;
+        const PlayerLeft = PlayerLeft = 6;
+        const NukeDetect = NukeDetect = 7;
+        const UnitDiscover = UnitDiscover = 8;
+        const UnitEvade = UnitEvade = 9;
+        const UnitShow = UnitShow = 10;
+        const UnitHide = UnitHide = 11;
+        const UnitCreate = UnitCreate = 12;
+        const UnitDestroy = UnitDestroy = 13;
+        const UnitMorph = UnitMorph = 14;
+        const UnitRenegade = UnitRenegade = 15;
+        const SaveGame = SaveGame = 16;
+        const UnitComplete = UnitComplete = 17;
+        const None = None = 18;
+    }
+
+    // Compared with Game::latency.
+    enum Latency = "BWAPI::Latency::Enum" {
+        const SinglePlayer = SinglePlayer = 2;
+        const LanLow = LanLow = 5;
+        const LanMedium = LanMedium = 7;
+        const LanHigh = LanHigh = 9;
+        const BattlenetLow = BattlenetLow = 14;
+        const BattlenetMedium = BattlenetMedium = 19;
+        const BattlenetHigh = BattlenetHigh = 24;
+    }
+}

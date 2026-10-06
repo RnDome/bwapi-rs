@@ -1,0 +1,14 @@
+error: lifetime may not live long enough
+ --> tests/ui/shrink_brand.rs:6:5
+  |
+5 | fn shrink<'a, 'b: 'a>(unit: Unit<'b>) -> Unit<'a> {
+  |           --  -- lifetime `'b` defined here
+  |           |
+  |           lifetime `'a` defined here
+6 |     unit
+  |     ^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`
+  |
+  = help: consider adding the following bound: `'a: 'b`
+  = note: requirement occurs because of the type `Unit<'_>`, which makes the generic argument `'_` invariant
+  = note: the struct `Unit<'game>` is invariant over the parameter `'game`
+  = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance

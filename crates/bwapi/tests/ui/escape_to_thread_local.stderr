@@ -1,0 +1,17 @@
+error[E0521]: borrowed data escapes outside of method
+  --> tests/ui/escape_to_thread_local.rs:21:9
+   |
+13 | impl<'game> Bot<'game> for MyBot {
+   |      ----- lifetime `'game` defined here
+...
+20 |     fn on_unit_create(&mut self, _cx: Context<'_, 'game>, unit: Unit<'game>) {
+   |                                  --- `_cx` is a reference that is only valid in the method body
+21 |         LEAKED.with(|l| l.set(Some(unit)));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |         |
+   |         `_cx` escapes the method body here
+   |         argument requires that `'game` must outlive `'static`
+   |
+   = note: requirement occurs because of the type `Cell<Option<Unit<'_>>>`, which makes the generic argument `Option<Unit<'_>>` invariant
+   = note: the struct `Cell<T>` is invariant over the parameter `T`
+   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance

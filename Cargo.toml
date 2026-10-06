@@ -1,21 +1,21 @@
-[package]
-name = "bwapi"
-version = "0.2.0"
-authors = ["Dmitry Kashitsyn <korvin@deeptown.org>", "Roman Proskuryakov <humbug@deeptown.org>"]
-keywords = ["starcraft", "broodwar", "api", "binding"]
+[workspace]
+resolver = "3"
+members = [
+    "crates/bwapi",
+    "crates/codegen",
+    "crates/xtask",
+    "examples/bot_rust",
+]
+# Plain `cargo build/clippy/test` skip the generator; `cargo xtask` and `--workspace` reach it.
+default-members = ["crates/bwapi", "examples/bot_rust"]
+
+[workspace.package]
+version = "0.3.0"
+edition = "2024"
+rust-version = "1.88"
+authors = [
+    "Dmitry Kashitsyn <korvin@deeptown.org>",
+    "Roman Proskuryakov <r.proskuryakoff@gmail.com>",
+]
 repository = "https://github.com/RnDome/bwapi-rs"
-description = "Rust bindings to the Starcraft Broodwar game API"
-license = "Unlicense/MIT"
-
-[dependencies]
-bwapi-sys = "0.1.2"
-
-[[example]]
-name = "dll"
-crate-type = ["cdylib"]
-
-[[example]]
-name = "client"
-
-[profile.release]
-debug = true
+license = "Unlicense OR MIT"
