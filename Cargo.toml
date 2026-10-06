@@ -10,7 +10,7 @@ members = [
 default-members = ["crates/bwapi", "examples/bot_rust"]
 
 [workspace.package]
-version = "0.3.0"
+version = "0.9.0"
 edition = "2024"
 rust-version = "1.88"
 authors = [
@@ -18,4 +18,5 @@ authors = [
     "Roman Proskuryakov <r.proskuryakoff@gmail.com>",
 ]
 repository = "https://github.com/RnDome/bwapi-rs"
+readme = "README.md"
 license = "Unlicense OR MIT"
