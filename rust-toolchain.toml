@@ -2,4 +2,4 @@
 # depend on its version. rust-src: compiler messages quote std sources with it.
 [toolchain]
 channel = "1.88"
-components = ["rust-src", "clippy", "rustfmt"]
+components = ["rust-src", "clippy", "rustfmt", "rust-analyzer"]

@@ -1,6 +1,8 @@
 [workspace]
 resolver = "3"
-members = ["crates/bwapi"]
+members = ["crates/bwapi", "crates/codegen", "crates/xtask"]
+# Plain `cargo build/clippy/test` skip the generator; `cargo xtask` and `--workspace` reach it.
+default-members = ["crates/bwapi"]
 
 [workspace.package]
 version = "0.3.0"

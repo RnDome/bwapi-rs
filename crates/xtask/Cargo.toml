@@ -1,0 +1,13 @@
+[package]
+name = "xtask"
+description = "Repository tasks: `cargo xtask generate`"
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[dependencies]
+codegen = { path = "../codegen" }
