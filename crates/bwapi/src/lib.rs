@@ -5,6 +5,10 @@
 //! match and can be stored in the bot, but cannot leave it, cross threads or meet
 //! handles of another match.
 
+#![no_std]
+
+extern crate alloc;
+
 mod bot;
 mod generated;
 mod position;

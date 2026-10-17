@@ -31,15 +31,17 @@
 //! turned back into a reference only inside `Module::dispatch` and `Module::end`,
 //! and no reference leaves them.
 
-use core::cell::Cell;
+use alloc::boxed::Box;
 use core::ffi::c_void;
 use core::ptr;
+use core::sync::atomic::{AtomicBool, Ordering};
 
 use super::brand::Brand;
 use super::context::{Context, FrameToken};
 use crate::bot::Bot;
 use crate::generated::raw;
 use crate::runtime::event::Event;
+use crate::runtime::ffi::fatal;
 use crate::{EventType, Game, Player, Unit};
 
 /// The bot of one match and its game.
@@ -129,7 +131,7 @@ impl Module {
     /// `game` must be the live game.
     unsafe fn start(&mut self, game: *mut raw::Game) {
         if !self.session.is_null() {
-            abort("BWAPI started a match twice");
+            fatal("BWAPI started a match twice");
         }
         let session = unsafe { open(self.start, game) };
         self.session = Box::into_raw(Box::new(session)).cast();
@@ -204,7 +206,7 @@ extern "C" fn bwapi_c_on_event(module: *mut c_void, game: *mut raw::Game, event:
     // SAFETY: see above; the guard makes `module` the only reference (point 5).
     let (module, event) = unsafe { (&mut *module.cast::<Module>(), &*event) };
     let Ok(kind) = EventType::try_from(event.event_type()) else {
-        abort("BWAPI passed an unknown event type");
+        fatal("BWAPI passed an unknown event type");
     };
     match kind {
         // SAFETY: `game` is the live game.
@@ -215,17 +217,17 @@ extern "C" fn bwapi_c_on_event(module: *mut c_void, game: *mut raw::Game, event:
     }
 }
 
-thread_local! {
-    static IN_CALLBACK: Cell<bool> = const { Cell::new(false) };
-}
+/// One flag for the process: it also catches a callback from another thread while
+/// one is running. BWAPI calls the module from one thread.
+static IN_CALLBACK: AtomicBool = AtomicBool::new(false);
 
 /// Aborts on a nested callback: two `&mut` to the session must never exist.
 struct ReentrancyGuard;
 
 impl ReentrancyGuard {
     fn enter() -> Self {
-        if IN_CALLBACK.with(|c| c.replace(true)) {
-            abort("BWAPI called the bot from inside a callback");
+        if IN_CALLBACK.swap(true, Ordering::Acquire) {
+            fatal("BWAPI called the bot from inside a callback");
         }
         ReentrancyGuard
     }
@@ -233,11 +235,6 @@ impl ReentrancyGuard {
 
 impl Drop for ReentrancyGuard {
     fn drop(&mut self) {
-        IN_CALLBACK.with(|c| c.set(false));
+        IN_CALLBACK.store(false, Ordering::Release);
     }
-}
-
-fn abort(msg: &str) -> ! {
-    eprintln!("bwapi-rs: {msg}");
-    std::process::abort();
 }

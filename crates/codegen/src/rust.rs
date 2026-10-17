@@ -13,6 +13,7 @@ use crate::{GENERATED_HEADER, OutputFile, append};
 
 const PRELUDE: &str = r#"#![allow(unused_imports)]
 
+use alloc::vec::Vec;
 use core::ffi::c_void;
 
 use super::*;
