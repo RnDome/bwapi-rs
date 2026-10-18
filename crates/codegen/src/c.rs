@@ -153,8 +153,6 @@ const MODULE: &str = r#"
 void bwapi_c_game_init(Game* game) BWAPI_C_NOEXCEPT;
 /* For `newAIModule` of the bot DLL: a module passing its callbacks to bwapi_c_on_event. */
 AIModule* bwapi_c_new_module(void* module) BWAPI_C_NOEXCEPT;
-/* Writes the `len` bytes of `msg` to stderr and aborts the process. */
-void bwapi_c_fatal(const char* msg, size_t len) BWAPI_C_NOEXCEPT;
 
 /* Event: which fields are set depends on the type. */
 

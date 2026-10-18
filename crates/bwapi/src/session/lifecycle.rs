@@ -41,7 +41,6 @@ use super::context::{Context, FrameToken};
 use crate::bot::Bot;
 use crate::generated::raw;
 use crate::runtime::event::Event;
-use crate::runtime::ffi::fatal;
 use crate::{EventType, Game, Player, Unit};
 
 /// The bot of one match and its game.
@@ -131,7 +130,7 @@ impl Module {
     /// `game` must be the live game.
     unsafe fn start(&mut self, game: *mut raw::Game) {
         if !self.session.is_null() {
-            fatal("BWAPI started a match twice");
+            panic!("bwapi-rs: BWAPI started a match twice");
         }
         let session = unsafe { open(self.start, game) };
         self.session = Box::into_raw(Box::new(session)).cast();
@@ -206,7 +205,7 @@ extern "C" fn bwapi_c_on_event(module: *mut c_void, game: *mut raw::Game, event:
     // SAFETY: see above; the guard makes `module` the only reference (point 5).
     let (module, event) = unsafe { (&mut *module.cast::<Module>(), &*event) };
     let Ok(kind) = EventType::try_from(event.event_type()) else {
-        fatal("BWAPI passed an unknown event type");
+        panic!("bwapi-rs: BWAPI passed an unknown event type");
     };
     match kind {
         // SAFETY: `game` is the live game.
@@ -227,7 +226,7 @@ struct ReentrancyGuard;
 impl ReentrancyGuard {
     fn enter() -> Self {
         if IN_CALLBACK.swap(true, Ordering::Acquire) {
-            fatal("BWAPI called the bot from inside a callback");
+            panic!("bwapi-rs: BWAPI called the bot from inside a callback");
         }
         ReentrancyGuard
     }

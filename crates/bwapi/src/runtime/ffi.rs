@@ -8,23 +8,12 @@
 //! takes it over without copying.
 
 use alloc::alloc::{alloc, handle_alloc_error};
-use alloc::format;
 use alloc::vec::Vec;
 use core::alloc::Layout;
 use core::ffi::c_void;
 use core::ptr;
 
 use crate::{Position, TilePosition, WalkPosition};
-
-unsafe extern "C" {
-    fn bwapi_c_fatal(msg: *const u8, len: usize) -> !;
-}
-
-/// Writes `bwapi-rs: {msg}` to stderr and aborts the process.
-pub(crate) fn fatal(msg: &str) -> ! {
-    // SAFETY: `msg` is `len` readable bytes; C++ only reads them.
-    unsafe { bwapi_c_fatal(msg.as_ptr(), msg.len()) }
-}
 
 /// `Position`, `TilePosition` and `WalkPosition` of bwapi_c.h: the same layout.
 #[repr(C)]
@@ -88,9 +77,9 @@ extern "C" fn bwapi_c_alloc_slice(
         .filter(|&size| size > 0)
         .and_then(|size| Layout::from_size_align(size, elem_align).ok());
     let Some(layout) = layout else {
-        fatal(&format!(
-            "a thunk asked for a slice of {count} x {elem_size} bytes aligned to {elem_align}"
-        ));
+        panic!(
+            "bwapi-rs: a thunk asked for a slice of {count} x {elem_size} bytes aligned to {elem_align}"
+        );
     };
     // SAFETY: the size is not zero.
     let data = unsafe { alloc(layout) };
