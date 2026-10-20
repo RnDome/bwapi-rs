@@ -26,5 +26,6 @@ pub mod grid;
 
 mod math;
 mod position;
+mod stdsort;
 
 pub use position::PositionExt;
