@@ -1,0 +1,874 @@
+answers bwem 1
+map scai/(3)OutsiderSE_2.2.scx
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas d62915ba340eda46
+tile_areas 128 128
+6*2 0*2 6*19 -1 18*21 0*2 19 0*4 19*12 -50*2 19 0*4 -1 3*52 0*3 -53
+6*2 0*2 6*19 -1 18*21 0*2 19*22 -52 0 3*55 0*2
+6*23 -1 18*19 -32768*2 19*24 0*2 3*57
+6*23 -1 18*18 -32768*2 19*25 0*4 3*55
+6*23 -1 18*19 -32768*2 19*26 3*57
+6*23 -1 18*18 -32768*2 19*24 0 19*2 0*2 3*55
+6*23 -1 18*18 -32768*2 19*22 -1 3 19*2 0 3*57
+6*23 -1 18*19 -32768*2 19*19 0 19 -1 3*2 0 3*58
+6*23 -1 18*19 -32768*2 19*19 0*2 3*62
+6*23 -1 18*18 -32768*2 19*20 0 3*63
+6*23 -1 18*17 0 19*17 0 19*3 0 3*64
+6*24 18*16 0 19*2 0 19*7 0*2 19*10 0 3*64
+-49 6*20 0*5 18*11 0*10 19*2 0*5 19*7 0*2 -48 0 3*63
+0 6*19 0*8 18*2 0*2 18*3 0*2 -46*2 0*6 -45 0*12 19*3 0*4 3*63
+6*18 0*41 19*2 0*7 3*60
+6*3 -32768*2 6*2 -32768*4 6 -32768*2 6*2 0*41 -47 0*11 3*13 0*2 3*38 0*4 3*2
+0*3 5 -32768*4 5*2 -32768*2 5 -32768*2 5*3 0*53 3*10 0*6 3*2 0*2 3*31 0*5 3
+5*19 0*54 3*6 0*3 11*4 0*6 3*29 -1*2 0 10*2 0*2
+5*17 0*50 -64*2 -11 0 -63 0 3*4 0*4 11*11 0*3 3*18 0*2 3*3 0*2 3 -1 10*4 0*2
+5*19 0*50 -11 -69 0*2 3*4 0 -70 11*14 -68 0 3*16 0*10 10*7
+5*21 0*54 3*2 0*2 11*14 0*2 3*18 -71*2 -72*2 10*2 0 10*8
+5*20 0*49 -65*4 -66 0*4 11*16 0*3 3*17 0*3 10*11
+5*17 0*54 -12 0*4 -67 11*19 0*2 3*8 0 3*6 0*4 10*11
+5*19 0*18 -1 -59 0*38 -56*2 11*17 0 -1 3*5 0*5 3*3 0*3 -57 10*13
+5*17 0*18 1*2 0*14 1*2 0*18 -60*2 -62*2 0*4 11*19 -1*2 0*17 10*11
+5*19 0*9 1*3 0 1*7 0*10 1*6 0*14 -54 -61 -2 -60 0*5 11*21 0*18 10*11
+5*21 0*6 1*10 0*6 1*2 0 1*11 0*10 -55 0*3 -2 0*4 -1 11*28 0*12 10*11
+5*19 0*10 1*3 0 1*7 0 1*19 0*14 1*2 -1 11*30 0*10 10*11
+5*21 0*6 1*13 0*3 1*18 0 1*4 0 1*2 0 1*7 -1 11*27 0*10 10*13
+5*23 0*6 1 0 1*8 0*6 1*32 -1 11*25 0*14 10*11
+5*22 0*4 1*15 0*2 1*34 -1*2 11*26 0*6 10*3 0 10*13
+5*19 0*6 1*53 -1 11*23 0*3 -25*2 0*2 10*19
+5*22 0*6 1*50 -1 11*22 0*10 10*3 0 10*13
+5*24 0*5 1*50 -1 11*19 0*10 10*4 0*2 10*13
+5*26 0*5 1*48 -1 11*3 0*2 11*16 0*10 10*17
+5*21 0*2 5*4 0*2 1*50 -1*2 -26*2 0*2 11*14 0*10 10*19
+0 5*3 0 5*14 0*4 5*2 0*6 1*50 0*3 22 11*2 0*2 11*5 0*4 11*3 0*10 10*17
+-18*3 0*2 5*2 0 5*5 -1 5*5 0*10 1*5 0 1*46 -24 0 22*7 0 11 0 22*5 0*2 11 -4 -19 0*10 10*15
+0 -18*2 -14*2 5*5 0 -1 2*3 0 2 0 -1 2*2 0 24*3 0*6 1*50 0*2 22*17 0 -4 -10 -1 -20 0*6 10*17
+2*3 0 -14 0 2 0 5*2 0*2 2*10 0 24*4 0*2 -17 0*3 1*47 0 22*18 0*2 -16 -1 -15 0*5 10*19
+2*8 0 5 0 2*10 0*2 24*2 0*10 1*44 0 22*17 0*14 10*17
+2*23 0 24*3 0*6 1*46 0*2 22*3 0 22*2 0*2 22*5 0*15 10*19
+2*25 24*4 0*5 1*45 -23 0*10 22*3 0*18 10*17
+2*26 0 24*4 0*6 1*42 0*3 1*8 0*4 1*5 0*14 10*15
+2*25 0*2 24*2 0*5 1*58 0 1*8 0*10 10*17
+2*25 0 -42 24*4 0*2 1*3 0 1*60 0 1*2 0*13 10*14 13
+2*25 0*2 24*2 0*6 1 0*3 1*58 0*17 10*2 -32768*2 10 -32768*4 10*2 -32768*2 13
+2*27 0 24*3 0*6 -8 0*2 1*59 0*14 13*2 -32768*2 13 -32768*2 13*2 -32768*4 13*2
+2*28 0 24*4 0*2 24*2 -8 1*59 0*14 13*17
+2*30 0 24*6 0*2 1*62 -1 -43 0*10 13*15
+2*29 0*10 1*62 0*9 13*18
+2*26 0*7 21*2 0*4 1*60 0*10 13*19
+2*25 0*3 -31 -27 -28 21*6 1*64 0*10 13*17
+2*25 0 -29 -3*2 0 21*8 0 1*60 0*2 -30*2 0*6 13*19
+2*25 0*2 -3*2 0*2 21*9 0 1*56 0*13 13*18
+2*23 0*4 -3*2 21*11 0 1*58 0*15 13*14
+2*25 -39 0*2 21*9 0*3 1*57 0*18 13*2 -1 13 -1*3 13 -1*5
+2*26 0*4 21*7 0 -41 1*56 0*18 9*2 -1*4 9*2 -1*2 9*4 -1
+2*25 0*6 21*6 0*2 1*2 0 1*52 0*2 -38 0*2 -1 -40 0*10 9*17
+2*25 0 -36 17*2 -35 21*9 1*52 0*6 -34 -1 0*14 9*15
+2*25 0*2 17*2 0*2 21*10 1 0 1*51 0 1*2 0*13 9*18
+2*24 0*2 17*3 0*4 21*9 0 1*56 0*2 -1 -111 0*6 9*19
+2*23 -1*2 0 17*6 0*3 21*6 0*2 1*32 0 1*25 0*10 9*17
+2*19 0*3 2 -1 17*9 21*10 1*60 0*6 9*19
+2*17 0*6 17*10 0*2 21*6 0*2 1*58 0*10 9*17
+2*18 -114 17*15 0*3 21*6 0 1*59 0*10 9*15
+2*17 0*2 17*16 -115 0 21*7 0 1*56 0*10 9*17
+2*15 0*3 17*17 0*2 21*5 0*3 1*58 0*10 9*15
+2*13 0*3 17*19 -113 0*3 21*2 0*3 1*58 0*9 9*17
+2*13 0*2 17*20 0*7 1*57 0*10 9*19
+-1 2*12 0*2 17*18 -1 1*6 0 1*56 0*14 9*17
+16 -1*9 2 0*3 17*18 -1 1*66 0 1 -1 -109 0*6 9*19
+16*8 -1*2 16*3 17*18 -1 1*64 0 1*5 0*9 9*17
+16*14 0 17*16 -1 1*64 0*2 1 0*10 9*19
+16*13 0*2 17*16 -1 1*69 0*11 9*16
+16*13 0 -108 17*14 -1*2 1*68 0*13 9*16
+16*13 0*2 17*14 -1 1*71 0*14 9*13
+16*15 0 17*11 0*2 1*69 0 1*4 0*10 9*15
+16*16 0*2 17*7 0*5 1*72 0*12 9*14
+16*18 0 17*2 0*2 17*5 0*5 1*66 0*14 15*2 -32768*2 9*2 -32768*4 9 -32768*2 9*2
+16*24 0 17*4 0*2 1*71 0*9 15*5 -32768*4 15*2 -32768*2 15 -32768*2 9
+16*23 0*2 17*2 0*7 1*69 0*10 15*14 0
+16*25 17*4 0*6 1*44 -126 0 1*20 0*10 15*17
+16*26 0 17*2 -124*2 0*2 1*46 0*2 1*18 0*14 15*15
+16*25 0*2 17 -7 0*6 1*44 20*2 -125 0 1*18 0*10 15*16 0
+16*27 0 -7*3 0*6 1*40 0 20*5 0 1*19 0*6 15*19
+16*28 0 -7 -5 -128*2 0*2 1*42 0*2 20*5 0 1*16 0*10 15*17
+16*27 0*3 -1 0*6 1*41 0*3 20*5 0 1*16 0*6 15*5 0 15*13
+0*3 16*2 0*2 16*13 0*14 1*44 0 20*6 0*2 1*16 -117*2 0*5 15*18
+7 -118 0*6 16*6 0*3 16*2 0*14 1*3 0 1*40 0 20*9 1*16 0*10 15*15
+7 0*3 7 -116 0 -1*2 16*5 0*6 7*3 0*12 1 0*2 1*39 0*3 20*8 0*2 1*7 -1*4 0*9 15*18
+7*5 0 7*2 -1 16 0*5 7*3 0 7*4 0*10 1*44 0*4 20*9 0 1*5 -1*2 12*5 0*6 15*19
+7*9 0*3 7*5 -1 7*4 0*2 -120 0*6 1*48 -119 0 20*11 0 -1*4 12*8 0*2 -122 -121 15*2 0*2 15*15
+7*19 0*14 1*2 0 1*43 0*2 20*9 0*3 12*10 0*6 -9 0*5 15*13
+7*22 0*9 -83 0*3 1*44 -84 0 20*8 0*3 12*14 0*9 15*13
+7*23 0*14 1*42 0*2 20*6 0*3 12*17 0*2 -85*2 0*2 -86*2 15*13
+7*21 0*14 1*43 0 20*6 0*4 12*16 0*6 12 -81 0*2 15*13
+7*23 0*14 1*40 0 20*7 0 -82 12*20 0*2 12*4 -89*2 15*13
+7*21 0*10 -87 -1 0*2 1*42 0*2 20*6 0*2 12*24 -93*2 0*2 15*13
+7*19 0*14 -1 -6 0*2 1*39 0 20*8 0 -92 12*24 0*3 -91 15*13
+7*21 0*18 1*6 0*2 1*25 0 1*2 0 20*8 0*3 12*24 4 0*3 15 0 15*11
+7*19 0*22 1*2 0*6 1*5 0 1*15 23 0*2 1*2 0*2 20*6 0*3 12*23 0 4*5 0 15*12
+7*17 0*22 1*6 0*2 1*4 0*2 1*10 0*5 23*5 1*2 0*4 20*4 0 -73 12*24 0*2 4*5 0 15*11
+7*19 0*18 -79*2 0*2 1*2 0*2 1*6 0*2 1*2 0*2 1*6 0*6 23*4 0*2 -1 -76 0*4 20*2 0*2 12*24 0*2 4*4 0*2 15*11
+7*17 0*30 1*2 0*2 -80*2 0*5 1*3 0*3 -74 0*2 23*4 0 4*5 0*2 4 0*5 12*24 0*2 4*6 15*11
+7*19 0*26 -75 0*20 23*3 0 4*13 12*6 4 -1 12*17 0 4*9 0 15*9
+7*21 0*46 23*2 0*2 4*13 0*2 4 0 4*2 -1 12 0 12*14 0 4*9 0*2 15*9
+7*19 0*42 -102 -1 -104 0*9 4*18 0*2 12*8 0*2 12*2 0 4*9 0*3 15*10
+0 7*16 0*46 14*2 0*2 14*4 -107 0 4*19 0*2 12 0 4 0 12 4*18 15*11
+0 7*18 0*42 14*10 0*2 4*42 0*2 15*2 0 15*8
+-105 7*17 0*4 8*4 0*33 14*7 0*3 14 0 4*46 0 15*2 -1 15*6 -106
+0 7*3 -32768*4 7*2 -32768*2 7 -32768*2 7 0*5 8*6 0*34 14*4 0 4*52 0 4*3 -1 0*2 15*2 0
+-98 7*2 -32768*2 8*2 -32768*4 8 -32768*2 8*16 0*8 -95 -1 -96 0*9 14*3 0 14*4 0 14*4 0 4*58 0*4 -99 4
+0*3 8*28 0 8*7 0*10 14*14 0*2 4*58 0*3 4*2
+0*3 8*38 0*6 14*5 0 14*10 -101 0 4*63
+0*2 8*37 0*10 14*3 0*2 14*9 0*2 4*63
+8*41 0*2 14*2 0 14*18 0*2 4*62
+0*4 8*36 -1 14*23 0 -1 4*62
+8*40 -1 14*25 -1 4 0*4 4*56
+8*40 -1 14*26 0*6 4*55
+8*40 -1 14*30 -100 0 4*55
+8*40 -1 14*30 0*2 4*55
+8*40 -1*2 14*29 4*57
+8*40 -1*2 14*27 0 4*58
+8*40 -1 14*28 0 4*58
+8*2 0 8*37 -1 14*29 0*3 4*55
+0*7 8*33 0 14*30 -13*3 0*2 4*47 0*5
+0*128
+areas 24
+1 top 269,253 mini_tiles 63864 group 1 box 25,24 102,104
+2 top 44,217 mini_tiles 11153 group 1 box 0,38 29,71
+3 top 413,43 mini_tiles 17383 group 1 box 64,0 127,23
+4 top 333,468 mini_tiles 17466 group 1 box 64,100 127,126
+5 top 34,113 mini_tiles 6440 group 1 box 0,16 26,40
+6 top 40,33 mini_tiles 5274 group 2 box 0,0 23,15
+7 top 33,408 mini_tiles 5759 group 1 box 0,89 22,112
+8 top 94,477 mini_tiles 8712 group 1 box 0,110 40,126
+9 top 481,281 mini_tiles 5541 group 3 box 109,57 127,80
+10 top 482,160 mini_tiles 5872 group 1 box 109,17 127,46
+11 top 348,107 mini_tiles 5536 group 1 box 77,17 106,37
+12 top 391,400 mini_tiles 4591 group 1 box 83,91 112,108
+13 top 482,205 mini_tiles 2395 group 3 box 109,45 127,56
+14 top 224,479 mini_tiles 5592 group 1 box 41,108 70,126
+15 top 483,356 mini_tiles 6114 group 1 box 109,79 127,111
+16 top 26,324 mini_tiles 5240 group 1 box 0,71 27,91
+17 top 110,281 mini_tiles 3866 group 1 box 13,59 34,84
+18 top 119,25 mini_tiles 3849 group 2 box 24,0 44,13
+19 top 226,24 mini_tiles 3962 group 1 box 41,0 70,14
+20 top 339,371 mini_tiles 1591 group 4 box 76,84 91,103
+21 top 135,226 mini_tiles 1478 group 5 box 28,51 43,68
+22 top 351,156 mini_tiles 921 group 6 box 80,36 99,42
+23 top 280,413 mini_tiles 145 group 7 box 66,101 72,106
+24 top 112,173 mini_tiles 394 group 8 box 22,38 36,49
+choke_points 56
+0 areas 1 11 ends 305,107 312,124 320,141
+1 areas 1 12 ends 403,362 387,366 372,369
+2 areas 1 17 ends 136,279 126,293 116,307
+3 areas 2 5 ends 47,153 50,151 52,150
+4 areas 2 16 ends 39,287 19,286 0,282
+5 areas 2 17 ends 92,255 94,252 97,249
+6 areas 3 10 ends 484,74 486,72 489,69
+7 areas 3 11 ends 389,94 393,96 396,97
+8 areas 3 19 ends 267,24 266,27 264,30
+9 areas 4 12 ends 359,422 362,424 364,425
+10 areas 4 14 ends 262,469 265,472 267,475
+11 areas 4 15 ends 488,445 485,443 482,442
+12 areas 6 18 ends 92,0 91,21 93,43
+13 areas 7 16 ends 30,361 33,364 35,366
+14 areas 8 14 ends 162,503 161,485 162,468
+15 areas 9 13 ends 460,228 485,227 511,228
+16 areas 6 5 ends 40,62 40,62 40,62 pseudo blocked
+17 areas 10 13 ends 464,190 464,190 464,190 pseudo blocked
+18 areas 9 15 ends 492,322 492,322 492,322 pseudo blocked
+19 areas 6 5 ends 44,66 44,66 44,66 pseudo blocked
+20 areas 18 19 ends 176,10 176,10 176,10 pseudo blocked
+21 areas 18 19 ends 172,22 172,22 172,22 pseudo blocked
+22 areas 18 19 ends 176,30 176,30 176,30 pseudo blocked
+23 areas 19 18 ends 172,14 172,14 172,14 pseudo blocked
+24 areas 19 18 ends 172,26 172,26 172,26 pseudo blocked
+25 areas 18 19 ends 176,18 176,18 176,18 pseudo blocked
+26 areas 6 5 ends 16,62 16,62 16,62 pseudo blocked
+27 areas 6 5 ends 20,66 20,66 20,66 pseudo blocked
+28 areas 9 15 ends 488,318 488,318 488,318 pseudo blocked
+29 areas 9 15 ends 468,322 468,322 468,322 pseudo blocked
+30 areas 9 15 ends 464,318 464,318 464,318 pseudo blocked
+31 areas 10 13 ends 480,186 480,186 480,186 pseudo blocked
+32 areas 10 13 ends 476,190 476,190 476,190 pseudo blocked
+33 areas 10 13 ends 500,190 500,190 500,190 pseudo blocked
+34 areas 10 13 ends 504,186 504,186 504,186 pseudo blocked
+35 areas 7 8 ends 16,450 16,450 16,450 pseudo blocked
+36 areas 7 8 ends 28,446 28,446 28,446 pseudo blocked
+37 areas 7 8 ends 20,446 20,446 20,446 pseudo blocked
+38 areas 7 8 ends 32,450 32,450 32,450 pseudo blocked
+39 areas 6 5 ends 56,66 56,66 56,66 pseudo blocked
+40 areas 6 5 ends 52,62 52,62 52,62 pseudo blocked
+41 areas 9 15 ends 500,318 500,318 500,318 pseudo blocked
+42 areas 9 15 ends 504,322 504,322 504,322 pseudo blocked
+43 areas 10 13 ends 468,186 468,186 468,186 pseudo blocked
+44 areas 7 8 ends 52,450 52,450 52,450 pseudo blocked
+45 areas 7 8 ends 56,446 56,446 56,446 pseudo blocked
+46 areas 9 15 ends 480,318 480,318 480,318 pseudo blocked
+47 areas 9 15 ends 476,322 476,322 476,322 pseudo blocked
+48 areas 10 13 ends 492,190 492,190 492,190 pseudo blocked
+49 areas 10 13 ends 488,186 488,186 488,186 pseudo blocked
+50 areas 18 19 ends 172,38 172,38 172,38 pseudo blocked
+51 areas 18 19 ends 176,34 176,34 176,34 pseudo blocked
+52 areas 6 5 ends 32,62 32,62 32,62 pseudo blocked
+53 areas 6 5 ends 28,66 28,66 28,66 pseudo blocked
+54 areas 7 8 ends 44,446 44,446 44,446 pseudo blocked
+55 areas 7 8 ends 40,450 40,450 40,450 pseudo blocked
+choke_point_distances
+0: b9871326b4a9dac7
+1: 60f6a91f08524975
+2: ff610415a870e0e0
+3: 7f7cdcc3c1f7b97f
+4: fa4cd1b2c9078e20
+5: 3a0e24e00f3577ae
+6: 0a22280bc9762342
+7: 3b4fd92e6aac5fe5
+8: 21dee80fe9eee6d7
+9: 169b60e8f5dd7ad3
+10: a62f9a2e39f92b28
+11: b90535a05bd00d51
+12: 87b69ea8dcef98ae
+13: 79c96ad43307418e
+14: 0faf51dce9c79b04
+15: a42ba040afcaded8
+16: 1bfc3d8a4ad42cc6
+17: 216b58450f6a9b11
+18: 37f02e0eb915dfb2
+19: e6e6ef0c329c834c
+20: 80549e60f461f84b
+21: 90760c3fa0d47832
+22: 86642e7b9b8e80b1
+23: a03814212e2af857
+24: 9d4454bee16e0ee9
+25: ac60d5a778665032
+26: c95f65f28bedcd4b
+27: 4483c2a6e95d529a
+28: 8730fca9aa41bd7b
+29: 344bbdf36aa0c5e3
+30: 4043b31506fafc78
+31: 4be838368e5d867d
+32: 543ced20df23959a
+33: 80592b71d96fa359
+34: 73b5c7c130af7330
+35: 66fec6fdb1918b22
+36: ae6819b7235b2852
+37: b3fed42822e0445c
+38: ccf2cbd730b2b19c
+39: 6ebd641ece095b6b
+40: 2a5ac551c1979e66
+41: 39fbb77cbcd8bd0d
+42: 70fce641836cd6bb
+43: 92f3f0718b4e2d79
+44: 58c5d537a54a8d10
+45: fbbd6e96448b808f
+46: 5c027d43a118e810
+47: b0bd8da5c1153526
+48: add926c89bba5b05
+49: 9a6834fa2114ee44
+50: 79df36c288b71b4a
+51: 47088e04127b2332
+52: e776fa0e1c8b68f5
+53: 0dc17d318e183e2d
+54: 12f9780026b32f2c
+55: b4f3dc8490993afd
+choke_point_paths
+0: abdedf7a2653a867
+1: 4f20b6bdfa625a07
+2: 896c9e8adb9212a4
+3: 3be2b9904fea1d86
+4: eefb775665aae0c4
+5: 3190d4a04ccb7500
+6: 9af79590c4fcf387
+7: d7aac0a589079360
+8: a25ed570270df4c9
+9: 9cc3e9b6d18e1563
+10: 7ae41029231d938b
+11: c3bd404bf75358e1
+12: 4af31cba57c00c24
+13: f9bc647117cba7c5
+14: 5e7d5deba2d52247
+15: e5f9b904d3981b63
+16: 993266fc0606b047
+17: 235b98f81aa325ad
+18: eb9c13be88ed40e3
+19: e7a6d03e5d397ae7
+20: 96b4ef7403164500
+21: 630a1ba99bf11020
+22: 871e9a2df25b1860
+23: 23389e9be9e93380
+24: eedc91d250a65680
+25: fc2246e630e4a920
+26: ad45ab1e5d2aa667
+27: b8314526bffdf2e7
+28: 8126a08bfe0a46e3
+29: 64ae07dcaa4cffe3
+30: 60311cc062424a43
+31: 8be443d7d7e49c2d
+32: 98bbc05123b62b6d
+33: 4e4468d10f8f418d
+34: 859669b2e6cd16cd
+35: 6bdd3949682b4285
+36: 5b68b63a6e107582
+37: 002fb3ad71379ba3
+38: 68cd320449c083a0
+39: 4f170cbbbce11187
+40: a759b10502fb2067
+41: 839b7d00fff30423
+42: 1d99d244a6afcd43
+43: eeb6fb373cd4242d
+44: 6c87b64c71a28a2a
+45: 04cf9b06ba31ecab
+46: eb46120a39c40f63
+47: 885f197dae1f9343
+48: 9753bf93d0af262d
+49: 4e67e7fa2017c0cd
+50: 16625d77818ae260
+51: 8636a71f7bd47540
+52: 04d266b7a90ef647
+53: edb4852b3bbe2687
+54: b3a30a5de916ae90
+55: 177ec9857a572251
+bases 14
+area 1 location 50,31 minerals 86 87 113 114 115 geysers 
+area 1 location 90,66 minerals 85 94 95 96 97 geysers 
+area 1 location 44,93 minerals 89 90 91 92 93 geysers 
+area 2 location 7,51 starting minerals 48 80 81 53 52 51 50 82 83 84 geysers 49
+area 3 location 96,7 starting minerals 34 33 32 31 30 29 28 27 26 25 geysers 126
+area 4 location 96,118 starting minerals 66 44 43 42 41 40 39 38 37 36 geysers 35
+area 6 location 11,0 minerals  geysers 3
+area 8 location 21,117 minerals  geysers 24 143
+area 9 location 117,62 minerals  geysers 11 10
+area 11 location 86,25 minerals 116 117 118 119 120 121 122 geysers 123
+area 12 location 97,98 minerals 98 99 100 101 102 103 104 geysers 88
+area 14 location 48,120 minerals 151 150 130 145 146 147 148 149 geysers 
+area 17 location 23,70 minerals 105 106 107 109 110 111 112 geysers 108
+area 18 location 25,0 minerals  geysers 144
+destroyed 67
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas fc9d47def1afe046
+tile_areas da3cabc04ecf6812
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 68
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 8cb5d8c00a07b586
+tile_areas bc1d280964a1dc3e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 12
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 898cb1ecba0373c6
+tile_areas e07966308ab41032
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 0
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 70587c6ef1035106
+tile_areas 33c1ed4fc6ddd136
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 9
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 618ff822f3fef866
+tile_areas 69bd6362deedf162
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 8
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 6db14f8cf81c4486
+tile_areas 24b6beec051a1056
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 7
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 5f3d60fcd31eafe6
+tile_areas 18615ca69694715a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 6
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas b803c9f01dc84d06
+tile_areas 82f8e261b4525f3e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 5
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas de6c9b8f5fff7346
+tile_areas 02f7ff381a5da61a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 4
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas a72b05779f9dd2a6
+tile_areas 9437acbfd5c93926
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 2
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 399e515bb6ac52a6
+tile_areas dbe6eb77bb3a0e52
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 1
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas d2660e7e5eca4ee6
+tile_areas a47a245fa38840d6
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 13
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 224ff9939b519b46
+tile_areas 73f12c2be913b132
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 14
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas cf3ea149ff197286
+tile_areas 63e00ab532454f16
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 15
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 5e9e2434658df5a6
+tile_areas 078a59d883af6922
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 16
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3435598bf13cace6
+tile_areas 82044db31c74afee
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 17
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas d0ef48c1a8bbec26
+tile_areas b3babfb5aa8135a2
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 18
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 2dcbef2c7e619966
+tile_areas a351311b0f9fa916
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 19
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas d88a80df9c6a7aa6
+tile_areas d31b453fdf041ac2
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 20
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 31c813c005857e66
+tile_areas 78177b8e529b8816
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 21
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas c5f1b67d24b565a6
+tile_areas a53b159f6c73cf82
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 22
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 6af64552e66ee4e6
+tile_areas 50347efe9775560e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 23
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas b7cae13ca60ef9a6
+tile_areas 59dfc7b9bee5f172
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 124
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 2f4a208f780c67e6
+tile_areas 7c58f3dc70222d2e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 125
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas bea5b271263614e6
+tile_areas 1ccda124c765ba82
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 127
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 1fab6e7efd961046
+tile_areas 53273741373f006e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 128
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 70ac374b3c717186
+tile_areas 0a538bc83677260a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 129
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 0aa960bbf70c10c6
+tile_areas bb31edd2d81cd046
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 131
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 0dafe25a91f22b06
+tile_areas bf354cce44f11f4a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 132
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 0018675384f44b46
+tile_areas f16a8a479be2fd2e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 133
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 39f7b7b2da42dee6
+tile_areas 883b098f94f8c32a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 134
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 17ff124643880f26
+tile_areas 4961b9374d897e7e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 135
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas afc495e92ab59766
+tile_areas 3e6e5cceee649ed2
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 136
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas a56e1f44f3f848a6
+tile_areas 50a0c131ddbe385e
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 137
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 99c48717910bc4e6
+tile_areas 0007879f6f204a12
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 138
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas ef2ecc347d785646
+tile_areas 35fdf31ae9a1c0ee
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 139
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 85585162e7fd5c46
+tile_areas fc12417822c8497a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 140
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 5b9fb7e12a91af86
+tile_areas 143b29af0c3399ce
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 141
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas ad165add18e403c6
+tile_areas 222e135ad3a0785a
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 142
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 43920fc7cf43e9da
+destroyed 151
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 86ab1fefc58270cf
+destroyed 150
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 47a8dd41d0ae077b
+destroyed 66
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 cffe7379e5f3253b
+destroyed 48
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 95a313f98fec3e17
+destroyed 44
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 638d200ce8dda0f7
+destroyed 43
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 6bd125d2cf7e0430
+destroyed 42
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 f64e1cc969631236
+destroyed 41
+max_altitude 700
+bases_found 1
+mini_tile_altitudes d0c9f2a655b59b3f
+mini_tile_areas 3ab22f396230b906
+tile_areas 76462949984b7efe
+areas 24 15c92964f1aa058c
+choke_points 56 bbdfbbabaca1ccab
+choke_point_distances a524ad530e2aa509
+choke_point_paths 4c5112b0cad4c605
+bases 14 34bc83011be396f3

@@ -1,0 +1,193 @@
+answers bwem 1
+map scbw/(4)Blood Bath.scm
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 64 64
+1*16 0*11 4*37
+1*18 0*11 4*35
+1*19 0*12 4*33
+1*22 0*11 4*31
+1*24 0*11 4*29
+1*26 0*12 4*26
+1*28 0*11 4*25
+1*29 0*12 4*23
+1*32 0*11 4*21
+1*34 0*11 4*19
+1*33 0*12 4*19
+1*31 0*11 4*22
+1*29 0*11 4*24
+1*27 0*11 4*26
+1*27 0*12 4*25
+1*30 0*11 4*23
+1*31 0*13 4*20
+1*33 0*12 4*19
+1*35 0*12 4*17
+1*35 0*11 4*18
+1*33 0*11 4*20
+1*31 0*11 4*22
+1*29 0*12 4*23
+0 1*26 0*14 4*23
+0*3 1*23 0*17 4*21
+0*6 1*21 5 0*16 4*20
+0*7 1*19 -1 5*3 0*3 5*3 0*6 4*22
+0*9 1*10 0*2 1*5 -1 5*10 0*3 5*2 -1 4*21
+0*11 1*6 0*6 1*3 -1 5*15 -1*2 4*5 0*2 4*13
+3*2 0*11 1*2 0*10 -1 5*17 -1 4*3 0*6 4*11
+3*4 0*20 5*20 -1 0*10 4*9
+3*6 0*17 5*23 0*11 4*7
+3*8 0*13 5*12 0 5*13 0*12 4*5
+3*9 0*12 5*26 0*14 4*3
+3*12 0*11 5*22 0*19
+3*13 0*11 5*20 0*20
+3*15 0*7 5*21 -1 2*2 0*6 2*3 0*9
+3*18 0*2 3*2 -1 5*20 -1 2*4 0*2 2*7 0*7
+3*23 -1*2 5*4 0*2 5*6 0*2 5*4 -1 2*15 0*5
+3*24 -1 5*2 0*6 5*2 0*6 5*2 -1 2*17 0*3
+3*25 0*18 -1 2*19 0
+3*26 0*16 2*22
+3*27 0*14 2*23
+3*27 0*12 2*25
+3*25 0*12 2*27
+3*23 0*11 2*30
+3*21 0*11 2*32
+3*19 0*11 2*34
+3*20 0*11 2*33
+3*21 0*13 2*30
+3*24 0*11 2*29
+3*26 0*11 2*27
+3*27 0*12 2*25
+3*27 0*11 2*26
+3*25 0*12 2*27
+3*23 0*12 2*29
+3*21 0*12 2*31
+3*22 0*11 2*31
+3*24 0*11 2*29
+3*25 0*12 2*27
+3*27 0*12 2*25
+3*30 0*11 2*23
+0*5 3*26 0*12 2*16 0*5
+0*64
+areas 5
+1 top 53,58 mini_tiles 11728 group 1 box 0,0 34,29
+2 top 207,201 mini_tiles 10216 group 1 box 30,36 63,62
+3 top 38,213 mini_tiles 10617 group 1 box 0,29 30,62
+4 top 219,39 mini_tiles 11065 group 1 box 27,0 63,33
+5 top 135,132 mini_tiles 3678 group 1 box 21,25 46,39
+choke_points 4
+0 areas 1 5 ends 103,118 105,110 108,103
+1 areas 2 5 ends 175,144 175,152 174,160
+2 areas 3 5 ends 99,159 94,154 89,148
+3 areas 4 5 ends 169,108 172,114 176,121
+choke_point_distances
+0: 54207b51509e5e7b
+1: ee876952a0d42137
+2: 479a6fa7e93d701f
+3: bda3586ea7eee6cb
+choke_point_paths
+0: 148ca197d89892a6
+1: 94ef139724db6727
+2: 43579ce2c31bb8c4
+3: 164d6f4835f5c885
+bases 12
+area 1 location 2,6 starting minerals 15 13 0 5 6 7 10 11 geysers 22
+area 1 location 20,12 minerals 21 19 17 geysers 
+area 1 location 7,17 minerals 25 24 23 geysers 
+area 2 location 53,55 starting minerals 59 60 64 65 66 70 73 74 geysers 81
+area 2 location 54,43 minerals 82 83 84 geysers 
+area 2 location 38,49 minerals 76 78 79 geysers 
+area 3 location 7,55 starting minerals 61 67 69 71 72 75 77 80 geysers 62
+area 3 location 0,36 minerals 87 85 86 geysers 
+area 3 location 17,58 minerals 56 58 63 geysers 
+area 4 location 53,6 starting minerals 18 16 14 1 2 8 9 12 geysers 20
+area 4 location 58,24 minerals 28 27 26 geysers 
+area 4 location 38,0 minerals 3 4 68 geysers 
+destroyed 87
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 488cfd11a217ebfd
+destroyed 28
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 6daa5bba5bd55d57
+destroyed 27
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 876ba7c318e10032
+destroyed 26
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 5ac8bad9c6e41476
+destroyed 25
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 80481647c5b03c31
+destroyed 24
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 58c2ce42b8f76a97
+destroyed 23
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 d349d45d5a430376
+destroyed 21
+max_altitude 408
+bases_found 1
+mini_tile_altitudes 258dc8114233cfa1
+mini_tile_areas a93a5fd23a247562
+tile_areas 9affeb3cb23a4617
+areas 5 865332fdfeba6d92
+choke_points 4 7917f684c51ea3bf
+choke_point_distances a74ccb5c32115ad1
+choke_point_paths 1aa2649a08f3b3e5
+bases 12 6d9ab9fa9700a515

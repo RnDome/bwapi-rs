@@ -1,0 +1,914 @@
+answers bwem 1
+map scbw/(8)Double Diamond.scm
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 3a4ebcc535af7e52
+tile_areas 256 128
+0 4*21 0*5 63*6 0*4 4*14 -1 3*11 0*4 53*7 0*3 3*22 0*5 51*5 0*22 -49*2 0*6 -3*4 0*3 52*6 0*5 8 0*4 8*8 0*4 67*4 0*15 25*11 -1*2 20*21 0*3 -19*3 0*8 12 0*4 12 0*5 68*2 0*2
+4*24 0*5 63*4 0*2 4*2 0 4*12 -1 3*14 0*5 53*4 0*3 3*23 0*5 51*4 0*2 -50*2 0*28 -3*2 0*3 52*5 0*5 8*17 0*4 67*4 0*3 25*4 0*4 25*13 -1 20*19 0*3 -20*2 0*6 12 0*2 12*9 0*5 68*3
+4*26 0*5 63*2 0*2 4*15 -1 3*15 0*5 53*2 0*4 3*26 0*2 51*4 0*2 -50*2 0*28 -5 0*5 52*2 0*4 8*21 0*5 67*2 0*2 25*23 -1 20*16 0*3 -9*2 0*6 12*17 0*4 68
+4*28 0*3 63*2 0*3 4*14 -1*2 3*17 0*2 53*2 0*3 3*27 0*2 51*4 0*32 -5*4 0*2 52 -13 0*3 8*24 0*3 49*2 0*2 25*23 -1 20*16 0*3 -9 0*4 12*21 0*4
+4*29 0*2 63*2 0*2 4*16 0*2 3*16 0*2 53*3 0*3 3*25 0*5 51*3 0*3 -11 0*30 -5 0*3 -13*2 0*3 8*24 0*2 49*3 0*2 25*22 -1 20*16 0*7 12*23 0*3
+4*29 0*6 4*16 0*2 3*15 0*5 53 0*3 3*27 0*3 51*3 0*3 -11 0*35 -13*2 0*2 8*23 0*5 49*3 0*3 25*18 0*2 20*17 0*3 -46 0*3 12*22 0*2 -45
+4*30 0*5 4*15 0*3 3*17 0*7 3*28 0*2 51*2 0*36 60*2 0*2 61*2 0*3 8*24 0*4 49*3 0*2 25*16 0*4 20*18 0*2 -46 0*3 12*22 0*2 -45
+4*31 0*5 4*15 0*4 3*18 0*4 3*28 0*2 51*2 0*35 60*3 0*2 61*3 0*3 8*24 0*3 49*3 0*3 25*15 0*4 20*17 0*3 -32*2 0*2 12*22 0*3
+4*31 0*4 4*16 0*2 35 0*3 3*16 0*5 3*27 0*2 51*3 0*3 -33 0*30 60*3 0*2 61*3 0*3 8*23 0*5 49*2 0*2 25*15 0*3 -47 0*3 20*14 0*3 -32*3 0*2 12*23 0*2
+4*31 0*5 4*13 0*3 35*3 0*2 3*16 0*4 3*27 0*5 51 0*3 -33 0*31 60*2 0*2 61*2 0*4 8*25 0*7 25*16 0*2 -47 -48 0*2 20*14 0*3 -32 0*4 12*25
+4*30 0*3 4*16 0*3 35*3 0*2 3*18 0*2 3*29 0*40 60 0*2 61*2 0*2 8*29 0*5 25*16 0*2 36*2 0*3 20*13 0*7 12*25 0
+4*49 0*4 35*2 0*2 3*48 0*44 61*2 0*2 8*28 0*3 -51 0*3 25*9 0 25*3 0*3 36*4 0*3 20*13 0*5 12*26 0
+4*50 0*3 35*2 0*3 3*47 0*6 44*3 0*39 8*28 0*3 -51 0*2 25*10 0*5 36*6 0*3 20*12 0*7 12*25 0
+4*51 0*2 35*3 0*3 3*46 0*7 44*2 0*33 33*2 0*4 8*27 0*7 -1*2 25*8 0*2 36*9 0*3 20 -1*3 20*2 -1 20*5 0*4 10*2 -1*2 12*22 0*3
+4*50 0*3 35*3 0*3 3*44 0*6 44*6 0*31 33*3 0*4 8*26 0*6 6*3 -1*2 25*7 0*2 36*6 0*5 10*4 -1 10 -1 10 -1*4 10 0*4 10*3 -1*2 12*21 0*3
+4*49 0*3 35*5 0*3 3*41 0*3 65*3 0*2 44*7 0*30 33*2 0*5 8*26 0*6 6*5 -1*2 25*4 0*3 36*6 0*3 10*16 0*3 10*4 -1*2 12*20 0*3
+0 4*48 0*3 35*4 0*3 3*42 0*3 65*3 0*2 44*9 0*29 33*3 0*3 8*26 0*2 6 0*4 6*5 -1*2 25*2 0*3 36*6 0*3 10*26 -1*7 12*13 0*3
+0*3 4*2 0*2 4*41 0*3 35*4 0*5 3*41 0*4 65*2 0*2 44*9 0*29 33*4 0*4 8*23 -1 6*14 -1 25 0*2 36*6 0*4 10*32 -1*2 12*12 0*3
+-25*2 0*7 4*38 0*3 35*5 0*2 3*45 0*3 65*2 0*2 44*7 0*30 33*4 0*5 8*22 -1 6*17 0*3 36*5 0*3 10*34 -1*2 12*9 0*3 55 0
+0*9 4*38 0*3 35*5 0*2 3*44 0*3 65*3 0*2 44*6 0*24 33*2 0*2 33*6 0*3 -26 0*3 8*21 -1 6*17 0*3 36*6 0*3 10*34 -1*2 12*2 0*7 55*3 0
+0*9 4*37 0*3 35*6 0*3 3*42 0*2 65*3 0*4 44*6 0*21 33*13 0*3 -26*2 0*2 8*20 -1 6*18 0*4 36*5 0*3 10*35 -1 0*3 55*9 0
+0*3 4 0*5 4*38 0*2 35*6 0*2 3*40 0*5 65*3 0*3 44*7 0*22 33*12 0*10 8*16 -1*2 6*19 0*3 36*6 0*3 10*35 0*2 55*7 0 55*2 0
+4*46 0*5 35*4 0*3 3*39 0*6 65*2 0*2 44*8 0*22 33*13 0*9 8*16 -1 6*21 0*2 36*7 0*2 10*3 0*2 10*29 0*5 55 0*8
+4*48 0*3 35*4 0*2 3*39 0*12 44*7 0*22 33*15 0*3 8 0*4 8*14 -1 6*22 0*3 36*8 0*5 10*30 0*13
+4*48 0*2 35*5 0*2 3*45 0*4 -1 44*8 0*22 33*15 -1 8*21 6*24 0*5 36*8 0*2 10*29 0*8 42*6
+4*45 0*3 35*8 0*3 3*47 -1 44*8 0*22 33*15 -1 8*20 -1 6*26 0*3 36*8 0*2 10*35 -1*2 42*6
+4*45 0*3 35*8 0*3 3*48 -1 44*5 0*26 33*13 -1 8*19 -1*2 6*25 0*3 36*7 0*4 10*35 -1 42*7
+0*3 4*41 0*3 35*10 0*2 3*48 -1*2 44*2 0*28 33*12 -1*2 8*19 -1 6*26 0*3 36*5 0*5 10*36 -1 42*7
+29*2 0*3 4*40 0*2 35*11 0*3 3*48 0*30 33*12 0 8*19 -1 6*26 0*3 36*6 0*3 10*37 0*2 42*7
+29*4 0*7 4*2 0*2 4*30 0*2 35*13 0*3 3*46 0*32 33*9 0*4 8*3 0*2 8*12 -1 6*27 0*2 36*6 0*2 10*36 0*6 42*5
+29*10 0*7 4*26 0*3 35*16 0*3 3*38 0 3*7 0*32 33*4 0*3 32*4 0*7 8*2 0 8*6 -1 6*28 0*2 36*6 0*3 10*29 0*2 10*2 0*3 24*4 0*3 42*3
+29*15 0*2 4*24 0*3 35*20 0*3 3*31 0 3*2 0*6 3*4 0*34 33*2 0*2 32*11 0*6 8*3 -1 6*27 0*3 36*8 0*3 10*26 0*7 24*8 0*3 42
+29*15 0*3 4*23 0*3 35*21 0*2 3*28 0*7 30*4 0*3 3 0*39 32*17 0*3 6*28 0*2 36*11 0*3 10*22 0*3 24*16 0*2
+29*16 0*3 4*21 0*3 35*9 0*2 35*11 0*2 3*26 0*3 30*12 0*3 -40 0*32 -18 0*3 32*18 0*3 6*24 0*2 6 0*3 36*12 0*2 10*20 0*3 24*19 0
+29*18 0*3 4*20 0*2 35*6 0*11 35*5 0*2 3*24 0*3 30*16 0*34 -18 0*2 32*19 0*3 6*24 0*5 36*13 0*2 10*20 0*3 24*19 0
+29*18 0*3 4*20 0*2 35*6 0*3 -38 0*9 35*3 0*3 3*21 0*3 30*20 0*3 -10*2 0*26 -18*2 0*2 32*17 -1*2 6 0 6*25 0*2 36*16 0*2 10*19 0*4 24 -1 24*18
+29*17 0*5 4*17 0*3 35*2 0*7 -38*2 0*10 35*3 0*3 3*20 0*3 30*20 0*3 -10*2 0*24 -6*2 0*3 32*15 0*3 6*27 0*3 36*17 0*2 10*16 -1*3 13*2 0 13*2 -1 24*18
+29*17 0*3 4*19 0*30 3*19 0*4 -1*2 30*19 0*2 -10 0*25 -6*2 0*3 32*13 0*6 6*24 0*3 36*20 0*3 10*12 -1*2 13*9 0*4 24*14
+29*17 0*2 4*20 0*31 3*20 0 3*2 -1 30*20 0*3 -15 0*29 32*12 0*3 6*2 0 6*24 0*3 36*9 0 36*10 0*3 10*10 -1*3 13*9 0*6 24*13
+29*16 0*3 4*22 0*22 -39*2 0*4 3*25 0*3 30*17 0*33 32*13 0*3 6*25 0*5 36*7 0*4 36*3 0 36*5 0*3 10*8 -1*2 13*11 0 13*3 0*2 24*13
+29*14 -1 4*2 0 4*23 0*22 -39*2 0*4 3*24 0*6 30*13 0*25 11*2 0*3 11 0*3 32*14 0*3 6*27 0*3 36*4 0*13 36*3 0*2 10*7 -1*3 13*16 0*2 24*13
+0*4 29*2 0*3 29*2 0*3 4*25 0*30 3*24 0 3*2 0*3 30*11 0*26 11*7 0*3 32*15 0*2 6*28 0*2 36*2 0*20 10*5 -1*3 13*17 0*3 24*13
+0*15 4*24 0*31 3*27 0*2 30*10 0*27 11*7 0*4 32*14 0*2 6*28 0*26 10 -1*2 13*21 0*2 24*13
+0*3 17 0*3 17 0*4 17*2 0 4*24 0*28 3*29 0*4 30*9 0*26 11*9 0*4 32*11 0*4 6*28 0*26 13*23 0*4 24*12
+17*14 -1 4*24 0*28 3*30 0*3 30*4 0*3 30*2 0*2 -44 0*23 11*10 0*3 32*11 0*3 6*29 0*20 -43 0*5 13*25 0*5 24*9
+17*14 -1 4*24 0*28 3*30 0*5 30 0*9 3 0*24 11*8 0*4 32*2 0*2 32*6 0*2 6*33 0*23 13*27 0*6 24*6
+17*14 -1*2 4*20 -32768*2 14 0*11 14 0*15 14 -32768*2 3*30 0*6 3 0*4 3*3 0*24 11*9 0*15 -1*2 6*30 0*24 13*29 0*5 24*2 0*2 24
+17*14 -1 4*20 -32768*2 14*4 0*6 14*5 0*12 14*4 -32768*2 3*31 0*3 3*7 0*24 11*13 0*12 11*2 -1*3 6*28 0*24 13 -32768*2 13*26 -1 27 0*8
+17*15 4*20 -32768*2 14*6 0*2 14*10 0*2 14*2 0*2 14*8 -32768*2 3*38 0*26 11*29 -1 6*28 0*24 16*2 -32768*2 13*24 -1*2 27*3 0*6
+17*15 -1 4*18 -32768*2 14*34 -32768*2 3 0*2 3*2 0 3*3 0 3*27 0*28 11*27 -1 6*28 0*19 16 0*2 16*5 -32768*2 13*22 -1*2 27*10
+17*15 -1 4*19 0*2 14*32 0*2 3*2 0*11 3*27 0*28 11*25 -1*2 6*29 0*6 16*2 0*6 16*12 -32768*2 13*20 -1 27*12
+17*14 -1 4*14 0*2 4*2 0*4 14*2 0*2 14*26 0*11 47*6 0*3 3*24 0*28 11*26 -1*2 6*3 0 6*7 0 6*2 0*2 6*11 -1 16 0*4 16*5 0*2 16*15 -32768*2 13*18 -1*2 27*12
+17*14 -1 4*12 0*16 14*24 0*13 47*5 0*2 3*22 0*28 11*30 0*6 6*3 0*9 6*7 -1*2 16*23 0*2 16*2 0*2 13*4 0*2 13*12 -1 27*14
+17*14 -1*2 4*11 0*18 14*22 0*15 47*3 0*3 3*21 0*27 11*31 0*3 37*2 0*4 37*6 0*3 6*2 0*2 6*2 -1 16*23 0*10 13*2 0*4 13*2 0*2 13*6 -1 27*14
+17*15 0 4*10 0*3 46 -42 0*2 -28*2 0*12 14*18 0*18 47*3 0*3 3*20 0*27 11*30 0*3 37*12 0*10 16*22 0*24 13*2 0*2 27*15
+17*13 0*6 4*2 0 4*3 0*3 46*2 0*3 -28*2 0*12 14*18 0*14 -34*2 0*2 47*5 0*3 3*16 0*30 11*30 0*2 37*10 0*14 16*20 0*18 40*5 0*7 27*13
+17*13 0*3 46*2 0*8 46*3 0*16 14*22 0*12 -34*2 0*2 47*7 0*7 3*10 0*30 11*29 0*3 37*10 0*16 16*20 0*13 -41 0*2 40*10 0*2 27*13
+17*12 0*3 46*14 0*16 14*24 0*14 47*7 0 47*3 0*3 3*10 0*28 11*26 0 11*3 0*3 37*11 0*2 -67 0*13 16*21 0*17 40*8 0*3 27*12
+17*11 0*3 46*14 0*19 14*24 0*9 -69 0*2 47*7 0*2 47*3 0*3 3*2 0 3*6 0*26 11*28 0*5 37*13 0*2 -67*2 0*10 16*23 0*17 40*9 0*2 27*12
+17*2 -1*2 17*7 0*3 46*13 0*20 14*24 0*14 47*11 0*7 3*4 0*26 11*27 0*3 37*16 0*2 -67*2 0*10 16*22 0*14 -68 0*3 40*11 0*3 27*9
+-1*7 17 -1*2 17 0*4 46*12 0*20 14*22 0*16 47*6 0 47*4 0*7 3 -1*2 7 0*28 11*20 0 11*4 0*2 37*15 0*16 16*22 0*20 40*11 0*3 27*2 0*2 27*3
+2*11 0*6 46*11 0*3 -61 0*15 14*20 0*15 -62 0*2 47*5 0*2 47*2 0*10 7*5 0*26 11*20 0*7 37*13 0*18 16*22 0*20 40*13 0*5 27*3
+2*11 0*8 46 0*3 46*5 0*3 -61 0*14 14*21 0*14 -62*2 0*2 47*8 0*5 7 0*2 7*10 0*22 11*21 0*9 37*12 0*20 16*18 0*16 -16*2 0*3 40*11 0*2 40 0*5 27*3
+2*16 0*9 46*4 0*2 -61*2 0*13 14*23 0*12 -62*2 0*2 47*8 0*2 7*16 0*22 11*23 0*9 37*11 0*3 -70 0*15 16*16 0*18 -16*2 0*3 40*8 0*9 28*3 -1*2
+2*18 0*7 46*4 0*2 -61*2 0*14 14*22 0*13 -62 0*2 47*7 0*3 7*16 0*22 11*29 0*6 37*10 0*3 -17 0*11 16*18 0*22 40*8 0*9 28*6
+2*23 0*2 46*4 0*2 -61 0*15 14*20 0*13 -7 0*3 47*3 0*8 7*16 0*20 11*33 0*5 37*10 0*2 -58 0*11 16*17 -1 45*2 0*17 -59 0*2 40*3 0*8 28*12
+2*22 0*6 46*2 0*3 -60 0*12 14*21 0*13 -7 0*3 47 0*8 7*16 0*15 11*3 0*2 11*37 0*3 37*3 0*3 37*4 0*14 16*16 -1 45*5 0*2 45*2 0*11 -59 0*12 28*13
+2*24 0*11 38*2 0*6 38*3 -1 14*22 0*11 -7 0*7 7 0*3 7*17 0*14 11*44 0*2 -65 0*6 37*4 0*3 -64 -66 0*8 16*14 0*3 45*11 0*6 5*2 0*15 28*12
+2*26 0*9 38*12 -1 14*20 -1 41*2 0*7 -63 0*6 7*24 0*14 11*44 0*18 -2*2 0*6 16*8 0*2 16*2 0*6 45*12 0*3 5*3 0*5 5*9 -1 28*12
+2*28 0*3 2 0*4 38*12 -1 14*14 0*2 14*2 -1 41*9 0*3 -23*2 0*3 7*22 0*16 11*45 0*4 1*4 0*9 -2*3 0*3 43*3 -1*2 16*2 0*15 45*10 -32768*2 5*3 0*5 5*10 -1 28*12
+2*35 -32768*2 38*12 0*3 14 0*2 14*6 0*6 41*10 0*9 7*21 0*16 11*2 0*2 11*2 0*3 11*36 -1 1*9 0*8 -32768*2 43*9 0*19 45*5 -32768*2 5*7 0*4 5*10 -1 28*11
+2*36 -32768*2 38*9 0*10 14*2 0*8 41*9 0*7 7*24 0*26 11*35 -1 1*19 -32768*2 43*7 0*20 45*3 -32768*2 5*22 -1*2 28*10
+2*37 -32768*2 38*5 0*23 41*6 -32768*2 41 -32768*2 7 0*3 7*25 0*28 11*32 -1*2 1*20 -32768*2 43*6 0*20 45*2 -32768*2 5*24 -1*2 28*9
+2*38 -32768*2 38*3 0*26 41*2 -32768*2 7 -32768*2 7*31 0*28 11*32 -1 1*22 -32768*2 43*3 0*22 45 -32768*2 5*26 -1 28*9
+2*40 -32768*2 0*28 -32768*2 7*35 0*26 11*33 -1*2 1*23 -32768*2 43*2 0*23 5*29 -1 28*8
+2*41 0*27 -73 0*2 7*36 0*26 11*32 -1*2 1*25 -32768*2 43 0*21 -72 0*2 5*28 -1 28*6 0 28
+2*41 0*25 -82 0*4 7*36 0*27 11*31 -1 1*28 0*20 -83 0*4 5*28 0*2 28*2 0*5
+2*40 0*3 34 0*3 -79 0*16 -80 0*7 7*35 0*27 11*31 -1 1*27 0*2 -1 -81 0*15 -78 0*3 39 0*3 5*25 0*7 18*4
+2*41 0*2 34*3 0*3 -84*2 0*2 -87 0*4 -88 0*2 -85 0*4 34*3 0*2 7*34 0*30 11*30 1*26 0*6 57 0*12 -86 0*3 39*3 0*2 5*24 0*3 18*10
+2 0 2*2 0 2*2 0 2*33 0*4 34*3 0*7 -76 0*8 34*3 0*5 7*33 0*30 11*26 0 11*2 -1 1*26 0*3 -74 0*2 57*3 0*3 57*2 0*2 -75*2 0*3 39*3 0*4 5*22 0*3 18*12
+0*4 2*2 0 2*35 0*3 34*9 0*4 34*7 0*5 7*37 0*27 11*13 0*6 11*2 0*2 11*2 0*6 1*25 0*3 -29*2 0*2 57*8 0*5 39*3 0*5 5*21 0*3 18*14
+22*4 0*3 2*2 0*2 2 0 2*30 0*2 34*20 0*3 7*39 0*27 11*13 0*2 23*3 0*8 23*2 0*3 1*26 0*2 -29*3 0*3 57*2 0 57*2 0*3 39*6 0*3 5*23 0*3 18*14
+22*6 0*7 2*30 0*2 34*21 0*3 7*30 0*2 7*6 0*28 11*2 0*2 11*8 0*2 23*14 0*2 1*26 0*5 39*2 0*8 39*7 0*2 5*23 0*3 18*15
+22*10 0*3 2*30 0*2 34*21 0*3 7*29 0*4 7*6 0*33 11*4 0*3 23*16 0*3 1*25 0*5 39*14 0 39 0*3 5*21 0*3 18*16
+22*11 0*3 2*29 0*4 34*17 0*5 7*26 0*3 21*4 0*3 7*2 0*2 -71 0*31 11*2 0*3 23*18 0*3 1*27 0*3 39*16 0*2 5*22 0*3 18*16
+22*12 0*3 2*29 0*4 34*16 0*4 7*25 0*3 21*8 0*7 -27*2 0*28 11 -1 0*3 23*19 0*3 1*27 0*2 39*14 0*5 5*21 0*4 18*15
+22*14 0*3 2*28 0*3 34*12 0*6 7*27 0*3 21*12 0*3 -27*2 0*28 1*2 0*4 23*19 0*3 1*25 0*5 39*2 0 39*9 0*3 5*24 0*3 18*15
+22*14 0*3 2*27 0*5 34*10 0*5 7*29 0*2 21*14 0*32 1*3 0*3 23*19 0*3 1*27 0*4 39*12 0*3 5*22 0*3 18*16
+22*13 0*4 2*29 0*3 34*10 0*3 7*29 0*3 21*15 0*2 -53 0*29 1*2 0*3 23*19 0*5 1*28 0*5 39*9 0*3 5*22 0*3 18*16
+22*13 0*2 2*32 0*2 34*10 0*2 7*30 0*3 21*15 0*31 1*3 0*3 23*19 0*3 1*25 0 1*6 0*3 39*8 0*5 5*20 0*4 18*16
+22*13 0*2 2*32 0*3 34*9 0*3 7*29 0*2 21*17 0*3 -24*2 0*24 1*4 0*4 23*18 0*2 1*34 0*2 39*8 0*3 5*24 0*5 18*13
+22*13 0*3 2*32 0*5 34*7 0*3 7*28 0*2 21*18 0*2 -24*2 0*26 1*4 0*4 23*14 0*4 1*33 0*3 39*9 0*3 5*25 0*4 -1*2 18*10
+22*14 0*3 2*33 0*3 34*8 0*2 7*27 0*3 21*18 0*2 -24*2 0*26 1*5 0*3 23*11 -1*2 0*4 1*35 0*2 39*10 0*2 5*27 0 5*2 -1 18*3 0*2 18*3 0*2
+22*14 0*3 2*34 0*2 34*8 0*2 7*26 0*3 21*18 0*3 -24*2 0*24 1*8 0*2 23*2 0*3 23*6 -1 1*2 0 1*36 0*5 39*8 0*3 5*30 0*10
+22*13 0*5 2*33 0*4 34*6 0*2 7*26 0*3 21*17 0*30 1*2 0*2 1*4 0*9 23 0*3 1*35 0 1*6 0*3 39*8 0*2 5*30 0*9 26*2
+22*10 -1 22 0*4 2*36 0*3 34*6 0*2 7*25 0*5 21*16 0*2 -52*2 0*32 1*3 0*13 1*40 0*3 39*7 0*5 5*29 0 26*10
+22*10 -1 2*2 0 2*39 0*2 34*7 0*3 7*23 -1 9 0*4 -1 21*15 0*3 31 0*33 1*8 0*3 1*2 0 1*38 0*3 39*9 0*3 5*32 -1 26*9
+0*6 22 0*3 2*42 0*3 34*7 0*3 7*23 -1 9*3 0 9 -1*2 21*14 0*3 31 0*33 1*52 0*2 39*5 0 39*3 0*3 5*33 -1 26*9
+0*11 2*41 0*2 34*7 0*4 7*22 -1 9*8 0*4 21*4 0*4 21*2 0*3 31*2 0*32 1*52 0*2 39*9 0*3 5*33 -1 26*9
+0*4 2 0*3 2*2 0 2*38 0*3 34*9 0*3 7*22 -1*2 9*7 0*17 31*3 0*32 1*52 0*2 39*5 0*6 5*34 -1 26*9
+2*49 0*3 34*9 0*2 7*23 -1 9*8 0 9*3 0*7 31 0*3 31*3 0*32 1*53 0*3 39*4 0*5 5*36 -1*2 26*8
+2*48 0*3 34*9 0*3 7*22 -1*2 9*17 -1 31*8 0*31 1*53 0*3 39*5 0*4 5*37 -1 26*9
+2*48 0*2 34*7 0*5 7*23 -1 9*18 -1 31*10 0*29 1*53 0*3 39*5 0*2 5*39 -1 26*9
+2*45 0*3 34*9 0*3 7*24 -1 9*18 -1 31*13 0*26 1*54 0*4 39*4 0*2 5*39 -1 26*9
+2*45 0*3 34*9 0*2 7*21 -1*2 9*21 -1 31*13 0*26 1*55 0*3 39*4 0*2 5*38 -1*2 26*9
+2*44 0*3 34*8 0*4 7*21 9*23 -1 31*11 0*28 1*54 0*3 39*3 0*5 5*37 0*2 26*9
+2*45 0*2 34*6 0*5 7*20 -1*2 9*22 -1 31*12 0*26 1*56 0*2 39*4 0*3 5*33 0*2 5*3 0*5 26*3 0 26*3
+2 0*2 2*2 0*2 2*38 0*2 34*6 0*3 7*22 -1 9*23 -1 31*14 0*24 1*12 0*2 1*2 0*2 1*38 0*2 39*5 0*3 5*32 0*5 58*4 0*6 26*2
+0*7 2*38 0*2 34*7 0*3 7*21 -1 9*24 -1 31*13 0*26 1*10 0*6 1*38 0*2 39*6 0*2 5*29 -1*2 0*6 58*10 0*2
+-12*2 0*5 2*38 0*4 34*5 0*3 7*20 -1*2 9*24 -1 31*13 0*26 1*9 0*8 1*33 -1*4 0*3 39*5 0*2 5*28 -1*2 15*3 0*5 58*11
+-12 0*5 2*40 0*3 34*4 0*5 7*19 -1 9*25 0*2 31*12 0*26 1*8 0*3 -22 0*2 1*35 -1*2 19*4 0*5 39*3 0*3 5*23 -1*3 15*8 0*12 58
+0*5 2*42 0*2 34*4 0*3 7*21 -1 9*25 0*3 31*9 0*30 1*4 0*3 -22*3 0*2 1*34 -1 19*8 0*3 39*3 0*3 5*23 -1 15*11 0*12
+0*5 2*42 0*2 34*4 0*2 7*20 0*2 9*25 0*7 31*4 0*32 1*4 0*3 -22 0*4 1*34 19*10 0*2 39*2 0*4 5*23 -1 15*17 0*6
+2*47 0*2 34*2 0*4 7*20 0*4 9*25 0*7 31*2 0*30 1*6 0*2 59*2 0*3 1*25 0 1*8 -1 19*9 0*8 5*22 -1*3 15*23
+2*47 0*2 34*2 0*3 7*20 0*5 9*26 0*2 -30*3 0*3 -31*2 0*28 1*4 0*3 59*3 0*2 1*26 0*4 1*5 -1 19*11 0*5 5*21 -1*2 15*25 0
+2*25 0*2 2*20 0*2 34*3 0*3 7*20 0*4 9*25 0*5 -30 0*3 -31*2 0*29 1*3 0*3 59*3 0*2 1*26 0*4 -1*5 19*11 0*3 64 0*3 5*17 0*2 -1*2 15*26 0
+2*25 0*4 2*18 0*8 7*20 0*3 9*28 0*3 56*2 0*2 -31 0*30 1*3 0*2 59*4 0*2 1*26 0*4 19*16 0*3 64*2 0*3 5*14 0*4 15*28 0
+2*25 0*6 2*17 0*8 7*17 0*6 9*28 0*2 56*3 0*3 -4*2 0*28 1*2 0*2 59*2 0*4 1*26 0*4 19*15 0*3 64*3 0*3 5*14 0*4 15*29
+2*25 0*2 -57 0*3 2*19 0*5 7*18 0*2 -55*2 0*2 9*27 0*3 56*3 0*3 -4*2 0*28 1*2 0*2 -14*2 0*3 1*25 0*3 -54 0*2 19*14 0*3 64*2 0*5 5*13 0*3 69 0*3 15*26 0
+2*25 0*6 2*20 0*5 7*17 0*2 -8*2 0*2 9*28 0*2 56*4 0*2 -4*2 0*27 1*3 0*2 -14*3 0*3 1*24 0*2 -54*2 0*2 19*14 0*3 64*2 0*4 5*13 0*3 69*3 0*2 15*26 0
+2*26 0*3 50 0*3 2*18 0*4 7*18 0*2 -8*3 0*3 9*25 0*5 56*2 0*2 -1 -4 0*27 1*3 0*4 -14 0*3 1*24 0*2 -37*2 0*2 19*13 0*8 5*15 0*3 69*3 0*3 15*24 0*2
+2*25 0*3 50*2 0*3 2*19 0*3 7*17 0*5 -8 54 0*2 9*27 0*3 48*2 0*2 -4 0*29 1*3 0*8 1*23 0*2 -37*2 0*2 19*15 0*4 5*17 0*4 69*2 0*2 15*26 0
+2*23 0*3 50*3 0*5 2*21 -1 7*18 0*4 54 0*3 9*25 0*3 48*4 0*3 -21*2 0*26 1*2 0*3 62 0*2 1*25 0*7 19*15 -1 5*21 0*3 69*2 0*3 15*25 0
+2*23 0*3 50*3 0*3 2*23 -1 7*19 0*3 54*2 0*3 9*24 0*2 48*5 0*3 -21*2 0*26 1*2 0*2 62*2 0*2 1*24 0*3 66 0*2 19*17 -1 5*22 0*2 69*3 0*3 15*24 0
+2*22 0*3 50*4 0*2 2*24 -1*2 7*18 0*4 54*3 0*3 9*22 0*2 48*4 0*36 62*2 0*3 1*23 0*3 66 0*2 19*17 -1 5*21 0*5 69*2 0*2 15*24 0
+2*21 0*3 50*5 0*3 2*23 -1 7*21 0*2 54*4 0*2 9*21 0*2 48*5 0*33 -36 0*2 62*3 0*3 1*21 0*3 66*2 0*3 19*15 -1 5*25 0*2 69*2 0*3 15*23 0
+0*5 2*14 0*3 50*7 0*2 2*24 -1 7*21 0*2 54*3 0*4 9*17 0*3 48*7 0*2 -35 0*30 -36 0*2 62*5 0*3 1*18 0*3 66*4 0*3 19*14 -1 5*25 0*2 69*3 0*3 15*18 0*5
+0*256
+areas 69
+1 top 728,390 mini_tiles 30636 group 1 box 139,69 201,126
+2 top 128,385 mini_tiles 37931 group 2 box 0,61 54,126
+3 top 317,99 mini_tiles 31314 group 2 box 51,0 112,60
+4 top 118,96 mini_tiles 28294 group 2 box 0,0 50,55
+5 top 911,399 mini_tiles 23318 group 1 box 200,67 246,126
+6 top 722,115 mini_tiles 14245 group 1 box 161,14 199,53
+7 top 309,401 mini_tiles 24208 group 2 box 54,60 110,126
+8 top 667,51 mini_tiles 10330 group 1 box 152,0 181,31
+9 top 363,455 mini_tiles 10291 group 2 box 77,96 107,126
+10 top 897,107 mini_tiles 11120 group 1 box 206,13 247,42
+11 top 583,276 mini_tiles 16806 group 1 box 123,40 167,85
+12 top 969,41 mini_tiles 5674 group 1 box 229,0 255,19
+13 top 906,172 mini_tiles 5297 group 1 box 217,36 245,54
+14 top 227,244 mini_tiles 7770 group 3 box 36,46 70,71
+15 top 955,474 mini_tiles 6111 group 1 box 227,109 255,126
+16 top 813,238 mini_tiles 5469 group 1 box 191,48 221,69
+17 top 28,204 mini_tiles 3646 group 2 box 0,43 14,60
+18 top 996,340 mini_tiles 3169 group 1 box 240,77 255,92
+19 top 770,462 mini_tiles 3453 group 1 box 183,110 201,126
+20 top 863,26 mini_tiles 3386 group 1 box 206,0 226,13
+21 top 404,366 mini_tiles 3065 group 2 box 92,84 110,98
+22 top 24,362 mini_tiles 2875 group 2 box 0,81 13,97
+23 top 626,351 mini_tiles 2989 group 1 box 146,81 165,94
+24 top 1000,155 mini_tiles 3197 group 1 box 236,30 255,46
+25 top 784,22 mini_tiles 3668 group 1 box 183,0 205,17
+26 top 1001,402 mini_tiles 1739 group 1 box 246,94 255,107
+27 top 1002,218 mini_tiles 2413 group 1 box 241,47 255,62
+28 top 997,281 mini_tiles 2053 group 1 box 243,63 255,76
+29 top 21,141 mini_tiles 2774 group 2 box 0,28 17,41
+30 top 419,152 mini_tiles 2711 group 2 box 92,32 113,45
+31 top 435,424 mini_tiles 2069 group 2 box 103,96 116,113
+32 top 612,159 mini_tiles 3063 group 1 box 146,30 165,45
+33 top 578,100 mini_tiles 2268 group 1 box 136,13 151,31
+34 top 216,341 mini_tiles 4550 group 4 box 43,77 68,115
+35 top 208,114 mini_tiles 2968 group 5 box 42,8 65,36
+36 top 817,137 mini_tiles 3529 group 6 box 192,10 212,41
+37 top 680,244 mini_tiles 2286 group 7 box 162,53 181,67
+38 top 155,287 mini_tiles 855 group 3 box 35,67 48,73
+39 top 827,346 mini_tiles 3111 group 8 box 196,77 216,112
+40 top 956,243 mini_tiles 1354 group 9 box 231,55 247,65
+41 top 291,288 mini_tiles 554 group 3 box 67,68 76,73
+42 top 1012,107 mini_tiles 667 group 1 box 249,24 255,31
+43 top 764,291 mini_tiles 409 group 1 box 188,69 196,75
+44 top 443,94 mini_tiles 1388 group 2 box 107,12 117,27
+45 top 882,283 mini_tiles 697 group 1 box 210,65 222,73
+46 top 87,237 mini_tiles 1262 group 10 box 14,54 29,66
+47 top 351,246 mini_tiles 1343 group 11 box 78,51 95,66
+48 top 445,493 mini_tiles 335 group 12 box 106,121 113,126
+49 top 732,27 mini_tiles 151 group 13 box 179,3 184,8
+50 top 108,503 mini_tiles 310 group 14 box 22,120 29,126
+51 top 428,7 mini_tiles 310 group 15 box 104,0 109,9
+52 top 591,4 mini_tiles 174 group 16 box 146,0 151,3
+53 top 287,4 mini_tiles 213 group 17 box 67,0 73,5
+54 top 324,502 mini_tiles 147 group 18 box 78,121 82,126
+55 top 996,84 mini_tiles 243 group 19 box 245,18 254,22
+56 top 444,476 mini_tiles 114 group 20 box 109,116 112,120
+57 top 795,319 mini_tiles 193 group 21 box 197,78 204,81
+58 top 1005,435 mini_tiles 336 group 22 box 244,107 255,110
+59 top 604,461 mini_tiles 110 group 23 box 149,113 152,117
+60 top 579,32 mini_tiles 101 group 24 box 144,6 146,10
+61 top 603,32 mini_tiles 88 group 25 box 149,6 151,11
+62 top 604,504 mini_tiles 115 group 26 box 149,122 153,126
+63 top 123,4 mini_tiles 130 group 27 box 27,0 32,4
+64 top 820,468 mini_tiles 107 group 28 box 202,115 205,119
+65 top 412,83 mini_tiles 196 group 29 box 102,15 106,22
+66 top 720,505 mini_tiles 76 group 30 box 178,123 181,126
+67 top 709,2 mini_tiles 83 group 31 box 174,0 180,2
+68 top 1009,2 mini_tiles 69 group 32 box 252,0 255,2
+69 top 907,493 mini_tiles 175 group 33 box 224,118 229,126
+choke_points 73
+0 areas 1 11 ends 673,280 666,299 658,319
+1 areas 1 11 ends 568,341 569,341 569,341
+2 areas 1 19 ends 743,462 764,450 784,438
+3 areas 1 23 ends 645,371 643,372 640,374
+4 areas 2 7 ends 221,507 223,497 222,488
+5 areas 2 17 ends 40,244 20,242 0,240
+6 areas 2 22 ends 45,383 42,385 40,386
+7 areas 3 4 ends 205,15 202,7 206,0
+8 areas 3 7 ends 416,244 419,242 423,240
+9 areas 3 30 ends 370,150 373,153 375,154
+10 areas 3 44 ends 424,99 428,105 433,111
+11 areas 4 17 ends 59,176 60,196 61,215
+12 areas 4 29 ends 56,162 59,160 61,159
+13 areas 5 15 ends 909,463 929,448 951,435
+14 areas 5 18 ends 978,367 981,369 983,371
+15 areas 5 19 ends 796,507 801,497 802,488
+16 areas 5 26 ends 986,384 987,401 985,419
+17 areas 5 28 ends 973,272 981,288 990,303
+18 areas 6 8 ends 716,68 696,98 676,128
+19 areas 6 11 ends 668,207 658,197 647,187
+20 areas 6 16 ends 778,204 772,209 766,215
+21 areas 6 25 ends 776,71 763,62 751,54
+22 areas 6 32 ends 655,141 659,140 662,140
+23 areas 7 9 ends 353,384 331,415 309,447
+24 areas 8 33 ends 609,96 611,104 606,111
+25 areas 9 21 ends 383,390 380,388 378,386
+26 areas 9 31 ends 414,439 412,421 419,404
+27 areas 10 12 ends 971,81 945,67 917,52
+28 areas 10 13 ends 927,143 898,158 870,172
+29 areas 10 20 ends 888,56 867,56 847,55
+30 areas 10 42 ends 994,111 993,106 997,100
+31 areas 13 24 ends 946,143 949,145 951,147
+32 areas 13 27 ends 965,215 975,201 986,188
+33 areas 14 38 ends 193,280 188,273 184,267
+34 areas 14 41 ends 270,279 272,275 274,272
+35 areas 16 43 ends 775,275 780,278 784,280
+36 areas 16 45 ends 843,260 840,263 839,267
+37 areas 20 25 ends 826,19 825,10 819,0
+38 areas 27 28 ends 1023,252 1019,252 1015,251
+39 areas 4 14 ends 148,186 148,186 148,186 pseudo blocked
+40 areas 3 14 ends 272,186 272,186 272,186 pseudo blocked
+41 areas 4 14 ends 144,190 144,190 144,190 pseudo blocked
+42 areas 3 14 ends 276,190 276,190 276,190 pseudo blocked
+43 areas 13 16 ends 876,190 876,190 876,190 pseudo blocked
+44 areas 4 14 ends 144,194 144,194 144,194 pseudo blocked
+45 areas 43 1 ends 768,298 768,298 768,298 pseudo blocked
+46 areas 38 2 ends 164,298 164,298 164,298 pseudo blocked
+47 areas 41 7 ends 284,298 284,298 284,298 pseudo blocked
+48 areas 43 1 ends 764,294 764,294 764,294 pseudo blocked
+49 areas 45 5 ends 876,294 876,294 876,294 pseudo blocked
+50 areas 38 2 ends 156,294 156,294 156,294 pseudo blocked
+51 areas 43 1 ends 772,302 772,302 772,302 pseudo blocked
+52 areas 41 7 ends 300,294 300,294 300,294 pseudo blocked
+53 areas 41 7 ends 288,294 288,294 288,294 pseudo blocked
+54 areas 43 1 ends 760,290 760,290 760,290 pseudo blocked
+55 areas 45 5 ends 880,290 880,290 880,290 pseudo blocked
+56 areas 38 2 ends 152,290 152,290 152,290 pseudo blocked
+57 areas 41 7 ends 296,290 296,290 296,290 pseudo blocked
+58 areas 41 7 ends 308,290 308,290 308,290 pseudo blocked
+59 areas 43 1 ends 756,286 756,286 756,286 pseudo blocked
+60 areas 45 5 ends 884,286 884,286 884,286 pseudo blocked
+61 areas 38 2 ends 148,286 148,286 148,286 pseudo blocked
+62 areas 43 1 ends 748,282 748,282 748,282 pseudo blocked
+63 areas 45 5 ends 888,282 888,282 888,282 pseudo blocked
+64 areas 38 2 ends 144,282 144,282 144,282 pseudo blocked
+65 areas 45 5 ends 896,278 896,278 896,278 pseudo blocked
+66 areas 16 13 ends 892,206 892,206 892,206 pseudo blocked
+67 areas 13 16 ends 888,202 888,202 888,202 pseudo blocked
+68 areas 13 16 ends 884,198 884,198 884,198 pseudo blocked
+69 areas 14 3 ends 284,198 284,198 284,198 pseudo blocked
+70 areas 14 4 ends 140,198 140,198 140,198 pseudo blocked
+71 areas 13 16 ends 880,194 880,194 880,194 pseudo blocked
+72 areas 3 14 ends 280,194 280,194 280,194 pseudo blocked
+choke_point_distances
+0: bfc574f74c75df29
+1: bfdb7ee2e9098514
+2: b307f441a23f5da4
+3: 33457ffe0a8c641f
+4: d2f937f5d97c2855
+5: 52bf0f8354dc7671
+6: 8300a3d297432200
+7: e292b95e517c6f1a
+8: 8ebd0c6e850687ed
+9: 85043a0776359211
+10: 12bba2142b0fe0ae
+11: b02bff446372603e
+12: 86596789d4491abb
+13: 89b7555371ef3bf8
+14: 0143e40cf44667a3
+15: a242a07d7c827873
+16: 93e03cb000cde033
+17: f40ae99ad116342d
+18: 6a08cb4a0669301e
+19: a39422db9dda53dd
+20: d4d2e55b3268a6f9
+21: 4e594e89e255947b
+22: fd7ba0dfa2b207f3
+23: 1d6c0d124bde64f2
+24: 4dd1011cee830e60
+25: ebd3ca544304ec33
+26: 2757b6912b8e33d6
+27: 2e44e03ec87ef118
+28: 212bd3b38ca9f81c
+29: 81ca08f8d40345c8
+30: 11973d89316e1b91
+31: 920f1a363e165a22
+32: 872c73e4dff6bcd2
+33: bfbcf082dcd72bdc
+34: b026ef860885c19b
+35: a0f1ea8f2322cc9c
+36: 30623f507140fe5e
+37: 6f0d93489ad6aaa8
+38: c3682d6fe526aa5d
+39: 8fb9942c6298334f
+40: f98965e18208a658
+41: fd3aff81c4db10ae
+42: d0a2a3f8e9530371
+43: 2c11df9bf0fc3671
+44: d0c86685709573a2
+45: 9deda152842f0323
+46: 4b1ebd1e084a8fb1
+47: 0949fda323226d96
+48: 08b86378264b2d67
+49: 4ff4539d7b832a86
+50: bb358c8a52764c1d
+51: 9c742bf3beb1047f
+52: bef1dcb0e86f6646
+53: 3e65eadf3e41d971
+54: 779f26f107e63e1a
+55: 2741a152b30d64a9
+56: 2d540f404d2b5f46
+57: 60e2e7e086ca0fd6
+58: a1fb2925b5921254
+59: 88a191e63ae16c2c
+60: ce86922aa0889a6d
+61: 8db994c3180562dd
+62: 29e1f62873590a85
+63: 20ded90b28a41253
+64: a6d709ac20133c5b
+65: 1f392f133df20dba
+66: fd23844c1b9a93e4
+67: b329ef00d34211dd
+68: 469025cdcee4fc8a
+69: 48cd8df5d4502aa0
+70: 414959d68719ab27
+71: 66ea6723f61334ac
+72: a9d115a301cdd507
+choke_point_paths
+0: 7fc463cb8ed545f5
+1: dfcad279d08d974c
+2: 668db4fc1e0fb9fa
+3: 626791af528aeba0
+4: d408eafe78fcefe1
+5: 6d967db8ff2faeee
+6: 20da1d8e805fda46
+7: a5f8f0b0c90f3dc4
+8: 32f60361d5110fc3
+9: 85a3e1eafa8f8c0f
+10: 9f9bd0701b633c68
+11: 7d0816d8c8420ce8
+12: 4a691de99794ee09
+13: 9bc6460e61dc61c0
+14: dd616ea7c9fde142
+15: c1d7a2d897217d16
+16: d73e287755b74562
+17: 57dce03d698d4cfd
+18: b80e73ec9e6d6ca6
+19: c6ce2e443700a397
+20: 66ea9bdd0bce7f73
+21: 619658c5e703fa6a
+22: f201df297e19a9d5
+23: 0de1a62f19c58030
+24: fce72ed63cd6b4db
+25: 08c92b02ea89dbca
+26: 1de9d0ba18125989
+27: 444e08d63aaf1cde
+28: ea14f463aa152d27
+29: c40bff595af0915a
+30: 0320f4f3b7e3f6be
+31: 474bea506fb8e385
+32: deb7c60571efa0d9
+33: 6028acf8b4fdb4d8
+34: 67af5d6cad2e9ff8
+35: a82ce02b9912be9d
+36: ceb66cdfab0874d8
+37: 0655970dee2e9626
+38: 685a31d5c280cacf
+39: a8fc01f31e15b247
+40: c0781f63ad052b6d
+41: 84b7652d04f67e69
+42: 72f9df8923baa48b
+43: 0e191f6ac36e894a
+44: 76f5b6afcb0a672c
+45: ebd4b3dbd6045589
+46: 3fdc23ccd4c3f389
+47: 6a748210c58b5648
+48: cc280a877e75b629
+49: 9168e84f529504e1
+50: 51b706593b137615
+51: ac121dc686ab0b49
+52: debe910bc199f093
+53: ccdcf82d13c396b2
+54: 293bb3c172884709
+55: 5088955436a14441
+56: cf5c764ef8fb58bf
+57: 8b0069b34f248e7e
+58: d25f7eec4692403d
+59: 56f0da607d60f509
+60: 052316da2b9025a1
+61: df9660c90a9168da
+62: e2e3ef25ce3333c9
+63: be11fc30cd30c741
+64: 86fb977fbb5a9ba3
+65: 88c013b6d3f97141
+66: a5920c738b85810a
+67: fb191619f815bd0a
+68: 1825bddd54906e2a
+69: 064ca337e500bc84
+70: 52183b1488be86c6
+71: 8f7bad1f0e89fd6a
+72: 16ece6e2d5eff529
+bases 24
+area 1 location 165,119 starting minerals 58 51 50 46 59 65 69 71 132 geysers 56
+area 1 location 181,76 minerals 133 153 154 geysers 146
+area 2 location 7,117 starting minerals 55 43 40 39 37 48 62 73 90 geysers 67
+area 2 location 29,74 minerals 8 134 162 163 geysers 11
+area 3 location 90,6 starting minerals 257 256 250 246 242 239 237 234 5 geysers 255
+area 3 location 75,42 minerals 220 215 208 201 195 geysers 224
+area 4 location 9,6 starting minerals 261 260 259 258 251 245 3 2 1 geysers 233
+area 4 location 28,43 minerals 194 172 173 174 177 geysers 222
+area 5 location 227,74 minerals 148 159 160 165 geysers 9
+area 6 location 177,43 minerals 203 198 196 192 185 184 170 179 180 geysers 169
+area 7 location 77,78 minerals 10 7 139 143 geysers 18
+area 8 location 162,5 starting minerals 262 252 247 240 238 235 6 0 193 geysers 248
+area 9 location 96,117 starting minerals 54 44 42 52 47 60 63 68 70 geysers 64
+area 12 location 241,7 starting minerals 263 254 253 249 243 241 236 232 4 geysers 244
+area 13 location 224,43 minerals 207 200 189 geysers 167
+area 15 location 241,119 starting minerals 57 53 45 41 38 49 61 66 72 geysers 131
+area 18 location 247,85 minerals 12 17 15 13 14 geysers 16
+area 21 location 98,91 minerals 33 32 31 29 28 geysers 35
+area 22 location 2,88 minerals 20 22 23 25 27 geysers 36
+area 23 location 155,86 minerals 30 21 19 24 26 geysers 34
+area 24 location 249,37 minerals 206 205 202 199 197 geysers 227
+area 29 location 8,34 minerals 231 230 229 228 226 geysers 225
+area 30 location 101,36 minerals 218 217 216 210 209 geysers 223
+area 32 location 151,35 minerals 221 219 213 212 204 geysers 211
+destroyed 191
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 67c674de27976612
+tile_areas 7312a2cd2bf42da9
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 190
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 8079fa7928333bd2
+tile_areas ed4c2e1e5ba7a76d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 188
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas df8ae952b86347b2
+tile_areas 7f4f3108f95ab469
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 187
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas f8d02e01d66bd252
+tile_areas f7f56f58910839ad
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 186
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas ca31b65f4220c832
+tile_areas 79b4bf2fd903fc69
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 183
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 11ff51a7ffc840d2
+tile_areas 4bde9cc8de50ccd5
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 136
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 84b93641caf5fb92
+tile_areas b7dcaaed128cdf91
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 137
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas d34b7733a3e86752
+tile_areas ddcc4d1ef0cd6415
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 138
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 98a64fa754d09012
+tile_areas 93daf2a94d6fe999
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 140
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 4339548fe743c752
+tile_areas fe25dafbb168d2bd
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 141
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 98318ab221972212
+tile_areas 1bfacac8ed355019
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 142
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 02f810ea1f5a43d2
+tile_areas 57e1c84fb761da25
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 135
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 4d8d5d94179804d2
+tile_areas c2742fe80345b2e9
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 144
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 3a704c3f481fb412
+tile_areas 485c2341ad559e45
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 145
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 846e33132b50f3d2
+tile_areas 2b3d9b4f06d5c779
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 147
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas f37c3eae4a5a8172
+tile_areas 54dae013bbb3457d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 149
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas a5007b7d405c9fd2
+tile_areas 16288aa7fb4edd01
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 150
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas a3ca7ff298587332
+tile_areas 0b0249f74d2a828d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 151
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas b4070491c9a5cd92
+tile_areas 7ee951d0ce14fb51
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 152
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 9ed2990719b199f2
+tile_areas 27675c2325a5de95
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 155
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas b2c7ba9609db8192
+tile_areas abe80f9f80da83d9
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 156
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas d9f352cdb71994f2
+tile_areas a4436121ea3ac995
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 157
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas a369519d86374212
+tile_areas 1de6cefe0ddd6271
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 158
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 8876dbe2edded9d2
+tile_areas a10f10f7c26aaac5
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 161
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas e1b8da411b8919d2
+tile_areas ca3714c87277fe01
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 164
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 3bd28454e626a612
+tile_areas f0229483541f83e5
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 166
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 18fa33ccefb93a12
+tile_areas 37c0e01928b10461
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 168
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 2fe06d6e6402f0f2
+tile_areas afa676e46cdcc965
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 171
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 377d5aad554d6eb2
+tile_areas 912aa093c4d6f581
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 175
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 3dcc49a3f20a4972
+tile_areas 7eb638343d1874ad
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 176
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 591cb291a0647f32
+tile_areas 7d60aa6ca5bc32a9
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 178
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas e086e2c0bd3bc1f2
+tile_areas 84362ab7e8b98f65
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 181
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas de83bb8d902b2872
+tile_areas f4fd91fac5a10a81
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 182
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 d5e1afb78e87a4eb
+destroyed 263
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 b3f126d005f1443c
+destroyed 262
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 8b044f6530c9ed6a
+destroyed 261
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 4039f17fd6def5bf
+destroyed 260
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 c4927ad7fd31796b
+destroyed 259
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 51227303b9216a95
+destroyed 258
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 4b7afdcc7ad9cd6a
+destroyed 257
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 c5d1b8eb5dd379da
+destroyed 256
+max_altitude 482
+bases_found 1
+mini_tile_altitudes 7011623eb61e2482
+mini_tile_areas 1dca2756a4940912
+tile_areas f43d6575aad4cd1d
+areas 69 66c8063ad4d5ed59
+choke_points 73 18920377cfe88646
+choke_point_distances b3b36fa7a55c0271
+choke_point_paths e39a36a14663a6ec
+bases 24 6dd960156a561b4b
