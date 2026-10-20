@@ -23,6 +23,7 @@
 extern crate alloc;
 
 pub mod adapter;
+pub mod bweb;
 pub mod bwem;
 pub mod grid;
 
