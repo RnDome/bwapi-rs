@@ -7,7 +7,7 @@
 
 use bwapi::{Context, Race, UnitType, UpgradeType, WeaponType};
 
-use crate::fap::{DamageType, Regen, Role, Splash, Unit, UnitSizeType};
+use crate::fap::{DamageType, Regeneration, Role, Splash, Unit, UnitSizeType};
 
 /// The upgrades and state of a unit beyond its type, as the setters of
 /// `FAP::Unit` take them.
@@ -54,7 +54,7 @@ pub fn fap_unit_of_type<T: Default>(
         flying: ty.is_flyer(),
         elevation: -1,
         role: role(ty),
-        regen: regen(ty),
+        regeneration: regeneration(ty),
         splash: (ty == UnitType::TERRAN_SIEGE_TANK_SIEGE_MODE).then(|| Splash {
             inner: gw.inner_splash_radius(),
             median: gw.median_splash_radius(),
@@ -153,7 +153,7 @@ fn role(ty: UnitType) -> Role {
     }
 }
 
-fn regen(ty: UnitType) -> Regen {
+fn regeneration(ty: UnitType) -> Regeneration {
     let race = ty.race();
     if race == Race::ZERG {
         let unborn = [
@@ -162,14 +162,14 @@ fn regen(ty: UnitType) -> Regen {
             UnitType::ZERG_LARVA,
         ];
         if unborn.contains(&ty) {
-            Regen::None
+            Regeneration::None
         } else {
-            Regen::ZergHp
+            Regeneration::ZergHealth
         }
     } else if race == Race::PROTOSS {
-        Regen::ProtossShields
+        Regeneration::ProtossShields
     } else {
-        Regen::None
+        Regeneration::None
     }
 }
 
@@ -201,23 +201,23 @@ fn unit_size(t: bwapi::UnitSizeType) -> UnitSizeType {
 }
 
 /// `setAttackerCount`.
-fn set_attacker_count<T>(u: &mut Unit<T>, ty: UnitType, num_attackers: i32) {
-    u.num_attackers = num_attackers;
-    if num_attackers != 0 {
+fn set_attacker_count<T>(u: &mut Unit<T>, ty: UnitType, attacker_count: i32) {
+    u.attacker_count = attacker_count;
+    if attacker_count != 0 {
         if ty == UnitType::PROTOSS_CARRIER {
             u.ground_damage = UnitType::PROTOSS_INTERCEPTOR
                 .ground_weapon()
                 .damage_amount();
             u.air_damage = u.ground_damage;
             // `round` of a positive number.
-            u.ground_cooldown = (37.4f32 / num_attackers as f32 + 0.5) as i32;
+            u.ground_cooldown = (37.4f32 / attacker_count as f32 + 0.5) as i32;
             u.air_cooldown = u.ground_cooldown;
         }
         if ty == UnitType::TERRAN_BUNKER {
             let gauss = UnitType::TERRAN_MARINE.ground_weapon();
             u.ground_damage = gauss.damage_amount();
             u.air_damage = u.ground_damage;
-            u.ground_cooldown = gauss.damage_cooldown() / num_attackers;
+            u.ground_cooldown = gauss.damage_cooldown() / attacker_count;
             u.air_cooldown = u.ground_cooldown;
         }
     } else if ty == UnitType::PROTOSS_CARRIER || ty == UnitType::TERRAN_BUNKER {

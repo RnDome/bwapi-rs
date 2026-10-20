@@ -4,34 +4,36 @@
 //! FAP, the Fast APproximation of a fight between two groups of units: an
 //! unofficial port of FAP by Hannes Bredberg.
 //!
-//! Each frame every unit of player 1 acts, then every unit of player 2, then
-//! cooldowns tick and units regenerate. A unit attacks the closest enemy it can
-//! hit, walking straight to it; units are points and ranges are measured between
-//! centers. The simulation stops after the given number of frames, when a side is
+//! Each frame every unit of the first side acts, then every unit of the second,
+//! then cooldowns tick and units regenerate. A unit attacks the closest enemy it
+//! can hit, walking straight to it; units are points and ranges are measured
+//! between centers. A run stops after the given number of frames, when a side is
 //! empty or when a frame changed nothing.
 //!
 //! Differences from the C++ code:
 //! - the `unitType` of a unit is replaced by what FAP decides by it: [`Role`],
-//!   [`Regen`] and [`Splash`];
+//!   [`Regeneration`] and [`Splash`];
 //! - [`Unit`] is a struct with the values of the `FAP::Unit` setters; there is
 //!   no typestate builder, and the unit types and upgrades are resolved by the
 //!   caller;
-//! - the simulator owns all its memory from [`FastAPproximation::with_capacity`]
-//!   on: adding more units than it holds is an error, and neither adding nor
-//!   simulating allocates;
+//! - the simulator owns all its memory from [`Simulator::with_capacity`] on:
+//!   adding more units than it holds is an error, and neither adding nor
+//!   running allocates;
 //! - a tank splash kill that moves the tank's target in the vector keeps
 //!   tracking the target; C++ keeps an iterator to the slot it left;
-//! - the API is renamed: `addIfCombatUnitPlayer1/2` is
-//!   [`add_if_combat_unit`](FastAPproximation::add_if_combat_unit) with a
-//!   [`Player`], `simulate<tankSplash>` takes [`Options`], `getState` is
-//!   [`state`](FastAPproximation::state) and
-//!   [`state_mut`](FastAPproximation::state_mut);
-//! - `simulate` tells how many frames it ran and why it stopped:
-//!   [`SimulationOutcome`].
+//! - the API is renamed: a fight is a [`Battle`] of the [`Simulator`],
+//!   `FAP::FastAPproximation`, which starts empty instead of after `clear`;
+//!   `addIfCombatUnitPlayer1/2` is [`Battle::add`] with a [`Side`],
+//!   `simulate<tankSplash>` is [`Battle::run`] of a battle with [`Options`],
+//!   `getState` is [`Battle::units`] and [`Battle::units_mut`];
+//! - `run` takes a count of frames that is not negative: C++ `simulate(-1)`
+//!   runs until the fight ends by itself, as `run(u32::MAX)` does for a fight
+//!   that ends sooner than that;
+//! - `run` tells how many frames it ran and why it stopped: [`Outcome`].
 
 mod unit;
 
-pub use unit::{DamageType, FAPUnit, Regen, Role, Splash, Unit, UnitSizeType};
+pub use unit::{DamageType, FapUnit, Regeneration, Role, Splash, Unit, UnitSizeType};
 
 use alloc::vec::Vec;
 use core::fmt;
@@ -39,26 +41,25 @@ use core::fmt;
 use crate::math::sqrt;
 
 /// Frames `simulate` runs in C++ by default: 4 seconds on the fastest speed.
-pub const DEFAULT_FRAMES: i32 = 96;
+pub const DEFAULT_FRAMES: u32 = 96;
 
-/// One of the two sides. Player one acts first in every frame.
+/// One of the two sides. The first acts first in every frame.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum Player {
-    One,
-    Two,
+pub enum Side {
+    First,
+    Second,
 }
 
-/// How [`FastAPproximation::simulate`] runs.
+/// How a [`Battle`] runs.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Options {
     /// Units with a [`Splash`] (siege tanks) splash: `simulate<true>` in C++.
     pub tank_splash: bool,
 }
 
-/// Why [`FastAPproximation::simulate`] stopped, and after how many frames it
-/// ran.
+/// Why [`Battle::run`] stopped, and after how many frames it ran.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum SimulationOutcome {
+pub enum Outcome {
     /// It ran the frames it was given, whatever the last one left.
     LimitReached { frames: u32 },
     /// A side had no units before the next frame; no frame at all if one had
@@ -68,157 +69,179 @@ pub enum SimulationOutcome {
     Idle { frames: u32 },
 }
 
-impl SimulationOutcome {
+impl Outcome {
     /// The frames it ran.
     pub fn frames(self) -> u32 {
         match self {
-            SimulationOutcome::LimitReached { frames }
-            | SimulationOutcome::SideEliminated { frames }
-            | SimulationOutcome::Idle { frames } => frames,
+            Outcome::LimitReached { frames }
+            | Outcome::SideEliminated { frames }
+            | Outcome::Idle { frames } => frames,
         }
     }
 }
 
-/// A player has no room for one more unit.
+/// A side has no room for one more unit.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct CapacityExceeded;
 
 impl fmt::Display for CapacityExceeded {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str("the simulator holds no more units for this player")
+        f.write_str("the simulator holds no more units for this side")
     }
 }
 
 impl core::error::Error for CapacityExceeded {}
 
-/// The simulator: `FAP::FastAPproximation`.
+/// The simulator, `FAP::FastAPproximation`: the memory of the battles it runs,
+/// one at a time.
 #[derive(Clone, Debug)]
-pub struct FastAPproximation<T = ()> {
-    player1: Vec<FAPUnit<T>>,
-    player2: Vec<FAPUnit<T>>,
-    /// Slots each player may need: a unit and the marines its bunker turns into.
+pub struct Simulator<T = ()> {
+    first: Vec<FapUnit<T>>,
+    second: Vec<FapUnit<T>>,
+    /// Slots each side may need: a unit and the marines its bunker turns into.
     reserved: [usize; 2],
-    did_something: bool,
 }
 
-impl<T: Clone> FastAPproximation<T> {
-    /// A simulator for up to `units_per_player` units of each player, counting
+impl<T: Clone> Simulator<T> {
+    /// A simulator for up to `units_per_side` units of each side, counting
     /// every marine a bunker turns into.
-    pub fn with_capacity(units_per_player: usize) -> Self {
-        FastAPproximation {
-            player1: Vec::with_capacity(units_per_player),
-            player2: Vec::with_capacity(units_per_player),
+    pub fn with_capacity(units_per_side: usize) -> Self {
+        Simulator {
+            first: Vec::with_capacity(units_per_side),
+            second: Vec::with_capacity(units_per_side),
             reserved: [0; 2],
-            did_something: false,
         }
     }
 
-    /// Adds the unit to `player` if it is a combat unit: it has a weapon or is a
-    /// medic, and its role is not [`Role::Ignored`].
-    pub fn add_if_combat_unit(
-        &mut self,
-        player: Player,
-        unit: Unit<T>,
-    ) -> Result<(), CapacityExceeded> {
-        let unit = FAPUnit::from(unit);
+    /// A new battle, with no units: those of the last battle are gone, the
+    /// memory stays.
+    pub fn battle(&mut self, options: Options) -> Battle<'_, T> {
+        self.first.clear();
+        self.second.clear();
+        self.reserved = [0; 2];
+        Battle {
+            simulator: self,
+            options,
+        }
+    }
+}
+
+/// A fight between two sides, run frame by frame.
+#[derive(Debug)]
+pub struct Battle<'s, T = ()> {
+    simulator: &'s mut Simulator<T>,
+    options: Options,
+}
+
+impl<T: Clone> Battle<'_, T> {
+    /// Adds the unit to `side` if it is a combat unit: it has a weapon or is a
+    /// medic, and its role is not [`Role::Ignored`]; otherwise does nothing.
+    pub fn add(&mut self, side: Side, unit: Unit<T>) -> Result<(), CapacityExceeded> {
+        let unit = FapUnit::from(unit);
         if !is_combat_unit(&unit) {
             return Ok(());
         }
-        let (units, player) = match player {
-            Player::One => (&mut self.player1, 0),
-            Player::Two => (&mut self.player2, 1),
+        let simulator = &mut *self.simulator;
+        let (units, side) = match side {
+            Side::First => (&mut simulator.first, 0),
+            Side::Second => (&mut simulator.second, 1),
         };
         let slots = match unit.role {
-            Role::Bunker { .. } if unit.num_attackers > 0 => unit.num_attackers as usize,
+            Role::Bunker { .. } if unit.attacker_count > 0 => unit.attacker_count as usize,
             _ => 1,
         };
-        let reserved = self.reserved[player] + slots;
+        let reserved = simulator.reserved[side] + slots;
         if reserved > units.capacity() {
             return Err(CapacityExceeded);
         }
-        self.reserved[player] = reserved;
+        simulator.reserved[side] = reserved;
         units.push(unit);
         Ok(())
     }
 
-    /// Simulates at most `n_frames` frames ([`DEFAULT_FRAMES`] in C++); a negative
-    /// number runs until the fight is over. Can be called again to continue.
-    /// C++ returns nothing.
-    pub fn simulate(&mut self, n_frames: i32, options: Options) -> SimulationOutcome {
-        if options.tank_splash {
-            self.run::<true>(n_frames)
+    /// Runs at most `frames` frames ([`DEFAULT_FRAMES`] in C++). Can be called
+    /// again to go on. C++ returns nothing.
+    pub fn run(&mut self, frames: u32) -> Outcome {
+        if self.options.tank_splash {
+            self.run_frames::<true>(frames)
         } else {
-            self.run::<false>(n_frames)
+            self.run_frames::<false>(frames)
         }
     }
 
-    /// The units of player one and player two.
-    pub fn state(&self) -> (&[FAPUnit<T>], &[FAPUnit<T>]) {
-        (&self.player1, &self.player2)
+    /// The units of `side`.
+    pub fn units(&self, side: Side) -> &[FapUnit<T>] {
+        match side {
+            Side::First => &self.simulator.first,
+            Side::Second => &self.simulator.second,
+        }
     }
 
-    /// The units of player one and player two, to edit between simulations.
-    pub fn state_mut(&mut self) -> (&mut [FAPUnit<T>], &mut [FAPUnit<T>]) {
-        (&mut self.player1, &mut self.player2)
+    /// The units of `side`, to edit between runs.
+    pub fn units_mut(&mut self, side: Side) -> &mut [FapUnit<T>] {
+        match side {
+            Side::First => &mut self.simulator.first,
+            Side::Second => &mut self.simulator.second,
+        }
     }
 
-    /// Removes all units; the memory stays.
-    pub fn clear(&mut self) {
-        self.player1.clear();
-        self.player2.clear();
-        self.reserved = [0; 2];
-    }
-
-    fn run<const TANK_SPLASH: bool>(&mut self, mut n_frames: i32) -> SimulationOutcome {
+    fn run_frames<const TANK_SPLASH: bool>(&mut self, mut remaining: u32) -> Outcome {
         let mut frames: u32 = 0;
-        while n_frames != 0 {
-            n_frames = n_frames.wrapping_sub(1);
-            if self.player1.is_empty() || self.player2.is_empty() {
-                return SimulationOutcome::SideEliminated { frames };
+        while remaining != 0 {
+            remaining -= 1;
+            if self.simulator.first.is_empty() || self.simulator.second.is_empty() {
+                return Outcome::SideEliminated { frames };
             }
-            self.did_something = false;
-            self.isimulate::<TANK_SPLASH>();
+            let did_something = self.simulate_frame::<TANK_SPLASH>();
             frames = frames.wrapping_add(1);
-            if !self.did_something && n_frames != 0 {
-                return SimulationOutcome::Idle { frames };
+            if !did_something && remaining != 0 {
+                return Outcome::Idle { frames };
             }
         }
-        SimulationOutcome::LimitReached { frames }
+        Outcome::LimitReached { frames }
     }
 
-    fn isimulate<const TANK_SPLASH: bool>(&mut self) {
-        let did = &mut self.did_something;
-        sim_player::<T, TANK_SPLASH>(&mut self.player1, &mut self.player2, did);
-        sim_player::<T, TANK_SPLASH>(&mut self.player2, &mut self.player1, did);
+    /// `isimulate`: one frame. Whether a unit did something.
+    fn simulate_frame<const TANK_SPLASH: bool>(&mut self) -> bool {
+        let simulator = &mut *self.simulator;
+        let mut did_something = false;
+        let did = &mut did_something;
+        simulate_side::<T, TANK_SPLASH>(&mut simulator.first, &mut simulator.second, did);
+        simulate_side::<T, TANK_SPLASH>(&mut simulator.second, &mut simulator.first, did);
 
-        for fu in self.player1.iter_mut().chain(self.player2.iter_mut()) {
-            update_unit(fu);
+        for unit in simulator
+            .first
+            .iter_mut()
+            .chain(simulator.second.iter_mut())
+        {
+            update_unit(unit);
         }
+        did_something
     }
 }
 
-/// `simUnit` of `isimulate` for every unit of one player.
-fn sim_player<T: Clone, const TANK_SPLASH: bool>(
-    friendly: &mut Vec<FAPUnit<T>>,
-    enemy: &mut Vec<FAPUnit<T>>,
+/// `simUnit` of `isimulate` for every unit of one side.
+fn simulate_side<T: Clone, const TANK_SPLASH: bool>(
+    friendly: &mut Vec<FapUnit<T>>,
+    enemy: &mut Vec<FapUnit<T>>,
     did_something: &mut bool,
 ) {
     let mut i = 0;
     while i < friendly.len() {
         match friendly[i].role {
             Role::Suicide => {
-                if suicide_sim(&mut friendly[i], enemy, did_something) {
+                if simulate_suicide(&mut friendly[i], enemy, did_something) {
                     friendly.remove(i);
                 } else {
                     i += 1;
                 }
             }
             Role::Medic => {
-                medicsim(i, friendly);
+                simulate_medic(i, friendly);
                 i += 1;
             }
             _ => {
-                unitsim::<T, TANK_SPLASH>(&mut friendly[i], enemy, did_something);
+                simulate_fighter::<T, TANK_SPLASH>(&mut friendly[i], enemy, did_something);
                 i += 1;
             }
         }
@@ -226,88 +249,88 @@ fn sim_player<T: Clone, const TANK_SPLASH: bool>(
 }
 
 /// `updateUnit` of `isimulate`: cooldown, healing flag, regeneration.
-fn update_unit<T>(fu: &mut FAPUnit<T>) {
-    if fu.attack_cooldown_remaining != 0 {
-        fu.attack_cooldown_remaining -= 1;
+fn update_unit<T>(unit: &mut FapUnit<T>) {
+    if unit.attack_cooldown_remaining != 0 {
+        unit.attack_cooldown_remaining -= 1;
     }
-    fu.did_heal_this_frame = false;
+    unit.did_heal_this_frame = false;
 
-    match fu.regen {
-        Regen::ZergHp => {
-            if fu.health < fu.max_health {
-                fu.health += 4;
+    match unit.regeneration {
+        Regeneration::ZergHealth => {
+            if unit.health < unit.max_health {
+                unit.health += 4;
             }
-            if fu.health > fu.max_health {
-                fu.health = fu.max_health;
-            }
-        }
-        Regen::ProtossShields => {
-            if fu.shields < fu.max_shields {
-                fu.shields += 7;
-            }
-            if fu.shields > fu.max_shields {
-                fu.shields = fu.max_shields;
+            if unit.health > unit.max_health {
+                unit.health = unit.max_health;
             }
         }
-        Regen::None => {}
+        Regeneration::ProtossShields => {
+            if unit.shields < unit.max_shields {
+                unit.shields += 7;
+            }
+            if unit.shields > unit.max_shields {
+                unit.shields = unit.max_shields;
+            }
+        }
+        Regeneration::None => {}
     }
 }
 
-fn is_combat_unit<T>(u: &FAPUnit<T>) -> bool {
+fn is_combat_unit<T>(u: &FapUnit<T>) -> bool {
     u.role != Role::Ignored && (u.air_damage != 0 || u.ground_damage != 0 || u.role == Role::Medic)
 }
 
-fn deal_damage<T>(fu: &mut FAPUnit<T>, damage: i32, damage_type: DamageType) {
+fn deal_damage<T>(unit: &mut FapUnit<T>, damage: i32, damage_type: DamageType) {
     let mut damage = damage << 8;
-    let remaining_shields = fu.shields - damage + (fu.shield_armor << 8);
+    let remaining_shields = unit.shields - damage + (unit.shield_armor << 8);
     if remaining_shields > 0 {
-        fu.shields = remaining_shields;
+        unit.shields = remaining_shields;
         return;
-    } else if fu.shields != 0 {
-        damage -= fu.shields + (fu.shield_armor << 8);
-        fu.shields = 0;
+    } else if unit.shields != 0 {
+        damage -= unit.shields + (unit.shield_armor << 8);
+        unit.shields = 0;
     }
 
     if damage == 0 {
         return;
     }
 
-    damage -= fu.armor << 8;
+    damage -= unit.armor << 8;
 
     if damage_type == DamageType::Concussive {
-        if fu.unit_size == UnitSizeType::Large {
+        if unit.unit_size == UnitSizeType::Large {
             damage /= 4;
-        } else if fu.unit_size == UnitSizeType::Medium {
+        } else if unit.unit_size == UnitSizeType::Medium {
             damage /= 2;
         }
     } else if damage_type == DamageType::Explosive {
-        if fu.unit_size == UnitSizeType::Small {
+        if unit.unit_size == UnitSizeType::Small {
             damage /= 2;
-        } else if fu.unit_size == UnitSizeType::Medium {
+        } else if unit.unit_size == UnitSizeType::Medium {
             damage = (damage * 3) / 4;
         }
     }
 
-    fu.health -= damage.max(128);
+    unit.health -= damage.max(128);
 }
 
-fn dist_squared<T>(u1: &FAPUnit<T>, u2: &FAPUnit<T>) -> i32 {
+fn distance_squared<T>(u1: &FapUnit<T>, u2: &FapUnit<T>) -> i32 {
     let (dx, dy) = (u1.x.wrapping_sub(u2.x), u1.y.wrapping_sub(u2.y));
     dx.wrapping_mul(dx).wrapping_add(dy.wrapping_mul(dy))
 }
 
-/// The enemy closest to `fu` that `fu` has a weapon for, not inside its minimum
+/// The enemy closest to `unit` that `unit` has a weapon for, not inside its minimum
 /// range; the first one on ties.
-fn closest_enemy<T>(fu: &FAPUnit<T>, enemy_units: &[FAPUnit<T>]) -> Option<(usize, i32)> {
+fn closest_enemy<T>(unit: &FapUnit<T>, enemy_units: &[FapUnit<T>]) -> Option<(usize, i32)> {
     let mut closest: Option<(usize, i32)> = None;
     for (i, enemy) in enemy_units.iter().enumerate() {
         let (damage, min_range_squared) = if enemy.flying {
-            (fu.air_damage, fu.air_min_range_squared)
+            (unit.air_damage, unit.air_min_range_squared)
         } else {
-            (fu.ground_damage, fu.ground_min_range_squared)
+            (unit.ground_damage, unit.ground_min_range_squared)
         };
         if damage != 0 {
-            let d = dist_squared(fu, enemy);
+            let d = distance_squared(unit, enemy);
             if closest.is_none_or(|(_, cd)| d < cd) && d >= min_range_squared {
                 closest = Some((i, d));
             }
@@ -317,74 +340,79 @@ fn closest_enemy<T>(fu: &FAPUnit<T>, enemy_units: &[FAPUnit<T>]) -> Option<(usiz
 }
 
 /// One step of `speed` pixels straight toward `(tx, ty)`.
-fn step_toward<T>(fu: &mut FAPUnit<T>, tx: i32, ty: i32) {
-    let dx = tx - fu.x;
-    let dy = ty - fu.y;
+fn step_toward<T>(unit: &mut FapUnit<T>, tx: i32, ty: i32) {
+    let dx = tx - unit.x;
+    let dy = ty - unit.y;
     let length = sqrt(f64::from(dx * dx + dy * dy));
-    fu.x += (f64::from(dx) * (f64::from(fu.speed) / length)) as i32;
-    fu.y += (f64::from(dy) * (f64::from(fu.speed) / length)) as i32;
+    unit.x += (f64::from(dx) * (f64::from(unit.speed) / length)) as i32;
+    unit.y += (f64::from(dy) * (f64::from(unit.speed) / length)) as i32;
 }
 
 /// Removes the dead unit at `index` by swapping in the last one.
-fn remove_dead<T: Clone>(index: usize, units: &mut Vec<FAPUnit<T>>) {
+fn remove_dead<T: Clone>(index: usize, units: &mut Vec<FapUnit<T>>) {
     let dead = units.swap_remove(index);
     unit_death(dead, units);
 }
 
-fn unitsim<T: Clone, const TANK_SPLASH: bool>(
-    fu: &mut FAPUnit<T>,
-    enemy_units: &mut Vec<FAPUnit<T>>,
+/// `unitsim`.
+fn simulate_fighter<T: Clone, const TANK_SPLASH: bool>(
+    unit: &mut FapUnit<T>,
+    enemy_units: &mut Vec<FapUnit<T>>,
     did_something: &mut bool,
 ) {
-    if fu.attack_cooldown_remaining != 0 {
+    if unit.attack_cooldown_remaining != 0 {
         *did_something = true;
         return;
     }
 
-    if fu.ground_damage == 0 && fu.air_damage == 0 {
+    if unit.ground_damage == 0 && unit.air_damage == 0 {
         return;
     }
 
-    let Some((mut closest, mut closest_dist_squared)) = closest_enemy(fu, enemy_units) else {
+    let Some((mut closest, mut closest_distance_squared)) = closest_enemy(unit, enemy_units) else {
         return;
     };
 
-    if closest_dist_squared as f32 <= fu.speed_squared
-        && !(fu.x == enemy_units[closest].x && fu.y == enemy_units[closest].y)
+    if closest_distance_squared as f32 <= unit.speed_squared
+        && !(unit.x == enemy_units[closest].x && unit.y == enemy_units[closest].y)
     {
-        fu.x = enemy_units[closest].x;
-        fu.y = enemy_units[closest].y;
-        closest_dist_squared = 0;
+        unit.x = enemy_units[closest].x;
+        unit.y = enemy_units[closest].y;
+        closest_distance_squared = 0;
 
         *did_something = true;
     }
 
     let target_flying = enemy_units[closest].flying;
     let max_range_squared = if target_flying {
-        fu.air_max_range_squared
+        unit.air_max_range_squared
     } else {
-        fu.ground_max_range_squared
+        unit.ground_max_range_squared
     };
 
-    if closest_dist_squared <= max_range_squared {
+    if closest_distance_squared <= max_range_squared {
         if target_flying {
-            deal_damage(&mut enemy_units[closest], fu.air_damage, fu.air_damage_type);
-            fu.attack_cooldown_remaining = fu.air_cooldown;
+            deal_damage(
+                &mut enemy_units[closest],
+                unit.air_damage,
+                unit.air_damage_type,
+            );
+            unit.attack_cooldown_remaining = unit.air_cooldown;
         } else {
             deal_damage(
                 &mut enemy_units[closest],
-                fu.ground_damage,
-                fu.ground_damage_type,
+                unit.ground_damage,
+                unit.ground_damage_type,
             );
 
-            if TANK_SPLASH && let Some(splash) = fu.splash {
-                closest = tank_splash(fu, splash, closest, enemy_units);
+            if TANK_SPLASH && let Some(splash) = unit.splash {
+                closest = tank_splash(unit, splash, closest, enemy_units);
             }
 
             let target = &enemy_units[closest];
             let higher =
-                fu.elevation != -1 && target.elevation != -1 && target.elevation > fu.elevation;
-            fu.attack_cooldown_remaining = fu.ground_cooldown << i32::from(higher);
+                unit.elevation != -1 && target.elevation != -1 && target.elevation > unit.elevation;
+            unit.attack_cooldown_remaining = unit.ground_cooldown << i32::from(higher);
         }
 
         if enemy_units[closest].health < 1 {
@@ -392,9 +420,9 @@ fn unitsim<T: Clone, const TANK_SPLASH: bool>(
         }
 
         *did_something = true;
-    } else if closest_dist_squared as f32 > fu.speed_squared && fu.speed >= 1.0 {
+    } else if closest_distance_squared as f32 > unit.speed_squared && unit.speed >= 1.0 {
         let (tx, ty) = (enemy_units[closest].x, enemy_units[closest].y);
-        step_toward(fu, tx, ty);
+        step_toward(unit, tx, ty);
 
         *did_something = true;
     }
@@ -403,59 +431,64 @@ fn unitsim<T: Clone, const TANK_SPLASH: bool>(
 /// Splash of a siege tank around its target at `closest`, which keeps its
 /// health: it is checked by the caller. Returns where the target is now.
 fn tank_splash<T: Clone>(
-    fu: &FAPUnit<T>,
+    unit: &FapUnit<T>,
     splash: Splash,
     mut closest: usize,
-    enemy_units: &mut Vec<FAPUnit<T>>,
+    enemy_units: &mut Vec<FapUnit<T>>,
 ) -> usize {
     let inner_squared = splash.inner * splash.inner;
     let median_squared = splash.median * splash.median;
     let outer_squared = splash.outer * splash.outer;
 
-    let mut enemy_idx = 0;
-    while enemy_idx < enemy_units.len() {
-        if enemy_units[enemy_idx].flying || enemy_idx == closest {
-            enemy_idx += 1;
+    let mut enemy_index = 0;
+    while enemy_index < enemy_units.len() {
+        if enemy_units[enemy_index].flying || enemy_index == closest {
+            enemy_index += 1;
             continue;
         }
         // Shell hit point to unit edge.
-        let effective_dist_squared =
-            dist_squared(&enemy_units[closest], &enemy_units[enemy_idx]) / 4;
-        let damage = if effective_dist_squared <= inner_squared {
-            Some(fu.ground_damage)
-        } else if effective_dist_squared <= median_squared {
-            Some(fu.ground_damage / 2)
-        } else if effective_dist_squared <= outer_squared {
-            Some(fu.ground_damage / 4)
+        let effective_distance_squared =
+            distance_squared(&enemy_units[closest], &enemy_units[enemy_index]) / 4;
+        let damage = if effective_distance_squared <= inner_squared {
+            Some(unit.ground_damage)
+        } else if effective_distance_squared <= median_squared {
+            Some(unit.ground_damage / 2)
+        } else if effective_distance_squared <= outer_squared {
+            Some(unit.ground_damage / 4)
         } else {
             None
         };
 
         let mut killed = false;
         if let Some(damage) = damage {
-            deal_damage(&mut enemy_units[enemy_idx], damage, fu.ground_damage_type);
-            if enemy_units[enemy_idx].health < 1 {
+            deal_damage(
+                &mut enemy_units[enemy_index],
+                damage,
+                unit.ground_damage_type,
+            );
+            if enemy_units[enemy_index].health < 1 {
                 killed = true;
                 if closest == enemy_units.len() - 1 {
-                    closest = enemy_idx;
+                    closest = enemy_index;
                 }
-                remove_dead(enemy_idx, enemy_units);
+                remove_dead(enemy_index, enemy_units);
             }
         }
         if !killed {
-            enemy_idx += 1;
+            enemy_index += 1;
         }
     }
     closest
 }
 
-fn medicsim<T>(medic: usize, friendly_units: &mut [FAPUnit<T>]) {
-    let fu = &friendly_units[medic];
+/// `medicsim`.
+fn simulate_medic<T>(medic: usize, friendly_units: &mut [FapUnit<T>]) {
+    let unit = &friendly_units[medic];
     let mut closest_healable: Option<(usize, i32)> = None;
 
     for (i, it) in friendly_units.iter().enumerate() {
         if it.is_organic && it.health < it.max_health && !it.did_heal_this_frame {
-            let d = dist_squared(fu, it);
+            let d = distance_squared(unit, it);
             if closest_healable.is_none_or(|(_, cd)| d < cd) {
                 closest_healable = Some((i, d));
             }
@@ -476,22 +509,22 @@ fn medicsim<T>(medic: usize, friendly_units: &mut [FAPUnit<T>]) {
     }
 }
 
-/// Returns whether the unit hit and died.
-fn suicide_sim<T: Clone>(
-    fu: &mut FAPUnit<T>,
-    enemy_units: &mut Vec<FAPUnit<T>>,
+/// `suicideSim`: whether the unit hit and died.
+fn simulate_suicide<T: Clone>(
+    unit: &mut FapUnit<T>,
+    enemy_units: &mut Vec<FapUnit<T>>,
     did_something: &mut bool,
 ) -> bool {
-    let Some((closest, closest_dist_squared)) = closest_enemy(fu, enemy_units) else {
+    let Some((closest, closest_distance_squared)) = closest_enemy(unit, enemy_units) else {
         return false;
     };
 
-    if closest_dist_squared as f32 <= fu.speed_squared {
+    if closest_distance_squared as f32 <= unit.speed_squared {
         let target = &mut enemy_units[closest];
         if target.flying {
-            deal_damage(target, fu.air_damage, fu.air_damage_type);
+            deal_damage(target, unit.air_damage, unit.air_damage_type);
         } else {
-            deal_damage(target, fu.ground_damage, fu.ground_damage_type);
+            deal_damage(target, unit.ground_damage, unit.ground_damage_type);
         }
 
         if target.health < 1 {
@@ -502,7 +535,7 @@ fn suicide_sim<T: Clone>(
         true
     } else {
         let (tx, ty) = (enemy_units[closest].x, enemy_units[closest].y);
-        step_toward(fu, tx, ty);
+        step_toward(unit, tx, ty);
 
         *did_something = true;
         false
@@ -510,38 +543,38 @@ fn suicide_sim<T: Clone>(
 }
 
 /// A dead bunker with marines turns into its marines.
-fn unit_death<T: Clone>(mut fu: FAPUnit<T>, its_friendlies: &mut Vec<FAPUnit<T>>) {
-    let Role::Bunker { marine_max_health } = fu.role else {
+fn unit_death<T: Clone>(mut unit: FapUnit<T>, friendlies: &mut Vec<FapUnit<T>>) {
+    let Role::Bunker { marine_max_health } = unit.role else {
         return;
     };
-    if fu.num_attackers == 0 {
+    if unit.attacker_count == 0 {
         return;
     }
-    fu.role = Role::Fighter;
+    unit.role = Role::Fighter;
 
     const fn squared_range(tiles: i32) -> i32 {
         (tiles * 32) * (tiles * 32)
     }
-    match fu.ground_max_range_squared {
+    match unit.ground_max_range_squared {
         // No range upgrade.
-        r if r == squared_range(5) => fu.ground_max_range_squared = squared_range(4),
+        r if r == squared_range(5) => unit.ground_max_range_squared = squared_range(4),
         // Range upgrade.
-        r if r == squared_range(6) => fu.ground_max_range_squared = squared_range(5),
+        r if r == squared_range(6) => unit.ground_max_range_squared = squared_range(5),
         _ => {}
     }
 
-    fu.air_max_range_squared = fu.ground_max_range_squared;
+    unit.air_max_range_squared = unit.ground_max_range_squared;
 
-    fu.armor = 0;
+    unit.armor = 0;
 
-    fu.max_health = marine_max_health << 8;
-    fu.health = fu.max_health;
+    unit.max_health = marine_max_health << 8;
+    unit.health = unit.max_health;
 
-    fu.ground_cooldown *= fu.num_attackers;
-    fu.air_cooldown *= fu.num_attackers;
+    unit.ground_cooldown *= unit.attacker_count;
+    unit.air_cooldown *= unit.attacker_count;
 
-    for _ in 0..fu.num_attackers - 1 {
-        its_friendlies.push(fu.clone());
+    for _ in 0..unit.attacker_count - 1 {
+        friendlies.push(unit.clone());
     }
-    its_friendlies.push(fu);
+    friendlies.push(unit);
 }
