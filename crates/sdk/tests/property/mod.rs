@@ -25,6 +25,8 @@
 pub mod bweb;
 pub mod bwem;
 pub mod edt;
+pub mod fap;
+pub mod mechanics;
 pub mod nav;
 pub mod production;
 
