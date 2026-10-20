@@ -17,7 +17,7 @@ pub enum Role {
     /// Dies dealing its damage on contact (`suicideSim`): Scourge, Spider Mine,
     /// Infested Terran, Scarab.
     Suicide,
-    /// Fights as a fighter and turns into `num_attackers` marines when it dies.
+    /// Fights as a fighter and turns into `attacker_count` marines when it dies.
     Bunker {
         /// `Terran_Marine.maxHitPoints()`, in hit points.
         marine_max_health: i32,
@@ -28,11 +28,11 @@ pub enum Role {
 
 /// Regeneration per frame after both players moved.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
-pub enum Regen {
+pub enum Regeneration {
     #[default]
     None,
     /// 4/256 hit points: Zerg, except eggs and larvae.
-    ZergHp,
+    ZergHealth,
     /// 7/256 shields: Protoss.
     ProtossShields,
 }
@@ -83,11 +83,11 @@ pub struct Unit<T = ()> {
     pub air_damage_type: DamageType,
 
     pub role: Role,
-    pub regen: Regen,
+    pub regeneration: Regeneration,
     pub splash: Option<Splash>,
     pub unit_size: UnitSizeType,
     /// Interceptors of a carrier or marines in a bunker.
-    pub num_attackers: i32,
+    pub attacker_count: i32,
     pub attack_cooldown_remaining: i32,
 
     pub data: T,
@@ -96,7 +96,7 @@ pub struct Unit<T = ()> {
 /// The state of a unit in the simulation: `FAP::FAPUnit`. Hit points and shields
 /// are in 1/256, ranges are squared.
 #[derive(Clone, Debug, PartialEq)]
-pub struct FAPUnit<T = ()> {
+pub struct FapUnit<T = ()> {
     pub x: i32,
     pub y: i32,
 
@@ -126,23 +126,23 @@ pub struct FAPUnit<T = ()> {
     pub air_damage_type: DamageType,
 
     pub role: Role,
-    pub regen: Regen,
+    pub regeneration: Regeneration,
     pub splash: Option<Splash>,
     pub unit_size: UnitSizeType,
     pub is_organic: bool,
     pub did_heal_this_frame: bool,
 
-    pub num_attackers: i32,
+    pub attacker_count: i32,
     pub attack_cooldown_remaining: i32,
 
     pub data: T,
 }
 
-impl<T> From<Unit<T>> for FAPUnit<T> {
+impl<T> From<Unit<T>> for FapUnit<T> {
     /// What the setters of `FAP::Unit` store: hit points and shields shifted by 8,
     /// the speed and the ranges squared.
     fn from(u: Unit<T>) -> Self {
-        FAPUnit {
+        FapUnit {
             x: u.x,
             y: u.y,
             health: u.health << 8,
@@ -166,12 +166,12 @@ impl<T> From<Unit<T>> for FAPUnit<T> {
             air_min_range_squared: u.air_min_range * u.air_min_range,
             air_damage_type: u.air_damage_type,
             role: u.role,
-            regen: u.regen,
+            regeneration: u.regeneration,
             splash: u.splash,
             unit_size: u.unit_size,
             is_organic: u.is_organic,
             did_heal_this_frame: false,
-            num_attackers: u.num_attackers,
+            attacker_count: u.attacker_count,
             attack_cooldown_remaining: u.attack_cooldown_remaining,
             data: u.data,
         }
@@ -225,13 +225,13 @@ impl<T: Default> Unit<T> {
             flying: ty.is_flyer(),
             elevation: -1,
             role: role(ty),
-            regen: regen(ty),
+            regeneration: regeneration(ty),
             splash: (ty == UnitType::TERRAN_SIEGE_TANK_SIEGE_MODE).then(|| Splash {
                 inner: gw.inner_splash_radius(),
                 median: gw.median_splash_radius(),
                 outer: gw.outer_splash_radius(),
             }),
-            num_attackers: 0,
+            attacker_count: 0,
             attack_cooldown_remaining: 0,
             data: T::default(),
         };
@@ -282,7 +282,7 @@ fn role(ty: UnitType) -> Role {
     }
 }
 
-fn regen(ty: UnitType) -> Regen {
+fn regeneration(ty: UnitType) -> Regeneration {
     let race = ty.race();
     if race == Race::ZERG {
         let unborn = [
@@ -291,35 +291,35 @@ fn regen(ty: UnitType) -> Regen {
             UnitType::ZERG_LARVA,
         ];
         if unborn.contains(&ty) {
-            Regen::None
+            Regeneration::None
         } else {
-            Regen::ZergHp
+            Regeneration::ZergHealth
         }
     } else if race == Race::PROTOSS {
-        Regen::ProtossShields
+        Regeneration::ProtossShields
     } else {
-        Regen::None
+        Regeneration::None
     }
 }
 
 /// `setAttackerCount`.
-fn set_attacker_count<T>(u: &mut Unit<T>, ty: UnitType, num_attackers: i32) {
-    u.num_attackers = num_attackers;
-    if num_attackers != 0 {
+fn set_attacker_count<T>(u: &mut Unit<T>, ty: UnitType, attacker_count: i32) {
+    u.attacker_count = attacker_count;
+    if attacker_count != 0 {
         if ty == UnitType::PROTOSS_CARRIER {
             u.ground_damage = UnitType::PROTOSS_INTERCEPTOR
                 .ground_weapon()
                 .damage_amount();
             u.air_damage = u.ground_damage;
             // `round` of a positive number.
-            u.ground_cooldown = (37.4f32 / num_attackers as f32 + 0.5) as i32;
+            u.ground_cooldown = (37.4f32 / attacker_count as f32 + 0.5) as i32;
             u.air_cooldown = u.ground_cooldown;
         }
         if ty == UnitType::TERRAN_BUNKER {
             let gauss = UnitType::TERRAN_MARINE.ground_weapon();
             u.ground_damage = gauss.damage_amount();
             u.air_damage = u.ground_damage;
-            u.ground_cooldown = gauss.damage_cooldown() / num_attackers;
+            u.ground_cooldown = gauss.damage_cooldown() / attacker_count;
             u.air_cooldown = u.ground_cooldown;
         }
     } else if ty == UnitType::PROTOSS_CARRIER || ty == UnitType::TERRAN_BUNKER {
