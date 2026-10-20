@@ -1,16 +1,26 @@
-//! BWEM on the fixtures of real maps. Each map is analysed once as Terran, and
-//! what the analysis gives is checked three ways:
+//! BWEM and BWEB on the fixtures of real maps. Each map is analysed once as each
+//! race, and what the analysis and BWEB give is checked three ways:
 //!
-//! - against the answers next to each fixture: `bwem.txt` for the analysis,
+//! - against the answers next to each fixture: `bwem.txt` for BWEM as Terran,
 //!   then after each blocking neutral and a few minerals are destroyed one by
-//!   one;
+//!   one; `bweb.txt` for what BWEB gives regardless of the race, as Terran, and
+//!   `bweb.<race>.txt` for the layout of each race;
 //! - for the properties of `tests/property`, with the known violations;
 //! - against the numbers of the tests of BWEM-community, on their maps.
 //!
-//! The analysis in full, but for the mini tiles: their altitudes and areas are
-//! hashes, and so are the distances and paths between choke points, a line per
-//! choke point. After a destruction every part is a hash, with the length of
-//! each list.
+//! BWEM: the analysis in full, but for the mini tiles: their altitudes and
+//! areas are hashes, and so are the distances and paths between choke points,
+//! a line per choke point. After a destruction every part is a hash, with the
+//! length of each list.
+//!
+//! BWEB: stations, blocks and walls in full; grids of tiles as the count of
+//! their set tiles and a hash; ground distances, choke point paths, closest
+//! choke tiles and searches as hashes, a line per row. Placement is
+//! `Layout::can_place`, which for a resource depot leaves out the units and
+//! creep `canBuildHere` checks; the type of a used tile under neutrals of
+//! several types is that of the last in the order of the fixture; with no path
+//! between points the ground distance is none, where BWEB gives the straight
+//! one for a point in no area. There the port and C++ differ.
 
 mod answer;
 mod extract;
@@ -22,13 +32,32 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::path::PathBuf;
 
-use bwapi::{Position, Race, TilePosition, WalkPosition};
+use bwapi::{Position, Race, TilePosition, UnitType, WalkPosition};
+use bwapi_sdk::bweb::{self, Blocks, Stations, WallSpec, Walls};
 use bwapi_sdk::bwem::{Map, MapInput, Node};
 use bwapi_sdk::grid::Grid;
-use fixture::Fixture;
+use extract::{PATH_TYPES, UNIT_MODE, WALK_TYPES};
+use fixture::{Fixture, Start};
+use property::bweb::Navigation;
 use property::bwem::{Terrain, When};
 use property::edt;
 use property::{Case, Side, Violation};
+
+const RACES: [(Race, &str); 3] = [
+    (Race::TERRAN, "terran"),
+    (Race::ZERG, "zerg"),
+    (Race::PROTOSS, "protoss"),
+];
+
+/// Sizes 2×2 to 4×3, on creep, and two resource depots.
+const PLACE_TYPES: [UnitType; 6] = [
+    UnitType::PROTOSS_PYLON,
+    UnitType::TERRAN_SUPPLY_DEPOT,
+    UnitType::PROTOSS_GATEWAY,
+    UnitType::ZERG_SPAWNING_POOL,
+    UnitType::TERRAN_COMMAND_CENTER,
+    UnitType::ZERG_HATCHERY,
+];
 
 /// The maps of the tests of BWEM-community: size in tiles and the greatest
 /// altitude BWEM-community 9a63141 computes on OpenBW. The altitudes of its own
@@ -62,6 +91,7 @@ type Cases = Vec<(Case, Vec<Violation>)>;
 /// What a map gives: the answers computed, by file; the cases of the
 /// properties; whether it is a map of BWEM-community, and how it differs from
 /// its numbers.
+#[derive(Default)]
 struct Checked {
     answers: Vec<(PathBuf, String)>,
     cases: Cases,
@@ -71,16 +101,23 @@ struct Checked {
 #[test]
 fn real_maps_give_their_answers_and_have_their_properties() {
     let fixtures = answer::fixtures();
-    let results = answer::parallel(&fixtures, |path| {
+    let read = answer::parallel(&fixtures, |path| {
         let text = std::fs::read_to_string(path).map_err(|e| format!("{}: {e}", path.display()))?;
-        let fixture = Fixture::parse(&text).map_err(|e| format!("{}: {e}", path.display()))?;
-        check(&fixture, path)
+        Fixture::parse(&text).map_err(|e| format!("{}: {e}", path.display()))
+    });
+    let jobs: Vec<(usize, usize)> = (0..fixtures.len())
+        .flat_map(|m| (0..RACES.len()).map(move |r| (m, r)))
+        .collect();
+    let results = answer::parallel(&jobs, |&(m, r)| {
+        let fixture = read[m].as_ref().map_err(Clone::clone)?;
+        check(fixture, &fixtures[m], r)
     });
 
     let mut problems: BTreeMap<String, Vec<String>> = BTreeMap::new();
     let mut cases = Vec::new();
     let mut community = BTreeSet::new();
-    for (path, result) in fixtures.iter().zip(results) {
+    for (&(m, _), result) in jobs.iter().zip(results) {
+        let path = &fixtures[m];
         let mut errors = Vec::new();
         match result {
             Ok(checked) => {
@@ -128,27 +165,46 @@ fn real_maps_give_their_answers_and_have_their_properties() {
     answer::assert_none(problems);
 }
 
-/// The map of `fixture`, at `path`, as Terran: the analysis of BWEM, the map
-/// after the destructions and the numbers of BWEM-community.
-fn check(fixture: &Fixture, path: &std::path::Path) -> Result<Checked, String> {
+/// The map of `fixture`, at `path`, as the race of `RACES[r]`: the analysis of
+/// BWEM and what BWEB makes of it; as Terran, also BWEM after the destructions
+/// and the numbers of BWEM-community.
+fn check(fixture: &Fixture, path: &std::path::Path, r: usize) -> Result<Checked, String> {
     let name = fixture
         .map
         .rsplit_once('.')
         .map_or(&*fixture.map, |(n, _)| n);
+    let (race, race_name) = RACES[r];
     let start = fixture
-        .start(Race::TERRAN)
-        .ok_or_else(|| "no start as terran".to_owned())?;
+        .start(race)
+        .ok_or_else(|| format!("no start as {race_name}"))?;
     let input = fixture.map_input(start);
     let mut map = Map::initialize(&input).map_err(|e| format!("refused: {e}"))?;
     let found = map.find_bases_for_starting_locations();
 
-    let community = community(&fixture.map, &map, found);
-    let (text, cases) = bwem(fixture, &input, &mut map, found, name)?;
-    Ok(Checked {
-        answers: vec![(path.with_file_name("bwem.txt"), text)],
-        cases,
-        community,
-    })
+    // What does not depend on the race is answered and searched as Terran
+    // only.
+    let shared = race == Race::TERRAN;
+    let (common, own, case) = bweb(fixture, start, &input, &map, found, name, race_name, shared);
+    let mut checked = Checked::default();
+    if let Some(common) = common {
+        checked
+            .answers
+            .push((path.with_file_name("bweb.txt"), common));
+    }
+    checked
+        .answers
+        .push((path.with_file_name(format!("bweb.{race_name}.txt")), own));
+    checked.cases.push(case);
+
+    if shared {
+        checked.community = community(&fixture.map, &map, found);
+        let (text, cases) = bwem(fixture, &input, &mut map, found, name)?;
+        checked
+            .answers
+            .push((path.with_file_name("bwem.txt"), text));
+        checked.cases.extend(cases);
+    }
+    Ok(checked)
 }
 
 /// The answer of BWEM and the cases of its properties: after the analysis,
@@ -327,6 +383,309 @@ fn bwem_state(out: &mut String, map: &Map, found: bool, full: bool) {
         )
     });
     list(out, "bases", bases.collect());
+}
+
+/// `name`, the count of the tiles where `set` holds and the hash of them all.
+fn grid_line(out: &mut String, name: &str, size: TilePosition, set: impl Fn(TilePosition) -> i64) {
+    let values: Vec<i64> = (0..size.y)
+        .flat_map(|y| (0..size.x).map(move |x| TilePosition::new(x, y)))
+        .map(set)
+        .collect();
+    let count = values.iter().filter(|&&v| v != 0).count();
+    writeln!(out, "{name} {count} {}", answer::hash(values)).unwrap();
+}
+
+fn tile(t: TilePosition) -> String {
+    format!("{},{}", t.x, t.y)
+}
+
+fn tiles<'a>(ts: impl IntoIterator<Item = &'a TilePosition>) -> String {
+    ts.into_iter()
+        .map(|&t| tile(t))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// BWEB on `bwem` as the race of `start`: the answer of what does not depend
+/// on the race, if `shared`; the answer of the layout of the race; the case of
+/// its properties.
+#[allow(clippy::too_many_arguments)]
+fn bweb(
+    fixture: &Fixture,
+    start: &Start,
+    input: &MapInput,
+    bwem: &Map,
+    found: bool,
+    name: &str,
+    race_name: &str,
+    shared: bool,
+) -> (Option<String>, String, (Case, Vec<Violation>)) {
+    let race = start.race;
+    let mut layout = bweb::Layout::new(bwem, input);
+    let after_start = layout.clone();
+    let stations = Stations::analyze(bwem, &mut layout, start.start_location, race);
+    let after_stations = layout.clone();
+    let mut walls = Walls::new(bwem);
+    let enemy = start.enemy.unwrap_or(Race::NONE);
+    let _ = WallSpec::natural(race, enemy, bwem, &stations)
+        .and_then(|spec| walls.build(bwem, &mut layout, &stations, start, &spec));
+    let after_wall = layout.clone();
+    let blocks = Blocks::find(bwem, &mut layout, &stations, race, start);
+    let snapshots = [&after_start, &after_stations, &after_wall, &layout];
+    let navigation = extract::navigation(bwem, &layout, shared);
+    let size = bwem.size();
+
+    let common = shared.then(|| {
+        let mut out = String::new();
+        writeln!(out, "answers bweb 1").unwrap();
+        writeln!(out, "map {}", fixture.map).unwrap();
+        bweb_common(&mut out, size, &navigation);
+        out
+    });
+
+    let mut own = String::new();
+    writeln!(own, "answers bweb 1").unwrap();
+    writeln!(own, "map {}", fixture.map).unwrap();
+    writeln!(own, "race {}", race.id()).unwrap();
+    bweb_own(&mut own, bwem, &snapshots, &stations, &blocks, &walls);
+
+    let path_tiles = extract::path_tiles(bwem);
+    let first_mode = if shared { 0 } else { UNIT_MODE };
+    let (common, own) = bweb_searches(common, own, &navigation, &path_tiles, first_mode);
+
+    let mut plan = extract::plan(
+        bwem,
+        &stations,
+        &walls,
+        &blocks,
+        snapshots.iter().map(|s| extract::snapshot(s)).collect(),
+        race.id(),
+        start.start_location,
+    );
+    plan.navigation = navigation;
+    let analysis = extract::analysis(bwem, found);
+    let terrain = Terrain::new(input, &[]);
+    let start = property::bweb::Start {
+        creep: start.creep.cells().to_vec(),
+        depot: start.depot.cells().to_vec(),
+    };
+    let cx = property::bweb::Context {
+        map: name,
+        analysis: &analysis,
+        terrain: &terrain,
+        start: &start,
+    };
+    let case = Case {
+        side: Side::Port,
+        map: name.to_owned(),
+        race: race_name.to_owned(),
+        state: "analysis".to_owned(),
+    };
+    let mut violations = property::bweb::check(&plan, &cx);
+    violations.extend(property::nav::check(&plan, &cx));
+    violations.extend(property::production::check(&plan, &cx));
+    (common, own, (case, violations))
+}
+
+/// What does not depend on the race: walkability, and from every point the
+/// ground distances, the choke point paths and the closest choke tiles.
+fn bweb_common(out: &mut String, size: TilePosition, navigation: &Navigation) {
+    let width = size.x;
+    for (ty, walkable) in WALK_TYPES.iter().zip(&navigation.walkable) {
+        let name = format!("walkable {}", ty.id());
+        grid_line(out, &name, size, |t| {
+            i64::from(walkable[(t.y * width + t.x) as usize])
+        });
+    }
+
+    let points = &navigation.points;
+    let n = points.len();
+    writeln!(out, "from {n} points: ground distance, choke point path").unwrap();
+    for (i, &(x, y)) in points.iter().enumerate() {
+        let distances = navigation.ground_distances[i * n..(i + 1) * n]
+            .iter()
+            .map(|d| d.map_or(-1, |d| d.to_bits() as i64));
+        // An unreachable point has an empty path.
+        let paths = navigation.choke_paths[i * n..(i + 1) * n]
+            .iter()
+            .flat_map(|path| {
+                std::iter::once(path.len() as i64).chain(path.iter().map(|&cp| i64::from(cp)))
+            });
+        writeln!(
+            out,
+            "{x},{y}: {} {}",
+            answer::hash(distances),
+            answer::hash(paths)
+        )
+        .unwrap();
+    }
+    writeln!(out, "closest choke tiles").unwrap();
+    for (cp, found) in &navigation.closest_choke_tiles {
+        let found = found.iter().flat_map(|t| {
+            let (x, y) = t.unwrap_or((32000, 32000));
+            [i64::from(x), i64::from(y)]
+        });
+        writeln!(out, "{cp}: {}", answer::hash(found)).unwrap();
+    }
+}
+
+/// The layout of the race: used and reserved tiles after the blocks and at
+/// each stage before, placement, stations, blocks and walls.
+fn bweb_own(
+    out: &mut String,
+    bwem: &Map,
+    snapshots: &[&bweb::Layout; 4],
+    stations: &Stations,
+    blocks: &Blocks,
+    walls: &Walls,
+) {
+    let size = bwem.size();
+    let layout = snapshots[3];
+    grid_line(out, "used", size, |t| {
+        i64::from(layout.used_by(t, 1, 1).map_or(-1, UnitType::id) + 1)
+    });
+    grid_line(out, "reserved", size, |t| {
+        i64::from(layout.is_reserved(t, 1, 1))
+    });
+    // The layout after `onStart`, the stations and the wall; the lines above
+    // are after the blocks.
+    for (stage, snapshot) in snapshots[..3].iter().enumerate() {
+        grid_line(out, &format!("used at stage {stage}"), size, |t| {
+            i64::from(snapshot.used_by(t, 1, 1).map_or(-1, UnitType::id) + 1)
+        });
+        grid_line(out, &format!("reserved at stage {stage}"), size, |t| {
+            i64::from(snapshot.is_reserved(t, 1, 1))
+        });
+    }
+    for ty in PLACE_TYPES {
+        let name = format!("placeable {}", ty.id());
+        grid_line(out, &name, size, |t| {
+            i64::from(layout.can_place(bwem, ty, t))
+        });
+    }
+
+    let location = |s: Option<&bweb::Station>| {
+        s.map_or("-".to_owned(), |s| tile(bwem.base(s.base()).location()))
+    };
+    writeln!(out, "starting_main {}", location(stations.own_main())).unwrap();
+    writeln!(out, "starting_natural {}", location(stations.own_natural())).unwrap();
+    let slot = |t: Option<TilePosition>| t.map_or("-".to_owned(), tile);
+    writeln!(out, "stations {}", stations.iter().len()).unwrap();
+    for s in stations {
+        let base = bwem.base(s.base());
+        let centroid = s.resource_centroid();
+        writeln!(
+            out,
+            "{}{}{} choke {} centroid {},{} small {} medium {} angle {:.9} defenses {} \
+             angle_bits {:016x}",
+            tile(base.location()),
+            if s.is_main() { " main" } else { "" },
+            if s.is_natural() { " natural" } else { "" },
+            s.choke_point()
+                .map_or("-".to_owned(), |cp| cp.index().to_string()),
+            centroid.x,
+            centroid.y,
+            slot(s.small_slot()),
+            slot(s.medium_slot()),
+            s.defense_angle(),
+            tiles(s.defenses()),
+            s.defense_angle().to_bits()
+        )
+        .unwrap();
+    }
+
+    writeln!(out, "blocks {}", blocks.iter().count()).unwrap();
+    for b in blocks {
+        writeln!(
+            out,
+            "{} size {} {} center {},{}{}{} small {} | medium {} | large {} | wide {}",
+            tile(b.tile()),
+            b.width(),
+            b.height(),
+            b.center().x,
+            b.center().y,
+            if b.is_proxy() { " proxy" } else { "" },
+            if b.is_defensive() { " defensive" } else { "" },
+            tiles(b.small_tiles()),
+            tiles(b.medium_tiles()),
+            tiles(b.large_tiles()),
+            tiles(b.wide_tiles())
+        )
+        .unwrap();
+    }
+
+    let all: Vec<_> = walls.iter().collect();
+    writeln!(out, "walls {}", all.len()).unwrap();
+    for w in all {
+        let defenses: Vec<String> = (0..=3)
+            .filter(|&row| !w.defenses(row).is_empty())
+            .map(|row| format!("{row}: {}", tiles(w.defenses(row))))
+            .collect();
+        writeln!(
+            out,
+            "angle {:.9} small {} | medium {} | large {} | openings {} | defenses {} | \
+             choke {} area {} angle_bits {:016x}",
+            w.defense_angle(),
+            tiles(w.small_tiles()),
+            tiles(w.medium_tiles()),
+            tiles(w.large_tiles()),
+            tiles(w.openings()),
+            defenses.join(" / "),
+            w.choke_point().index(),
+            w.area().get(),
+            w.defense_angle().to_bits()
+        )
+        .unwrap();
+    }
+}
+
+/// The searches of `navigation`, run between `path_tiles` in the modes from
+/// `first_mode` on, a line per unit type, mode and source: those over the
+/// terrain to `common`, those over the buildings to `own`.
+fn bweb_searches(
+    common: Option<String>,
+    mut own: String,
+    navigation: &Navigation,
+    path_tiles: &[TilePosition],
+    first_mode: i32,
+) -> (Option<String>, String) {
+    let mut runs = navigation.searches.iter();
+    let mut searches: BTreeMap<(i32, i32, usize), Vec<i64>> = BTreeMap::new();
+    for ty in PATH_TYPES {
+        for i in 0..path_tiles.len() {
+            for _ in path_tiles {
+                for mode in first_mode..=UNIT_MODE {
+                    let path = runs.next().expect("a search of each kind");
+                    let row = searches.entry((ty.id(), mode, i)).or_default();
+                    row.push(i64::from(path.reachable));
+                    row.push(path.distance.to_bits() as i64);
+                    row.push(path.tiles.len() as i64);
+                    row.extend(
+                        path.tiles
+                            .iter()
+                            .flat_map(|&(x, y)| [i64::from(x), i64::from(y)]),
+                    );
+                }
+            }
+        }
+    }
+    let mut common = common.unwrap_or_default();
+    writeln!(common, "searches").unwrap();
+    writeln!(own, "searches").unwrap();
+    for ((ty, mode, i), values) in searches {
+        let out = if mode == UNIT_MODE {
+            &mut own
+        } else {
+            &mut common
+        };
+        let line = format!(
+            "{ty} mode {mode} from {}: {}",
+            tile(path_tiles[i]),
+            answer::hash(values)
+        );
+        writeln!(out, "{line}").unwrap();
+    }
+    ((first_mode == 0).then_some(common), own)
 }
 
 /// How the map `map` differs from the numbers of BWEM-community, if it is one

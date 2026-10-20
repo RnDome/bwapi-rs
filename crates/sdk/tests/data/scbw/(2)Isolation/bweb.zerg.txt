@@ -1,0 +1,74 @@
+answers bweb 1
+map scbw/(2)Isolation.scx
+race 0
+used 164 937b526c572128e5
+reserved 797 7fa0503b44b8cb04
+used at stage 0 164 937b526c572128e5
+reserved at stage 0 164 d06f0b1bde11d4e5
+used at stage 1 164 937b526c572128e5
+reserved at stage 1 494 931dbf39f4a21265
+used at stage 2 164 937b526c572128e5
+reserved at stage 2 494 931dbf39f4a21265
+placeable 156 10465 c9816e5220fec004
+placeable 109 9748 01151c53ba851205
+placeable 160 8157 25485df3a589eb24
+placeable 142 8826 1888040f6d6f5505
+placeable 106 7516 3308a47ba85118c5
+placeable 131 7516 3308a47ba85118c5
+starting_main 42,60
+starting_natural 7,41
+stations 8
+82,60 main choke 5 centroid 2500,1974 small - medium - angle 3.141592654 defenses 78,56 80,58 80,61 83,58 84,56 angle_bits 400921fb54442d18
+42,60 main choke 0 centroid 1592,2002 small - medium - angle 0.000000000 defenses 41,67 43,63 46,60 46,63 47,67 angle_bits 0000000000000000
+117,41 natural choke 15 centroid 3990,1376 small - medium - angle 4.712388980 defenses 118,39 121,39 121,42 angle_bits 4012d97c7f3321d2
+7,41 natural choke 3 centroid 105,1321 small - medium - angle 7.853981634 defenses 5,39 5,42 8,39 angle_bits 401f6a7a2955385e
+117,119 choke 7 centroid 3990,3890 small - medium - angle 3.926990817 defenses 118,122 121,119 121,122 angle_bits 400f6a7a2955385e
+7,6 choke 2 centroid 109,219 small - medium - angle 7.068583471 defenses 5,2 5,4 5,7 8,4 11,2 angle_bits 401c463abeccb2bb
+117,6 choke 14 centroid 3986,219 small - medium - angle 2.356194490 defenses 115,2 118,4 121,2 121,4 121,7 angle_bits 4002d97c7f3321d2
+7,119 choke 11 centroid 105,3890 small - medium - angle 2.356194490 defenses 5,119 5,122 8,122 angle_bits 4002d97c7f3321d2
+blocks 27
+42,57 size 4 2 center 1346,1824 small  | medium  | large  | wide 42,57
+38,60 size 3 2 center 1217,1920 small  | medium 38,60 | large  | wide 
+39,57 size 3 2 center 1249,1824 small  | medium 39,57 | large  | wide 
+40,64 size 3 2 center 1281,2048 small  | medium 40,64 | large  | wide 
+38,62 size 3 2 center 1217,1984 small  | medium 38,62 | large  | wide 
+42,55 size 3 2 center 1345,1760 small  | medium 42,55 | large  | wide 
+37,58 size 2 2 center 1185,1857 small 37,58 | medium  | large  | wide 
+103,62 size 4 3 center 3298,1984 small  | medium  | large 103,62 | wide 
+103,58 size 4 3 center 3298,1856 small  | medium  | large 103,58 | wide 
+103,66 size 4 3 center 3298,2112 small  | medium  | large 103,66 | wide 
+98,62 size 4 3 center 3138,1984 small  | medium  | large 98,62 | wide 
+108,63 size 4 3 center 3458,2016 small  | medium  | large 108,63 | wide 
+111,73 size 4 3 center 3554,2336 small  | medium  | large 111,73 | wide 
+111,77 size 4 3 center 3554,2464 small  | medium  | large 111,77 | wide 
+116,73 size 4 3 center 3714,2336 small  | medium  | large 116,73 | wide 
+121,66 size 4 3 center 3874,2112 small  | medium  | large 121,66 | wide 
+107,81 size 4 3 center 3426,2592 small  | medium  | large 107,81 | wide 
+22,61 size 4 3 center 706,1952 small  | medium  | large 22,61 | wide 
+22,65 size 4 3 center 706,2080 small  | medium  | large 22,65 | wide 
+22,57 size 4 3 center 706,1824 small  | medium  | large 22,57 | wide 
+17,61 size 4 3 center 546,1952 small  | medium  | large 17,61 | wide 
+27,61 size 4 3 center 866,1952 small  | medium  | large 27,61 | wide 
+13,71 size 4 3 center 418,2272 small  | medium  | large 13,71 | wide 
+13,75 size 4 3 center 418,2400 small  | medium  | large 13,75 | wide 
+8,71 size 4 3 center 258,2272 small  | medium  | large 8,71 | wide 
+3,66 size 4 3 center 98,2112 small  | medium  | large 3,66 | wide 
+8,75 size 4 3 center 258,2400 small  | medium  | large 8,75 | wide 
+walls 0
+searches
+37 mode 3 from 7,41: f54b65e7bb3c793c
+37 mode 3 from 82,60: 50e5da74eb1497c9
+37 mode 3 from 42,60: c79e33345b3456e7
+37 mode 3 from 117,41: fb424967b1891b40
+37 mode 3 from 117,119: c54f66b5d608227a
+37 mode 3 from 7,6: 25893e278d2606e6
+37 mode 3 from 117,6: 59179d6c4eb8abe5
+37 mode 3 from 7,119: 6532d8627655f1e3
+66 mode 3 from 7,41: 11426c15137c7dd9
+66 mode 3 from 82,60: 92ab8b757e3ade15
+66 mode 3 from 42,60: ba090bd0f66a10b1
+66 mode 3 from 117,41: 7fdf3ac38651765d
+66 mode 3 from 117,119: 626835e205995ebd
+66 mode 3 from 7,6: 38a59b5d41c71acf
+66 mode 3 from 117,6: 0b2caf0ad74a253a
+66 mode 3 from 7,119: 48ec1d2623eaf769
