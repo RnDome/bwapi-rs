@@ -1,0 +1,22 @@
+[package]
+name = "bwapi-sdk"
+description = "Map analysis, building placement, pathfinding and combat simulation for bwapi bots"
+keywords = ["starcraft", "broodwar", "bwapi", "bwem", "bot"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+# Ports of MIT code: their notices must stay with it, so no Unlicense option.
+license = "MIT"
+include = [
+    "/Cargo.toml",
+    "/src/**",
+    "/LICENSE-BWEM",
+    "/LICENSE-BWEB",
+    "/LICENSE-FAP",
+    "/LICENSE-MUSL",
+]
+
+[dependencies]
+bwapi = { path = "../bwapi" }
