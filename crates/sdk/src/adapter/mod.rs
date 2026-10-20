@@ -3,8 +3,42 @@
 
 use bwapi::{Context, Position, TilePosition, UnitType, WalkPosition};
 
+use crate::bweb::{Footprint, StartState};
 use crate::bwem::{MapInput, NeutralInput, NeutralKind};
 use crate::grid::Grid;
+
+/// What BWEB reads of the unit type.
+pub fn footprint(ty: UnitType) -> Footprint {
+    Footprint {
+        type_id: ty.id(),
+        tile_width: ty.tile_width(),
+        tile_height: ty.tile_height(),
+        width: ty.width(),
+        height: ty.height(),
+        requires_creep: ty.requires_creep(),
+        is_resource_depot: ty.is_resource_depot(),
+    }
+}
+
+/// What the game knows now of creep and of where buildings fit, for the
+/// analysis of BWEB's blocks and walls.
+pub fn start_state<'a, 'game: 'a>(cx: Context<'a, 'game>) -> impl StartState + 'a {
+    GameState(cx)
+}
+
+struct GameState<'a, 'game>(Context<'a, 'game>);
+
+impl StartState for GameState<'_, '_> {
+    fn has_creep(&self, tile: TilePosition) -> bool {
+        self.0.game().has_creep(tile)
+    }
+
+    fn can_build_here(&self, tile: TilePosition, footprint: &Footprint) -> bool {
+        self.0
+            .game()
+            .can_build_here(tile, UnitType::from_id(footprint.type_id))
+    }
+}
 
 /// What BWAPI reports of a static neutral unit.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
