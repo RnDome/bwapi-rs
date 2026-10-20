@@ -4,7 +4,10 @@
 
 //! Mini tiles (8×8 pixels) and tiles (32×32 pixels).
 
-use super::{Altitude, Map, Neutral};
+use bwapi::TilePosition;
+
+use super::map::MapView;
+use super::{Altitude, Neutral};
 
 /// The area id of the walkable mini tiles of a blocking neutral.
 const BLOCKING_CP: i16 = i16::MIN;
@@ -29,9 +32,13 @@ impl Default for MiniTile {
 }
 
 impl MiniTile {
+    pub(crate) fn new(altitude: Altitude, area_id: i16) -> Self {
+        MiniTile { altitude, area_id }
+    }
+
     /// Walkable for BWEM: unwalkable in BWAPI makes the 8 neighbours unwalkable
     /// too, and every mini tile of a buildable tile is walkable.
-    pub fn walkable(self) -> bool {
+    pub fn is_walkable(self) -> bool {
         self.area_id != 0
     }
 
@@ -41,18 +48,18 @@ impl MiniTile {
     }
 
     /// An unwalkable mini tile of altitude 0.
-    pub fn sea(self) -> bool {
+    pub fn is_sea(self) -> bool {
         self.altitude == 0
     }
 
     /// An unwalkable mini tile of altitude > 0: part of a small unwalkable zone.
-    pub fn lake(self) -> bool {
-        self.altitude != 0 && !self.walkable()
+    pub fn is_lake(self) -> bool {
+        self.altitude != 0 && !self.is_walkable()
     }
 
     /// A walkable mini tile.
-    pub fn terrain(self) -> bool {
-        self.walkable()
+    pub fn is_terrain(self) -> bool {
+        self.is_walkable()
     }
 
     /// 0 for seas and lakes; for terrain, the id of its area (> 0) or of a zone
@@ -102,16 +109,13 @@ impl MiniTile {
         self.area_id = BLOCKING_CP;
     }
 
-    pub(crate) fn blocked(self) -> bool {
+    pub(crate) fn is_blocked(self) -> bool {
         self.area_id == BLOCKING_CP
-    }
-
-    pub(crate) fn replace_blocked_area_id(&mut self, id: i16) {
-        self.area_id = id;
     }
 }
 
-/// The data of a tile; [`Tile`] is its view.
+/// A tile while the analysis writes it whole; then [`TileTerrain`] and
+/// [`TileState`].
 #[derive(Clone, Copy, Debug, Default)]
 pub(crate) struct TileData {
     /// The bottom neutral of the stack on this tile.
@@ -123,61 +127,87 @@ pub(crate) struct TileData {
     pub(crate) doodad: bool,
 }
 
+/// What never changes in a tile.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct TileTerrain {
+    pub(crate) min_altitude: Altitude,
+    pub(crate) buildable: bool,
+    pub(crate) ground_height: u8,
+    pub(crate) doodad: bool,
+}
+
+/// What changes in a tile when neutrals are destroyed.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct TileState {
+    /// The bottom neutral of the stack on this tile.
+    pub(crate) neutral: Option<u32>,
+    pub(crate) area_id: i16,
+}
+
 /// A tile of the map.
 #[derive(Clone, Copy)]
 pub struct Tile<'m> {
-    pub(crate) map: &'m Map,
-    pub(crate) data: &'m TileData,
+    map: MapView<'m>,
+    terrain: &'m TileTerrain,
+    state: &'m TileState,
 }
 
 impl<'m> Tile<'m> {
+    pub(crate) fn new(map: MapView<'m>, t: TilePosition) -> Self {
+        Tile {
+            map,
+            terrain: &map.geometry.tiles[t],
+            state: &map.state.tiles[t],
+        }
+    }
+
     /// `Game::is_buildable`. Every mini tile of a buildable tile is walkable.
-    pub fn buildable(self) -> bool {
-        self.data.buildable
+    pub fn is_buildable(self) -> bool {
+        self.terrain.buildable
     }
 
     /// The area id of its walkable mini tiles if they share one, -1 if they do
     /// not, 0 if none is walkable.
     pub fn area_id(self) -> i16 {
-        self.data.area_id
+        self.state.area_id
     }
 
     /// The least altitude of its mini tiles.
     pub fn min_altitude(self) -> Altitude {
-        self.data.min_altitude
+        self.terrain.min_altitude
     }
 
     /// At least one of its mini tiles is walkable.
-    pub fn walkable(self) -> bool {
-        self.data.area_id != 0
+    pub fn is_walkable(self) -> bool {
+        self.state.area_id != 0
     }
 
-    pub fn terrain(self) -> bool {
-        self.walkable()
+    pub fn is_terrain(self) -> bool {
+        self.is_walkable()
     }
 
     /// 0 low ground, 1 high ground, 2 very high ground: `getGroundHeight / 2`.
     pub fn ground_height(self) -> i32 {
-        i32::from(self.data.ground_height)
+        i32::from(self.terrain.ground_height)
     }
 
     /// Part of a doodad: `getGroundHeight % 2`.
-    pub fn doodad(self) -> bool {
-        self.data.doodad
+    pub fn is_doodad(self) -> bool {
+        self.terrain.doodad
     }
 
     /// The neutral on this tile; with stacked neutrals, the bottom one.
     pub fn neutral(self) -> Option<Neutral<'m>> {
-        self.data.neutral.map(|i| Neutral::new(self.map, i))
+        self.state.neutral.map(|i| Neutral::new(self.map, i))
     }
 
     /// The number of neutrals stacked on this tile.
     pub fn stacked_neutrals(self) -> i32 {
         let mut count = 0;
-        let mut next = self.data.neutral;
+        let mut next = self.state.neutral;
         while let Some(i) = next {
             count += 1;
-            next = self.map.neutrals[i as usize].next_stacked;
+            next = self.map.state.neutrals[i as usize].next_stacked;
         }
         count
     }

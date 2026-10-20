@@ -8,7 +8,8 @@ use alloc::vec::Vec;
 
 use bwapi::WalkPosition;
 
-use super::{Area, ChokePointId, Map, Neutral};
+use super::map::MapView;
+use super::{Area, AreaId, ChokePointId, Map, Neutral};
 use crate::PositionExt;
 
 /// A node of a choke point: `ChokePoint::node`.
@@ -29,24 +30,29 @@ impl Node {
     }
 }
 
-/// The data of a choke point; [`ChokePoint`] is its view.
+/// What never changes in a choke point; [`ChokePoint`] is its view.
 #[derive(Clone, Debug)]
-pub(crate) struct ChokePointData {
+pub(crate) struct StaticChokePoint {
     pub(crate) areas: (i16, i16),
     pub(crate) nodes: [WalkPosition; 3],
     pub(crate) nodes_in_area: [(WalkPosition, WalkPosition); 3],
     pub(crate) geometry: Vec<WalkPosition>,
+    pub(crate) pseudo: bool,
+}
+
+/// What changes in a choke point when its blocking neutrals are destroyed.
+#[derive(Clone, Debug)]
+pub(crate) struct ChokePointState {
     pub(crate) blocked: bool,
     /// The bottom neutral of the blocking stack.
     pub(crate) blocking_neutral: Option<u32>,
-    pub(crate) pseudo: bool,
 }
 
 /// A choke point between two areas: a frontier of mini tiles, or a pseudo choke
 /// point standing for a blocking neutral.
 #[derive(Clone, Copy)]
 pub struct ChokePoint<'m> {
-    map: &'m Map,
+    map: MapView<'m>,
     index: u32,
 }
 
@@ -57,12 +63,16 @@ impl core::fmt::Debug for ChokePoint<'_> {
 }
 
 impl<'m> ChokePoint<'m> {
-    pub(crate) fn new(map: &'m Map, index: u32) -> Self {
+    pub(crate) fn new(map: MapView<'m>, index: u32) -> Self {
         ChokePoint { map, index }
     }
 
-    fn data(self) -> &'m ChokePointData {
-        &self.map.choke_points[self.index as usize]
+    fn data(self) -> &'m StaticChokePoint {
+        &self.map.geometry.choke_points[self.index as usize]
+    }
+
+    fn state(self) -> &'m ChokePointState {
+        &self.map.state.choke_points[self.index as usize]
     }
 
     /// Its index in the distance matrix.
@@ -80,22 +90,22 @@ impl<'m> ChokePoint<'m> {
         (Area::new(self.map, a), Area::new(self.map, b))
     }
 
-    /// `pos(Node::Middle)`.
+    /// `node(Node::Middle)`.
     pub fn center(self) -> WalkPosition {
-        self.pos(Node::Middle)
+        self.node(Node::Middle)
     }
 
     /// The ends of the frontier, and its middle: the point of highest altitude
-    /// near the middle of the frontier.
-    pub fn pos(self, n: Node) -> WalkPosition {
-        self.data().nodes[n.index()]
+    /// near the middle of the frontier. `Pos`.
+    pub fn node(self, node: Node) -> WalkPosition {
+        self.data().nodes[node.index()]
     }
 
     /// The mini tile of `area` nearest to the node, not under a neutral. For an
-    /// area that is not one of the two, the position in the second.
-    pub fn pos_in_area(self, n: Node, area: Area<'_>) -> WalkPosition {
-        let (first, second) = self.data().nodes_in_area[n.index()];
-        if area.id().get() == self.data().areas.0 {
+    /// area that is not one of the two, the position in the second. `PosInArea`.
+    pub fn node_in_area(self, node: Node, area: AreaId) -> WalkPosition {
+        let (first, second) = self.data().nodes_in_area[node.index()];
+        if area.get() == self.data().areas.0 {
             first
         } else {
             second
@@ -109,36 +119,36 @@ impl<'m> ChokePoint<'m> {
 
     /// A pseudo choke point is blocked until its neutral is destroyed and the
     /// map updates paths automatically.
-    pub fn blocked(self) -> bool {
-        self.data().blocked
+    pub fn is_blocked(self) -> bool {
+        self.state().blocked
     }
 
     /// With stacked neutrals, the bottom one.
     pub fn blocking_neutral(self) -> Option<Neutral<'m>> {
-        self.data()
+        self.state()
             .blocking_neutral
             .map(|i| Neutral::new(self.map, i))
     }
 
     /// Ground distance in pixels, through areas and choke points; `None` when
     /// unreachable (-1 in BWEM).
-    pub fn distance_from(self, cp: ChokePoint<'_>) -> Option<i32> {
-        let d = self.map.cp_distance(self.index, cp.index);
-        (d != -1).then_some(d)
+    pub fn distance_to(self, other: ChokePointId) -> Option<i32> {
+        let distance = self.map.choke_point_distance(self.index, other.0);
+        (distance != -1).then_some(distance)
     }
 
-    pub fn accessible_from(self, cp: ChokePoint<'_>) -> bool {
-        self.map.cp_distance(self.index, cp.index) >= 0
+    pub fn is_reachable_from(self, other: ChokePointId) -> bool {
+        self.map.choke_point_distance(self.index, other.0) >= 0
     }
 
-    /// The choke points from this one to `cp` through the graph of choke points,
-    /// both included.
-    pub fn choke_point_path_to(self, cp: ChokePoint<'_>) -> CpPath<'m> {
-        CpPath::new(self.map, self.map.cp_path(self.index, cp.index))
-    }
-
-    pub fn map(self) -> &'m Map {
-        self.map
+    /// The choke points from this one to `other` through the graph of choke
+    /// points, both included; to itself, this one alone. `None` when BWEM keeps
+    /// no path. As `GetPath`, a path may come without a length: BWEM can join
+    /// two choke points it gives no distance between.
+    pub fn path_to(self, other: ChokePointId) -> Option<ChokePointPath<'m>> {
+        let choke_points = self.map.choke_point_path_between(self.index, other.0);
+        (!choke_points.is_empty())
+            .then(|| ChokePointPath::new(self.map, choke_points, self.distance_to(other)))
     }
 
     /// The distance between the two ends in whole mini tiles, in pixels. Not in
@@ -146,7 +156,7 @@ impl<'m> ChokePoint<'m> {
     /// (Christian McCrave, MIT), which truncates the distance in mini tiles
     /// before scaling it.
     pub fn width(self) -> i32 {
-        self.pos(Node::End1).distance(self.pos(Node::End2)) as i32 * 8
+        self.node(Node::End1).distance(self.node(Node::End2)) as i32 * 8
     }
 }
 
@@ -154,41 +164,63 @@ impl Map {
     /// `ChokePoint::OnBlockingNeutralDestroyed`, after the neutral left its
     /// tiles: the choke point keeps the next neutral of the stack, and opens
     /// when none is left and paths update automatically.
-    pub(crate) fn cp_on_blocking_neutral_destroyed(&mut self, cp: u32, blocking: u32) {
-        if self.choke_points[cp as usize].blocking_neutral != Some(blocking) {
+    pub(crate) fn update_choke_point_after_neutral_removal(
+        &mut self,
+        choke_point: u32,
+        blocking: u32,
+    ) {
+        let state = &mut self.state;
+        if state.choke_points[choke_point as usize].blocking_neutral != Some(blocking) {
             return;
         }
-        let next = self.tiles[self.neutrals[blocking as usize].top_left].neutral;
-        let data = &mut self.choke_points[cp as usize];
-        data.blocking_neutral = next;
-        if next.is_none() && self.automatic_path_update {
-            data.blocked = false;
+        let next = state.tiles[self.geometry.neutrals[blocking as usize].top_left].neutral;
+        let automatic_path_update = state.automatic_path_update;
+        let choke_point_state = &mut state.choke_points[choke_point as usize];
+        choke_point_state.blocking_neutral = next;
+        if next.is_none() && automatic_path_update {
+            choke_point_state.blocked = false;
         }
     }
 }
 
-/// A path of choke points: `CPPath`.
+/// A path of choke points and its length: `CPPath`.
 #[derive(Clone, Copy)]
-pub struct CpPath<'m> {
-    map: &'m Map,
-    cps: &'m [u32],
+pub struct ChokePointPath<'m> {
+    map: MapView<'m>,
+    choke_points: &'m [u32],
+    length: Option<i32>,
 }
 
-impl<'m> CpPath<'m> {
-    pub(crate) fn new(map: &'m Map, cps: &'m [u32]) -> Self {
-        CpPath { map, cps }
+impl<'m> ChokePointPath<'m> {
+    pub(crate) fn new(map: MapView<'m>, choke_points: &'m [u32], length: Option<i32>) -> Self {
+        ChokePointPath {
+            map,
+            choke_points,
+            length,
+        }
     }
 
+    /// The length of the route in pixels: 32 a straight step, 45 a diagonal
+    /// one, as BWEM counts; between two positions, approximate where they
+    /// meet the route. Not the number of choke points: that is
+    /// [`ChokePointPath::len`]. `None` where BWEM gives -1.
+    pub fn length(self) -> Option<i32> {
+        self.length
+    }
+
+    /// The number of choke points on the route.
     pub fn len(self) -> usize {
-        self.cps.len()
+        self.choke_points.len()
     }
 
     pub fn is_empty(self) -> bool {
-        self.cps.is_empty()
+        self.choke_points.is_empty()
     }
 
     pub fn get(self, i: usize) -> Option<ChokePoint<'m>> {
-        self.cps.get(i).map(|&cp| ChokePoint::new(self.map, cp))
+        self.choke_points
+            .get(i)
+            .map(|&choke_point| ChokePoint::new(self.map, choke_point))
     }
 
     pub fn first(self) -> Option<ChokePoint<'m>> {
@@ -196,11 +228,15 @@ impl<'m> CpPath<'m> {
     }
 
     pub fn last(self) -> Option<ChokePoint<'m>> {
-        self.cps.last().map(|&cp| ChokePoint::new(self.map, cp))
+        self.choke_points
+            .last()
+            .map(|&choke_point| ChokePoint::new(self.map, choke_point))
     }
 
     pub fn iter(self) -> impl DoubleEndedIterator<Item = ChokePoint<'m>> + ExactSizeIterator + 'm {
         let map = self.map;
-        self.cps.iter().map(move |&cp| ChokePoint::new(map, cp))
+        self.choke_points
+            .iter()
+            .map(move |&choke_point| ChokePoint::new(map, choke_point))
     }
 }

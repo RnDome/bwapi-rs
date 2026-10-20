@@ -17,18 +17,22 @@ pub(crate) fn norm(dx: i32, dy: i32) -> f64 {
 }
 
 /// `BWAPI_ext::dist`.
-pub(crate) fn dist<P: GridPosition>(a: P, b: P) -> f64 {
+pub(crate) fn distance<P: GridPosition>(a: P, b: P) -> f64 {
     norm(a.x() - b.x(), a.y() - b.y())
 }
 
 /// `BWAPI_ext::roundedDist`: `int(0.5 + dist)`.
-pub(crate) fn rounded_dist<P: GridPosition>(a: P, b: P) -> i32 {
-    (0.5 + dist(a, b)) as i32
+pub(crate) fn rounded_distance<P: GridPosition>(a: P, b: P) -> i32 {
+    (0.5 + distance(a, b)) as i32
 }
 
 /// `BWAPI_ext::distToRectangle`: from `a` to the pixels of the tiles
 /// `top_left..top_left + size`.
-pub(crate) fn dist_to_rectangle(a: Position, top_left: TilePosition, size: TilePosition) -> i32 {
+pub(crate) fn distance_to_rectangle(
+    a: Position,
+    top_left: TilePosition,
+    size: TilePosition,
+) -> i32 {
     let tl = Position::from(top_left);
     let br = Position::from(top_left + size) - Position::new(1, 1);
     if a.x >= tl.x {
@@ -41,16 +45,16 @@ pub(crate) fn dist_to_rectangle(a: Position, top_left: TilePosition, size: TileP
                 0
             }
         } else if a.y > br.y {
-            rounded_dist(a, br)
+            rounded_distance(a, br)
         } else if a.y < tl.y {
-            rounded_dist(a, Position::new(br.x, tl.y))
+            rounded_distance(a, Position::new(br.x, tl.y))
         } else {
             a.x - br.x
         }
     } else if a.y > br.y {
-        rounded_dist(a, Position::new(tl.x, br.y))
+        rounded_distance(a, Position::new(tl.x, br.y))
     } else if a.y < tl.y {
-        rounded_dist(a, tl)
+        rounded_distance(a, tl)
     } else {
         tl.x - a.x
     }
