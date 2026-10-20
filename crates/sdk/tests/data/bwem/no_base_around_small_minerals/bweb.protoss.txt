@@ -1,0 +1,32 @@
+answers bweb 1
+map bwem/no_base_around_small_minerals.scx
+race 2
+used 30 bda0071f8da3a845
+reserved 149 f400bba469f1bfe4
+used at stage 0 30 bda0071f8da3a845
+reserved at stage 0 30 d747be2ba9a9d345
+used at stage 1 30 bda0071f8da3a845
+reserved at stage 1 126 9a887bff63b8dfe5
+used at stage 2 30 bda0071f8da3a845
+reserved at stage 2 126 9a887bff63b8dfe5
+placeable 156 645 d2c695a00b82d004
+placeable 109 591 c60d3e0d6fff72c4
+placeable 160 443 6ad80519ae06f244
+placeable 142 504 d1736463c91f7245
+placeable 106 221 ad4a9fc3877b7224
+placeable 131 221 ad4a9fc3877b7224
+starting_main 44,88
+starting_natural -
+stations 3
+74,90 main choke - centroid 2560,2972 small - medium - angle 0.000000000 defenses 70,97 75,93 76,97 78,90 78,93 angle_bits 0000000000000000
+44,88 main choke - centroid 1384,2956 small - medium - angle 0.000000000 defenses 45,91 48,88 48,91 angle_bits 0000000000000000
+56,107 choke - centroid 1792,3632 small - medium - angle 0.000000000 defenses 54,110 57,110 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 56,107: b7fb0de628c2d836
+37 mode 3 from 74,90: 3ecb33e15783bec5
+37 mode 3 from 44,88: 3ecb33e15783bec5
+66 mode 3 from 56,107: 3ecb33e15783bec5
+66 mode 3 from 74,90: 3ecb33e15783bec5
+66 mode 3 from 44,88: 3ecb33e15783bec5

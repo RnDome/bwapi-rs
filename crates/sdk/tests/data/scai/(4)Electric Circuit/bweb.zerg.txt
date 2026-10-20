@@ -1,0 +1,87 @@
+answers bweb 1
+map scai/(4)Electric Circuit.scx
+race 0
+used 404 b822fa13d787b0e5
+reserved 1533 6ce8ff5333b482a4
+used at stage 0 404 b822fa13d787b0e5
+reserved at stage 0 404 081850a4fdcc6b65
+used at stage 1 404 b822fa13d787b0e5
+reserved at stage 1 1154 0fe14e0d797e8305
+used at stage 2 404 b822fa13d787b0e5
+reserved at stage 2 1154 0fe14e0d797e8305
+placeable 156 6650 029436a220e7fa25
+placeable 109 5813 d73d41080bf6b2e4
+placeable 160 4566 f1ff569f6a3aa485
+placeable 142 5292 95c1a7b8f0feeaa5
+placeable 106 3608 b644308c31966d65
+placeable 131 3608 b644308c31966d65
+starting_main 117,7
+starting_natural 117,34
+stations 16
+117,7 main choke 9 centroid 3987,244 small 118,10 medium 121,12 angle 6.283185307 defenses 115,3 118,5 121,3 121,5 121,8 angle_bits 401921fb54442d18
+7,7 main choke 16 centroid 108,244 small 11,5 medium 11,3 angle 7.853981634 defenses 5,3 5,5 5,8 8,5 angle_bits 401f6a7a2955385e
+117,119 main choke 12 centroid 3987,3828 small 115,117 medium 114,115 angle 4.712388980 defenses 118,117 121,115 121,117 121,120 angle_bits 4012d97c7f3321d2
+7,119 main choke 14 centroid 108,3828 small 5,115 medium 7,116 angle 3.141592654 defenses 5,117 5,120 11,115 angle_bits 400921fb54442d18
+117,34 natural choke 38 centroid 3975,1112 small - medium - angle 5.497787144 defenses 118,37 121,34 121,37 angle_bits 4015fdbbe9bba775
+33,6 natural choke 30 centroid 1080,106 small - medium - angle 7.068583471 defenses 34,4 37,4 37,7 angle_bits 401c463abeccb2bb
+91,119 natural choke 32 centroid 3011,4000 small - medium - angle 3.926990817 defenses 89,119 89,122 92,122 angle_bits 400f6a7a2955385e
+7,92 natural choke 35 centroid 106,2997 small - medium - angle 2.356194490 defenses 5,90 5,93 8,90 angle_bits 4002d97c7f3321d2
+91,5 choke - centroid 2976,35 small - medium - angle 0.000000000 defenses 89,3 89,6 92,3 angle_bits 0000000000000000
+32,119 choke - centroid 1088,4028 small - medium - angle 0.000000000 defenses 30,119 30,122 33,122 angle_bits 0000000000000000
+6,29 choke - centroid 51,995 small - medium - angle 0.000000000 defenses 4,29 4,32 7,32 angle_bits 0000000000000000
+118,94 choke - centroid 4044,3075 small - medium - angle 0.000000000 defenses 119,97 122,94 122,97 angle_bits 0000000000000000
+7,59 choke 26 centroid 80,1942 small - medium - angle 7.853981634 defenses 5,57 5,60 8,57 angle_bits 401f6a7a2955385e
+117,66 choke 23 centroid 4016,2166 small - medium - angle 4.712388980 defenses 118,64 121,64 121,67 angle_bits 4012d97c7f3321d2
+66,5 choke 34 centroid 2152,86 small - medium - angle 6.283185307 defenses 64,1 64,3 64,6 67,3 70,1 angle_bits 401921fb54442d18
+58,119 choke 33 centroid 1896,3978 small - medium - angle 3.141592654 defenses 56,119 56,122 59,122 angle_bits 400921fb54442d18
+blocks 32
+114,11 size 4 2 center 3650,352 small  | medium  | large  | wide 114,11
+113,7 size 3 2 center 3617,224 small  | medium 113,7 | large  | wide 
+113,9 size 3 2 center 3617,288 small  | medium 113,9 | large  | wide 
+113,5 size 3 2 center 3617,160 small  | medium 113,5 | large  | wide 
+118,12 size 3 2 center 3777,384 small  | medium 118,12 | large  | wide 
+110,7 size 3 2 center 3521,224 small  | medium 110,7 | large  | wide 
+113,3 size 2 2 center 3617,97 small 113,3 | medium  | large  | wide 
+114,18 size 4 3 center 3650,576 small  | medium  | large 114,18 | wide 
+114,22 size 4 3 center 3650,704 small  | medium  | large 114,22 | wide 
+113,14 size 4 3 center 3618,448 small  | medium  | large 113,14 | wide 
+109,18 size 4 3 center 3490,576 small  | medium  | large 109,18 | wide 
+119,18 size 4 3 center 3810,576 small  | medium  | large 119,18 | wide 
+18,10 size 4 3 center 578,320 small  | medium  | large 18,10 | wide 
+18,6 size 4 3 center 578,192 small  | medium  | large 18,6 | wide 
+18,14 size 4 3 center 578,448 small  | medium  | large 18,14 | wide 
+13,10 size 4 3 center 418,320 small  | medium  | large 13,10 | wide 
+23,13 size 4 3 center 738,416 small  | medium  | large 23,13 | wide 
+13,14 size 4 3 center 418,448 small  | medium  | large 13,14 | wide 
+18,18 size 4 3 center 578,576 small  | medium  | large 18,18 | wide 
+23,17 size 4 3 center 738,544 small  | medium  | large 23,17 | wide 
+13,20 size 4 3 center 418,640 small  | medium  | large 13,20 | wide 
+18,22 size 4 3 center 578,704 small  | medium  | large 18,22 | wide 
+108,116 size 4 3 center 3458,3712 small  | medium  | large 108,116 | wide 
+108,120 size 4 3 center 3458,3840 small  | medium  | large 108,120 | wide 
+108,112 size 4 3 center 3458,3584 small  | medium  | large 108,112 | wide 
+103,113 size 4 3 center 3298,3616 small  | medium  | large 103,113 | wide 
+108,108 size 4 3 center 3458,3456 small  | medium  | large 108,108 | wide 
+11,108 size 4 3 center 354,3456 small  | medium  | large 11,108 | wide 
+11,104 size 4 3 center 354,3328 small  | medium  | large 11,104 | wide 
+16,108 size 4 3 center 514,3456 small  | medium  | large 16,108 | wide 
+6,108 size 4 3 center 194,3456 small  | medium  | large 6,108 | wide 
+14,112 size 4 3 center 450,3584 small  | medium  | large 14,112 | wide 
+walls 0
+searches
+37 mode 3 from 117,7: 72ef00fcf5940acd
+37 mode 3 from 7,7: 04d38fe0596a134d
+37 mode 3 from 117,119: c32152a943999d3e
+37 mode 3 from 7,119: 65fddde50ee2dcb8
+37 mode 3 from 33,6: ba9249ea39b65782
+37 mode 3 from 91,5: 6ef4f75e5aa89a91
+37 mode 3 from 91,119: 5801c2d00771c30f
+37 mode 3 from 7,92: c52640c993dba89a
+66 mode 3 from 117,7: 9cefd7273ac94ec6
+66 mode 3 from 7,7: afbffb2900af80f1
+66 mode 3 from 117,119: 62e61ee38a368177
+66 mode 3 from 7,119: 828bcc3628b4f7b1
+66 mode 3 from 33,6: 7167a1520cb71257
+66 mode 3 from 91,5: 97835342b2c82955
+66 mode 3 from 91,119: 25385c5b908acecb
+66 mode 3 from 7,92: 860db302232609cc

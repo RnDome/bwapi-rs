@@ -1,0 +1,54 @@
+answers bweb 1
+map scbw/(8)Plains of Snow '98.scm
+race 1
+used 372 6f794b305c4edbe5
+reserved 1350 3cc090c305e5dc85
+used at stage 0 372 6f794b305c4edbe5
+reserved at stage 0 372 4e1b11ac255823e5
+used at stage 1 372 6f794b305c4edbe5
+reserved at stage 1 1300 ac8c35e113d0eb45
+used at stage 2 372 6f794b305c4edbe5
+reserved at stage 2 1300 ac8c35e113d0eb45
+placeable 156 20652 f9ed5fa880ea5ec5
+placeable 109 19297 7168e4994259c864
+placeable 160 16389 db15b2c8e420d084
+placeable 142 17719 e1e0238c4dbbce84
+placeable 106 14029 e51790dc8bdc3be4
+placeable 131 14029 e51790dc8bdc3be4
+starting_main 18,19
+starting_natural -
+stations 15
+18,71 main choke - centroid 624,2203 small 22,72 medium - angle 0.000000000 defenses 17,78 19,74 22,74 23,78 angle_bits 0000000000000000
+18,19 main choke - centroid 627,776 small 22,20 medium - angle 0.000000000 defenses 16,15 16,17 16,20 19,17 22,15 angle_bits 0000000000000000
+18,129 main choke - centroid 604,4052 small 22,130 medium - angle 0.000000000 defenses 16,129 16,132 16,136 19,132 22,136 angle_bits 0000000000000000
+170,19 main choke - centroid 5516,772 small 174,20 medium - angle 0.000000000 defenses 168,15 171,17 174,15 174,17 angle_bits 0000000000000000
+170,129 main choke - centroid 5542,4049 small 174,130 medium - angle 0.000000000 defenses 168,136 171,132 174,132 174,136 angle_bits 0000000000000000
+18,177 main choke - centroid 633,5598 small 22,178 medium - angle 0.000000000 defenses 16,177 16,180 16,184 19,180 22,184 angle_bits 0000000000000000
+170,71 main choke - centroid 5488,2436 small 174,72 medium - angle 0.000000000 defenses 169,67 171,69 174,69 175,67 angle_bits 0000000000000000
+170,177 main choke - centroid 5516,5592 small 174,178 medium - angle 0.000000000 defenses 168,184 171,180 174,180 174,184 angle_bits 0000000000000000
+96,168 choke - centroid 3145,5619 small 100,169 medium - angle 0.000000000 defenses 97,171 100,171 angle_bits 0000000000000000
+100,6 choke - centroid 3241,412 small 104,7 medium - angle 0.000000000 defenses 98,6 98,9 101,9 angle_bits 0000000000000000
+106,116 choke - centroid 3584,3662 small 110,117 medium - angle 0.000000000 defenses 107,119 110,119 110,123 angle_bits 0000000000000000
+79,85 choke - centroid 2740,2674 small 83,86 medium - angle 0.000000000 defenses 76,80 80,83 83,83 angle_bits 0000000000000000
+99,100 choke - centroid 3189,3170 small 103,101 medium - angle 0.000000000 defenses 97,98 97,101 100,98 angle_bits 0000000000000000
+84,115 choke - centroid 2548,3710 small 88,116 medium - angle 0.000000000 defenses 82,115 82,118 85,118 angle_bits 0000000000000000
+111,81 choke - centroid 3392,2642 small 115,82 medium - angle 0.000000000 defenses 109,81 109,84 112,84 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 18,71: 6b8cd8ba9527dc69
+37 mode 3 from 18,19: 2e373c127d09b64b
+37 mode 3 from 18,129: 6a356e693a1483b0
+37 mode 3 from 170,19: 4c557586215a2469
+37 mode 3 from 170,129: 82bba2bb8bd69b7d
+37 mode 3 from 96,168: ab0c262759a1d225
+37 mode 3 from 18,177: ab0c262759a1d225
+37 mode 3 from 170,71: ab0c262759a1d225
+66 mode 3 from 18,71: ab0c262759a1d225
+66 mode 3 from 18,19: ab0c262759a1d225
+66 mode 3 from 18,129: ab0c262759a1d225
+66 mode 3 from 170,19: ab0c262759a1d225
+66 mode 3 from 170,129: ab0c262759a1d225
+66 mode 3 from 96,168: ab0c262759a1d225
+66 mode 3 from 18,177: ab0c262759a1d225
+66 mode 3 from 170,71: ab0c262759a1d225

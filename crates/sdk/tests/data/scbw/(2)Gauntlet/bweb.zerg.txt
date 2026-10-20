@@ -1,0 +1,74 @@
+answers bweb 1
+map scbw/(2)Gauntlet.scm
+race 0
+used 144 1be7378ab5358c25
+reserved 824 662f67c12495abe5
+used at stage 0 144 1be7378ab5358c25
+reserved at stage 0 144 63bab8e3f8c6b625
+used at stage 1 144 1be7378ab5358c25
+reserved at stage 1 522 d0f9441fc51fc2e5
+used at stage 2 144 1be7378ab5358c25
+reserved at stage 2 522 d0f9441fc51fc2e5
+placeable 156 6559 13448419fc9e39c4
+placeable 109 6156 493fdba5e9350c25
+placeable 160 5093 38690eb9cb696a64
+placeable 142 5529 aa2bce272df1b984
+placeable 106 4469 c262858e593744c4
+placeable 131 4469 c262858e593744c4
+starting_main 7,62
+starting_natural 7,83
+stations 8
+7,62 main choke 0 centroid 184,1906 small - medium - angle 7.853981634 defenses 5,60 5,63 8,60 9,58 15,58 angle_bits 401f6a7a2955385e
+117,32 main choke 2 centroid 3932,1178 small - medium - angle 4.712388980 defenses 111,39 117,39 118,35 121,32 121,35 angle_bits 4012d97c7f3321d2
+7,83 natural choke 3 centroid 243,2560 small - medium - angle 7.853981634 defenses 8,81 11,81 11,84 angle_bits 401f6a7a2955385e
+117,10 natural choke 1 centroid 3897,505 small - medium - angle 4.712388980 defenses 118,13 121,10 121,13 angle_bits 4012d97c7f3321d2
+7,30 choke - centroid 213,1157 small - medium - angle 0.000000000 defenses 5,30 5,33 8,33 angle_bits 0000000000000000
+69,68 choke - centroid 2272,2054 small - medium - angle 0.000000000 defenses 67,66 67,69 70,66 angle_bits 0000000000000000
+118,61 choke 10 centroid 3797,1834 small - medium - angle 6.283185307 defenses 116,59 116,62 119,59 angle_bits 401921fb54442d18
+48,25 choke - centroid 1612,1030 small - medium - angle 0.000000000 defenses 49,28 52,25 52,28 angle_bits 0000000000000000
+blocks 27
+7,66 size 4 2 center 226,2112 small  | medium  | large  | wide 7,66
+4,66 size 3 2 center 129,2112 small  | medium 4,66 | large  | wide 
+11,59 size 3 2 center 353,1888 small  | medium 11,59 | large  | wide 
+12,62 size 3 2 center 385,1984 small  | medium 12,62 | large  | wide 
+12,64 size 3 2 center 385,2048 small  | medium 12,64 | large  | wide 
+2,64 size 3 2 center 65,2048 small  | medium 2,64 | large  | wide 
+11,66 size 2 2 center 353,2113 small 11,66 | medium  | large  | wide 
+18,65 size 4 3 center 578,2080 small  | medium  | large 18,65 | wide 
+18,69 size 4 3 center 578,2208 small  | medium  | large 18,69 | wide 
+18,61 size 4 3 center 578,1952 small  | medium  | large 18,61 | wide 
+23,65 size 4 3 center 738,2080 small  | medium  | large 23,65 | wide 
+13,69 size 4 3 center 418,2208 small  | medium  | large 13,69 | wide 
+29,71 size 4 3 center 930,2272 small  | medium  | large 29,71 | wide 
+31,66 size 4 3 center 994,2112 small  | medium  | large 31,66 | wide 
+34,70 size 4 3 center 1090,2240 small  | medium  | large 34,70 | wide 
+35,74 size 4 3 center 1122,2368 small  | medium  | large 35,74 | wide 
+39,67 size 4 3 center 1250,2144 small  | medium  | large 39,67 | wide 
+106,29 size 4 3 center 3394,928 small  | medium  | large 106,29 | wide 
+106,33 size 4 3 center 3394,1056 small  | medium  | large 106,33 | wide 
+106,25 size 4 3 center 3394,800 small  | medium  | large 106,25 | wide 
+101,29 size 4 3 center 3234,928 small  | medium  | large 101,29 | wide 
+111,29 size 4 3 center 3554,928 small  | medium  | large 111,29 | wide 
+95,26 size 4 3 center 3042,832 small  | medium  | large 95,26 | wide 
+90,29 size 4 3 center 2882,928 small  | medium  | large 90,29 | wide 
+90,25 size 4 3 center 2882,800 small  | medium  | large 90,25 | wide 
+89,21 size 4 3 center 2850,672 small  | medium  | large 89,21 | wide 
+85,28 size 4 3 center 2722,896 small  | medium  | large 85,28 | wide 
+walls 0
+searches
+37 mode 3 from 7,62: c55129594b3712ce
+37 mode 3 from 117,10: 06317b8ccbd4171c
+37 mode 3 from 117,32: c94591bbc2606a6a
+37 mode 3 from 7,83: c15f1ef7664fc7ca
+37 mode 3 from 7,30: 4fbb1777d028ac94
+37 mode 3 from 69,68: 2870ace507e5f46d
+37 mode 3 from 118,61: 39068ef0f83b3d24
+37 mode 3 from 48,25: b21ae2fe3d6ae161
+66 mode 3 from 7,62: 7511e7ed194c752b
+66 mode 3 from 117,10: c95a06428eaa318f
+66 mode 3 from 117,32: 27ec0f8c28974b83
+66 mode 3 from 7,83: cb0d79babc082c6b
+66 mode 3 from 7,30: 83d46c6ebbd9d6ed
+66 mode 3 from 69,68: fdb9cd373466d2e1
+66 mode 3 from 118,61: cdca5acace7f9d16
+66 mode 3 from 48,25: f738421602dbf4c0

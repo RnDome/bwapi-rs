@@ -1,0 +1,41 @@
+answers bweb 1
+map scbw/(2)Crystallis.scm
+race 0
+used 1804 f540813dd25c2e65
+reserved 2271 40b3cd194e09c3e4
+used at stage 0 1804 f540813dd25c2e65
+reserved at stage 0 1804 30e5a15bef2c3265
+used at stage 1 1804 f540813dd25c2e65
+reserved at stage 1 2256 3ff6bf24282cf585
+used at stage 2 1804 f540813dd25c2e65
+reserved at stage 2 2256 3ff6bf24282cf585
+placeable 156 1089 3a57aec18f944904
+placeable 109 947 825853605b05ec04
+placeable 160 790 804d4c927c8f36a5
+placeable 142 923 cd53918584821d84
+placeable 106 479 49088f08d09aabe4
+placeable 131 479 49088f08d09aabe4
+starting_main 51,19
+starting_natural 47,10
+stations 6
+51,19 main choke - centroid 1642,846 small - medium - angle 0.000000000 defenses 49,19 49,22 52,22 angle_bits 0000000000000000
+10,46 main choke - centroid 330,1300 small - medium - angle 0.000000000 defenses 8,44 8,47 11,44 angle_bits 0000000000000000
+47,10 natural choke - centroid 1270,544 small - medium - angle 0.000000000 defenses 45,10 45,13 48,13 angle_bits 0000000000000000
+0,50 natural choke - centroid 32,1312 small - medium - angle 0.000000000 defenses 1,48 angle_bits 0000000000000000
+20,52 choke - centroid 956,1693 small - medium - angle 0.000000000 defenses 21,50 24,50 24,53 angle_bits 0000000000000000
+41,0 choke - centroid 1184,241 small - medium - angle 0.000000000 defenses 39,0 39,3 42,3 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 51,19: c9dab1c08302830d
+37 mode 3 from 20,52: ec32669a74fcae65
+37 mode 3 from 10,46: ec32669a74fcae65
+37 mode 3 from 41,0: ec32669a74fcae65
+37 mode 3 from 47,10: ec32669a74fcae65
+37 mode 3 from 0,50: ec32669a74fcae65
+66 mode 3 from 51,19: ec32669a74fcae65
+66 mode 3 from 20,52: ec32669a74fcae65
+66 mode 3 from 10,46: ec32669a74fcae65
+66 mode 3 from 41,0: ec32669a74fcae65
+66 mode 3 from 47,10: ec32669a74fcae65
+66 mode 3 from 0,50: ec32669a74fcae65

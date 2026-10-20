@@ -1,0 +1,32 @@
+answers bweb 1
+map bwem/geysers_only_bases.scx
+race 2
+used 36 fd0f8230db9a7ee5
+reserved 166 cb444081ff27e6a5
+used at stage 0 36 fd0f8230db9a7ee5
+reserved at stage 0 36 d943c86929a7b4e5
+used at stage 1 36 fd0f8230db9a7ee5
+reserved at stage 1 143 c344f721ce82b924
+used at stage 2 36 fd0f8230db9a7ee5
+reserved at stage 2 143 c344f721ce82b924
+placeable 156 637 35ea0198a9847004
+placeable 109 583 058a8ab6693c1144
+placeable 160 441 ed4b9fc321c30aa4
+placeable 142 496 91f617bacfe2d3c5
+placeable 106 243 548e2c974622d524
+placeable 131 243 548e2c974622d524
+starting_main 44,88
+starting_natural -
+stations 3
+74,90 main choke - centroid 2560,2972 small - medium - angle 0.000000000 defenses 70,97 75,93 76,97 78,90 78,93 angle_bits 0000000000000000
+44,88 main choke - centroid 1384,2956 small - medium - angle 0.000000000 defenses 45,91 48,88 48,91 angle_bits 0000000000000000
+53,113 choke - centroid 1856,3488 small - medium - angle 0.000000000 defenses 51,111 51,114 54,109 54,111 60,109 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 53,113: 3f9a1b9ce70e0b61
+37 mode 3 from 74,90: 3ecb33e15783bec5
+37 mode 3 from 44,88: 3ecb33e15783bec5
+66 mode 3 from 53,113: 3ecb33e15783bec5
+66 mode 3 from 74,90: 3ecb33e15783bec5
+66 mode 3 from 44,88: 3ecb33e15783bec5

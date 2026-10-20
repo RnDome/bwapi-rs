@@ -1,0 +1,32 @@
+answers bweb 1
+map bwem/mineral_only_bases.scx
+race 1
+used 72 defcb4c82fe5cca5
+reserved 202 3fb368be79ff3a65
+used at stage 0 72 defcb4c82fe5cca5
+reserved at stage 0 72 d44f0cb55547fea5
+used at stage 1 72 defcb4c82fe5cca5
+reserved at stage 1 178 a3586676d6f13565
+used at stage 2 72 defcb4c82fe5cca5
+reserved at stage 2 178 a3586676d6f13565
+placeable 156 589 226923ce955cdca4
+placeable 109 530 85462a2120887c45
+placeable 160 382 ff71f53b8949dc65
+placeable 142 443 d42bb8cf989335c4
+placeable 106 156 980108e738c2c0c5
+placeable 131 156 980108e738c2c0c5
+starting_main 44,88
+starting_natural -
+stations 3
+74,90 main choke - centroid 2560,2972 small 78,91 medium - angle 0.000000000 defenses 70,97 75,93 76,97 78,93 angle_bits 0000000000000000
+44,88 main choke - centroid 1384,2956 small 48,89 medium - angle 0.000000000 defenses 45,91 48,91 angle_bits 0000000000000000
+56,118 choke - centroid 1873,3568 small 60,119 medium - angle 0.000000000 defenses 57,116 60,116 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 56,118: 94200f2f4ecff08b
+37 mode 3 from 74,90: 3ecb33e15783bec5
+37 mode 3 from 44,88: 3ecb33e15783bec5
+66 mode 3 from 56,118: 3ecb33e15783bec5
+66 mode 3 from 74,90: 3ecb33e15783bec5
+66 mode 3 from 44,88: 3ecb33e15783bec5

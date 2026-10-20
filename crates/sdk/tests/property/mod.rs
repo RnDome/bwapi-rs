@@ -22,8 +22,11 @@
 
 #![allow(dead_code)]
 
+pub mod bweb;
 pub mod bwem;
 pub mod edt;
+pub mod nav;
+pub mod production;
 
 use std::collections::BTreeSet;
 use std::path::Path;

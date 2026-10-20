@@ -1,0 +1,243 @@
+answers bweb 1
+map scbw/(6)River of Light.scm
+race 1
+used 352 ab1b16229e1d9925
+reserved 4027 5c7725fee410ee64
+used at stage 0 352 ab1b16229e1d9925
+reserved at stage 0 352 3e4881767f380d25
+used at stage 1 352 ab1b16229e1d9925
+reserved at stage 1 1183 c7c868b3d5319ba4
+used at stage 2 352 ab1b16229e1d9925
+reserved at stage 2 1183 c7c868b3d5319ba4
+placeable 156 9197 87ad83bb863e6384
+placeable 109 8611 2a97ae5e15c76004
+placeable 160 7298 c9adf5e86bf34e85
+placeable 142 7989 8888398db7a793e4
+placeable 106 5461 8b92df5e3c416764
+placeable 131 5461 8b92df5e3c416764
+starting_main 8,56
+starting_natural 28,56
+stations 23
+9,114 main choke 4 centroid 138,3688 small 13,115 medium - angle 2.356194490 defenses 7,114 7,117 10,117 angle_bits 4002d97c7f3321d2
+8,56 main choke 6 centroid 106,1832 small 12,57 medium - angle 1.570796327 defenses 6,56 6,59 9,59 angle_bits 3ff921fb54442d18
+9,9 main choke 7 centroid 138,328 small 13,10 medium - angle 7.853981634 defenses 7,9 7,12 10,12 angle_bits 401f6a7a2955385e
+115,10 main choke 8 centroid 3957,328 small 119,11 medium - angle 5.497787144 defenses 116,13 119,13 angle_bits 4015fdbbe9bba775
+115,59 main choke 9 centroid 3957,1896 small 119,60 medium - angle 4.712388980 defenses 116,62 119,62 angle_bits 4012d97c7f3321d2
+112,114 main choke 1 centroid 3861,3656 small 116,115 medium - angle 3.926990817 defenses 113,117 116,117 angle_bits 400f6a7a2955385e
+21,104 natural choke 4 centroid 757,3200 small 25,105 medium - angle 2.356194490 defenses 19,102 19,105 22,102 angle_bits 4002d97c7f3321d2
+28,56 natural choke - centroid 985,2016 small 32,57 medium - angle 0.000000000 defenses 26,56 26,59 29,59 angle_bits 0000000000000000
+29,17 natural choke 7 centroid 1017,768 small 33,18 medium - angle 7.853981634 defenses 27,17 27,20 30,20 angle_bits 401f6a7a2955385e
+83,27 natural choke 8 centroid 2694,736 small 87,28 medium - angle 5.497787144 defenses 84,25 87,25 angle_bits 4015fdbbe9bba775
+88,66 natural choke - centroid 2912,1992 small 92,67 medium - angle 0.000000000 defenses 89,64 92,64 angle_bits 0000000000000000
+77,99 natural choke 3 centroid 2598,3046 small 81,100 medium - angle 3.141592654 defenses 78,97 81,97 angle_bits 400921fb54442d18
+69,84 choke - centroid 2067,2736 small 73,85 medium - angle 0.000000000 defenses 67,82 67,85 70,82 angle_bits 0000000000000000
+84,66 choke - centroid 2762,1978 small 88,67 medium - angle 0.000000000 defenses 85,64 88,64 angle_bits 0000000000000000
+108,88 choke - centroid 3728,2824 small 112,89 medium - angle 0.000000000 defenses 109,91 112,91 angle_bits 0000000000000000
+26,93 choke - centroid 938,2864 small 30,94 medium - angle 0.000000000 defenses 27,91 30,91 angle_bits 0000000000000000
+114,35 choke - centroid 3920,1128 small 118,36 medium - angle 0.000000000 defenses 115,38 118,38 angle_bits 0000000000000000
+73,43 choke - centroid 2192,1440 small 77,44 medium - angle 0.000000000 defenses 71,43 71,46 74,46 angle_bits 0000000000000000
+8,34 choke - centroid 112,1096 small 12,35 medium - angle 0.000000000 defenses 6,34 6,37 9,37 angle_bits 0000000000000000
+9,84 choke - centroid 144,2696 small 13,85 medium - angle 0.000000000 defenses 7,84 7,87 10,87 angle_bits 0000000000000000
+39,40 choke - centroid 1107,1328 small 43,41 medium - angle 0.000000000 defenses 37,38 37,41 40,38 angle_bits 0000000000000000
+57,118 choke - centroid 1850,4008 small 61,119 medium - angle 0.000000000 defenses 58,121 61,121 66,125 angle_bits 0000000000000000
+55,7 choke - centroid 1797,88 small 59,8 medium - angle 0.000000000 defenses 56,5 58,3 59,5 64,3 angle_bits 0000000000000000
+blocks 181
+30,51 size 3 2 center 961,1632 defensive small  | medium 30,51 | large  | wide 
+8,62 size 10 6 center 261,1984 small 16,63 16,66 | medium  | large 8,62 8,65 12,62 12,65 | wide 
+21,108 size 10 9 center 677,3456 small 29,109 29,112 29,115 | medium  | large 21,108 21,111 21,114 25,108 25,111 25,114 | wide 
+8,103 size 10 9 center 261,3296 small 16,104 16,107 16,110 | medium  | large 8,103 8,106 8,109 12,103 12,106 12,109 | wide 
+15,51 size 10 9 center 485,1632 small 23,52 23,55 23,58 | medium  | large 15,51 15,54 15,57 19,51 19,54 19,57 | wide 
+23,65 size 10 6 center 741,2080 small 31,66 31,69 | medium  | large 23,65 23,68 27,65 27,68 | wide 
+30,47 size 6 3 center 963,1504 small 34,48 | medium  | large 30,47 | wide 
+19,7 size 10 9 center 613,224 small 27,8 27,11 27,14 | medium  | large 19,7 19,10 19,13 23,7 23,10 23,13 | wide 
+7,15 size 10 9 center 229,480 small 15,16 15,19 15,22 | medium  | large 7,15 7,18 7,21 11,15 11,18 11,21 | wide 
+41,22 size 10 6 center 1317,704 small 49,23 49,26 | medium  | large 41,22 41,25 45,22 45,25 | wide 
+43,30 size 6 3 center 1379,960 small 47,31 | medium  | large 43,30 | wide 
+92,20 size 10 9 center 2949,640 small 100,21 100,24 100,27 | medium  | large 92,20 92,23 92,26 96,20 96,23 96,26 | wide 
+104,16 size 10 9 center 3333,512 small 112,17 112,20 112,23 | medium  | large 104,16 104,19 104,22 108,16 108,19 108,22 | wide 
+96,62 size 10 9 center 3077,1984 small 104,63 104,66 104,69 | medium  | large 96,62 96,65 96,68 100,62 100,65 100,68 | wide 
+88,51 size 10 9 center 2821,1632 small 96,52 96,55 96,58 | medium  | large 88,51 88,54 88,57 92,51 92,54 92,57 | wide 
+91,102 size 10 9 center 2917,3264 small 99,103 99,106 99,109 | medium  | large 91,102 91,105 91,108 95,102 95,105 95,108 | wide 
+97,113 size 10 9 center 3109,3616 small 105,114 105,117 105,120 | medium  | large 97,113 97,116 97,119 101,113 101,116 101,119 | wide 
+0,123 size 3 2 center 1,3936 small  | medium 0,123 | large  | wide 
+3,124 size 3 2 center 97,3968 small  | medium 3,124 | large  | wide 
+2,121 size 3 2 center 65,3872 small  | medium 2,121 | large  | wide 
+6,125 size 3 2 center 193,4000 small  | medium 6,125 | large  | wide 
+0,116 size 3 2 center 1,3712 small  | medium 0,116 | large  | wide 
+5,122 size 3 2 center 161,3904 small  | medium 5,122 | large  | wide 
+9,125 size 3 2 center 289,4000 small  | medium 9,125 | large  | wide 
+0,114 size 3 2 center 1,3648 small  | medium 0,114 | large  | wide 
+8,123 size 3 2 center 257,3936 small  | medium 8,123 | large  | wide 
+5,120 size 3 2 center 161,3840 small  | medium 5,120 | large  | wide 
+0,112 size 3 2 center 1,3584 small  | medium 0,112 | large  | wide 
+12,125 size 3 2 center 385,4000 small  | medium 12,125 | large  | wide 
+8,121 size 3 2 center 257,3872 small  | medium 8,121 | large  | wide 
+0,110 size 3 2 center 1,3520 small  | medium 0,110 | large  | wide 
+11,123 size 3 2 center 353,3936 small  | medium 11,123 | large  | wide 
+0,108 size 3 2 center 1,3456 small  | medium 0,108 | large  | wide 
+15,125 size 3 2 center 481,4000 small  | medium 15,125 | large  | wide 
+0,106 size 3 2 center 1,3392 small  | medium 0,106 | large  | wide 
+11,121 size 3 2 center 353,3872 small  | medium 11,121 | large  | wide 
+14,123 size 3 2 center 449,3936 small  | medium 14,123 | large  | wide 
+3,110 size 3 2 center 97,3520 small  | medium 3,110 | large  | wide 
+20,125 size 3 2 center 641,4000 small  | medium 20,125 | large  | wide 
+3,108 size 3 2 center 97,3456 small  | medium 3,108 | large  | wide 
+14,121 size 3 2 center 449,3872 small  | medium 14,121 | large  | wide 
+17,123 size 3 2 center 545,3936 small  | medium 17,123 | large  | wide 
+0,70 size 3 2 center 1,2240 small  | medium 0,70 | large  | wide 
+0,68 size 3 2 center 1,2176 small  | medium 0,68 | large  | wide 
+0,66 size 3 2 center 1,2112 small  | medium 0,66 | large  | wide 
+0,64 size 3 2 center 1,2048 small  | medium 0,64 | large  | wide 
+0,62 size 3 2 center 1,1984 small  | medium 0,62 | large  | wide 
+0,49 size 3 2 center 1,1568 small  | medium 0,49 | large  | wide 
+0,51 size 3 2 center 1,1632 small  | medium 0,51 | large  | wide 
+3,70 size 3 2 center 97,2240 small  | medium 3,70 | large  | wide 
+3,68 size 3 2 center 97,2176 small  | medium 3,68 | large  | wide 
+3,66 size 3 2 center 97,2112 small  | medium 3,66 | large  | wide 
+3,64 size 3 2 center 97,2048 small  | medium 3,64 | large  | wide 
+3,48 size 3 2 center 97,1536 small  | medium 3,48 | large  | wide 
+3,62 size 3 2 center 97,1984 small  | medium 3,62 | large  | wide 
+6,71 size 3 2 center 193,2272 small  | medium 6,71 | large  | wide 
+3,50 size 3 2 center 97,1600 small  | medium 3,50 | large  | wide 
+3,52 size 3 2 center 97,1664 small  | medium 3,52 | large  | wide 
+6,69 size 3 2 center 193,2208 small  | medium 6,69 | large  | wide 
+9,72 size 3 2 center 289,2304 small  | medium 9,72 | large  | wide 
+6,46 size 3 2 center 193,1472 small  | medium 6,46 | large  | wide 
+6,48 size 3 2 center 193,1536 small  | medium 6,48 | large  | wide 
+6,50 size 3 2 center 193,1600 small  | medium 6,50 | large  | wide 
+9,70 size 3 2 center 289,2240 small  | medium 9,70 | large  | wide 
+12,72 size 3 2 center 385,2304 small  | medium 12,72 | large  | wide 
+9,47 size 3 2 center 289,1504 small  | medium 9,47 | large  | wide 
+12,70 size 3 2 center 385,2240 small  | medium 12,70 | large  | wide 
+26,43 size 3 2 center 833,1376 small  | medium 26,43 | large  | wide 
+29,42 size 3 2 center 929,1344 small  | medium 29,42 | large  | wide 
+29,44 size 3 2 center 929,1408 small  | medium 29,44 | large  | wide 
+32,44 size 3 2 center 1025,1408 small  | medium 32,44 | large  | wide 
+35,51 size 3 2 center 1121,1632 small  | medium 35,51 | large  | wide 
+0,5 size 3 2 center 1,160 small  | medium 0,5 | large  | wide 
+4,0 size 3 2 center 129,0 small  | medium 4,0 | large  | wide 
+0,7 size 3 2 center 1,224 small  | medium 0,7 | large  | wide 
+4,2 size 3 2 center 129,64 small  | medium 4,2 | large  | wide 
+3,4 size 3 2 center 97,128 small  | medium 3,4 | large  | wide 
+0,9 size 3 2 center 1,288 small  | medium 0,9 | large  | wide 
+7,0 size 3 2 center 225,0 small  | medium 7,0 | large  | wide 
+0,11 size 3 2 center 1,352 small  | medium 0,11 | large  | wide 
+7,2 size 3 2 center 225,64 small  | medium 7,2 | large  | wide 
+6,4 size 3 2 center 193,128 small  | medium 6,4 | large  | wide 
+0,15 size 3 2 center 1,480 small  | medium 0,15 | large  | wide 
+10,0 size 3 2 center 321,0 small  | medium 10,0 | large  | wide 
+0,17 size 3 2 center 1,544 small  | medium 0,17 | large  | wide 
+0,19 size 3 2 center 1,608 small  | medium 0,19 | large  | wide 
+10,2 size 3 2 center 321,64 small  | medium 10,2 | large  | wide 
+0,21 size 3 2 center 1,672 small  | medium 0,21 | large  | wide 
+9,4 size 3 2 center 289,128 small  | medium 9,4 | large  | wide 
+13,0 size 3 2 center 417,0 small  | medium 13,0 | large  | wide 
+3,15 size 3 2 center 97,480 small  | medium 3,15 | large  | wide 
+3,17 size 3 2 center 97,544 small  | medium 3,17 | large  | wide 
+13,2 size 3 2 center 417,64 small  | medium 13,2 | large  | wide 
+3,19 size 3 2 center 97,608 small  | medium 3,19 | large  | wide 
+12,4 size 3 2 center 385,128 small  | medium 12,4 | large  | wide 
+16,0 size 3 2 center 513,0 small  | medium 16,0 | large  | wide 
+3,21 size 3 2 center 97,672 small  | medium 3,21 | large  | wide 
+55,26 size 3 2 center 1761,832 small  | medium 55,26 | large  | wide 
+43,18 size 3 2 center 1377,576 small  | medium 43,18 | large  | wide 
+57,29 size 3 2 center 1825,928 small  | medium 57,29 | large  | wide 
+52,25 size 3 2 center 1665,800 small  | medium 52,25 | large  | wide 
+54,28 size 3 2 center 1729,896 small  | medium 54,28 | large  | wide 
+54,30 size 3 2 center 1729,960 small  | medium 54,30 | large  | wide 
+51,29 size 3 2 center 1633,928 small  | medium 51,29 | large  | wide 
+51,31 size 3 2 center 1633,992 small  | medium 51,31 | large  | wide 
+46,34 size 3 2 center 1473,1088 small  | medium 46,34 | large  | wide 
+123,4 size 3 2 center 3937,128 small  | medium 123,4 | large  | wide 
+125,7 size 3 2 center 4001,224 small  | medium 125,7 | large  | wide 
+125,9 size 3 2 center 4001,288 small  | medium 125,9 | large  | wide 
+120,3 size 3 2 center 3841,96 small  | medium 120,3 | large  | wide 
+125,11 size 3 2 center 4001,352 small  | medium 125,11 | large  | wide 
+117,1 size 3 2 center 3745,32 small  | medium 117,1 | large  | wide 
+120,5 size 3 2 center 3841,160 small  | medium 120,5 | large  | wide 
+117,3 size 3 2 center 3745,96 small  | medium 117,3 | large  | wide 
+114,0 size 3 2 center 3649,0 small  | medium 114,0 | large  | wide 
+125,15 size 3 2 center 4001,480 small  | medium 125,15 | large  | wide 
+117,5 size 3 2 center 3745,160 small  | medium 117,5 | large  | wide 
+114,2 size 3 2 center 3649,64 small  | medium 114,2 | large  | wide 
+111,0 size 3 2 center 3553,0 small  | medium 111,0 | large  | wide 
+114,4 size 3 2 center 3649,128 small  | medium 114,4 | large  | wide 
+122,15 size 3 2 center 3905,480 small  | medium 122,15 | large  | wide 
+111,2 size 3 2 center 3553,64 small  | medium 111,2 | large  | wide 
+108,0 size 3 2 center 3457,0 small  | medium 108,0 | large  | wide 
+111,4 size 3 2 center 3553,128 small  | medium 111,4 | large  | wide 
+121,17 size 3 2 center 3873,544 small  | medium 121,17 | large  | wide 
+108,2 size 3 2 center 3457,64 small  | medium 108,2 | large  | wide 
+119,15 size 3 2 center 3809,480 small  | medium 119,15 | large  | wide 
+105,0 size 3 2 center 3361,0 small  | medium 105,0 | large  | wide 
+121,19 size 3 2 center 3873,608 small  | medium 121,19 | large  | wide 
+108,4 size 3 2 center 3457,128 small  | medium 108,4 | large  | wide 
+105,2 size 3 2 center 3361,64 small  | medium 105,2 | large  | wide 
+125,47 size 3 2 center 4001,1504 small  | medium 125,47 | large  | wide 
+125,49 size 3 2 center 4001,1568 small  | medium 125,49 | large  | wide 
+125,51 size 3 2 center 4001,1632 small  | medium 125,51 | large  | wide 
+125,53 size 3 2 center 4001,1696 small  | medium 125,53 | large  | wide 
+125,55 size 3 2 center 4001,1760 small  | medium 125,55 | large  | wide 
+125,57 size 3 2 center 4001,1824 small  | medium 125,57 | large  | wide 
+125,59 size 3 2 center 4001,1888 small  | medium 125,59 | large  | wide 
+122,48 size 3 2 center 3905,1536 small  | medium 122,48 | large  | wide 
+122,50 size 3 2 center 3905,1600 small  | medium 122,50 | large  | wide 
+122,52 size 3 2 center 3905,1664 small  | medium 122,52 | large  | wide 
+122,54 size 3 2 center 3905,1728 small  | medium 122,54 | large  | wide 
+123,64 size 3 2 center 3937,2048 small  | medium 123,64 | large  | wide 
+119,48 size 3 2 center 3809,1536 small  | medium 119,48 | large  | wide 
+119,50 size 3 2 center 3809,1600 small  | medium 119,50 | large  | wide 
+119,52 size 3 2 center 3809,1664 small  | medium 119,52 | large  | wide 
+120,64 size 3 2 center 3841,2048 small  | medium 120,64 | large  | wide 
+116,47 size 3 2 center 3713,1504 small  | medium 116,47 | large  | wide 
+116,49 size 3 2 center 3713,1568 small  | medium 116,49 | large  | wide 
+119,68 size 3 2 center 3809,2176 small  | medium 119,68 | large  | wide 
+119,66 size 3 2 center 3809,2112 small  | medium 119,66 | large  | wide 
+116,51 size 3 2 center 3713,1632 small  | medium 116,51 | large  | wide 
+117,64 size 3 2 center 3745,2048 small  | medium 117,64 | large  | wide 
+113,48 size 3 2 center 3617,1536 small  | medium 113,48 | large  | wide 
+116,68 size 3 2 center 3713,2176 small  | medium 116,68 | large  | wide 
+113,50 size 3 2 center 3617,1600 small  | medium 113,50 | large  | wide 
+123,122 size 3 2 center 3937,3904 small  | medium 123,122 | large  | wide 
+120,123 size 3 2 center 3841,3936 small  | medium 120,123 | large  | wide 
+123,118 size 3 2 center 3937,3776 small  | medium 123,118 | large  | wide 
+117,125 size 3 2 center 3745,4000 small  | medium 117,125 | large  | wide 
+121,120 size 3 2 center 3873,3840 small  | medium 121,120 | large  | wide 
+125,113 size 3 2 center 4001,3616 small  | medium 125,113 | large  | wide 
+117,123 size 3 2 center 3745,3936 small  | medium 117,123 | large  | wide 
+125,111 size 3 2 center 4001,3552 small  | medium 125,111 | large  | wide 
+118,121 size 3 2 center 3777,3872 small  | medium 118,121 | large  | wide 
+114,125 size 3 2 center 3649,4000 small  | medium 114,125 | large  | wide 
+125,109 size 3 2 center 4001,3488 small  | medium 125,109 | large  | wide 
+122,114 size 3 2 center 3905,3648 small  | medium 122,114 | large  | wide 
+125,107 size 3 2 center 4001,3424 small  | medium 125,107 | large  | wide 
+118,119 size 3 2 center 3777,3808 small  | medium 118,119 | large  | wide 
+114,123 size 3 2 center 3649,3936 small  | medium 114,123 | large  | wide 
+122,112 size 3 2 center 3905,3584 small  | medium 122,112 | large  | wide 
+111,125 size 3 2 center 3553,4000 small  | medium 111,125 | large  | wide 
+115,121 size 3 2 center 3681,3872 small  | medium 115,121 | large  | wide 
+122,110 size 3 2 center 3905,3520 small  | medium 122,110 | large  | wide 
+122,108 size 3 2 center 3905,3456 small  | medium 122,108 | large  | wide 
+111,123 size 3 2 center 3553,3936 small  | medium 111,123 | large  | wide 
+122,106 size 3 2 center 3905,3392 small  | medium 122,106 | large  | wide 
+108,125 size 3 2 center 3457,4000 small  | medium 108,125 | large  | wide 
+112,121 size 3 2 center 3585,3872 small  | medium 112,121 | large  | wide 
+119,109 size 3 2 center 3809,3488 small  | medium 119,109 | large  | wide 
+walls 0
+searches
+37 mode 3 from 77,99: 1c079323b27b36d3
+37 mode 3 from 69,84: 51bb3a63d44f3e63
+37 mode 3 from 9,114: 08ffabecdc0d5537
+37 mode 3 from 21,104: d38194460d689476
+37 mode 3 from 8,56: 3d51a79d8188f1b3
+37 mode 3 from 28,56: ba45353ab9c76995
+37 mode 3 from 9,9: f41a762fdb5a5941
+37 mode 3 from 29,17: dce11b2cdae015bf
+66 mode 3 from 77,99: ee8293e27cc43d18
+66 mode 3 from 69,84: 373dbd9b226941d4
+66 mode 3 from 9,114: 490012603189b2c3
+66 mode 3 from 21,104: 2bda5ed018b567b0
+66 mode 3 from 8,56: 88f6410360bb264f
+66 mode 3 from 28,56: bb9ddd8682d94cff
+66 mode 3 from 9,9: ea987a9893fff120
+66 mode 3 from 29,17: 63e52c519449fc76
