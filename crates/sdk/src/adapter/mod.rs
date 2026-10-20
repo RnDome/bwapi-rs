@@ -1,6 +1,10 @@
 //! The only module that reads the game: it turns what BWAPI reports into the
 //! data the algorithms take.
 
+mod fap;
+
+pub use fap::{FapUpgrades, fap_unit, fap_unit_of_type};
+
 use bwapi::{Context, Position, TilePosition, UnitType, WalkPosition};
 
 use crate::bweb::{Footprint, StartState};

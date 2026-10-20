@@ -24,6 +24,7 @@ extern crate alloc;
 pub mod adapter;
 pub mod bweb;
 pub mod bwem;
+pub mod fap;
 pub mod grid;
 
 mod math;
