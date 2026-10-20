@@ -13,36 +13,37 @@ fn main() {
     let mut generated = cpp_files("cpp/generated");
     generated.sort();
 
-    // On Linux the host provides BWAPILIB at dlopen. On Windows BWAPI.dll
-    // does not export it: every AI module links its own copy.
-    if windows {
-        let mut sources = cpp_files(&format!("{BWAPILIB}/Source"));
-        sources.push(Path::new(BWAPILIB).join("UnitCommand.cpp"));
-        sources.sort();
-        // svnrev.h as BWAPI's revisionUpdate.vbs writes it for the 4.4.0 release.
-        let out = PathBuf::from(std::env::var("OUT_DIR").expect("cargo sets OUT_DIR"));
-        fs::write(
-            out.join("svnrev.h"),
-            "#pragma once\nstatic const int SVN_REV = 5016;\n\n#include \"starcraftver.h\"\n",
-        )
-        .expect("cannot write svnrev.h");
+    // Every AI module links its own copy of BWAPILIB, as on Windows, where
+    // BWAPI.dll does not export it. Type data then needs no host, and the
+    // copy is the one the headers describe, whatever BWAPI the host runs.
+    let mut sources = cpp_files(&format!("{BWAPILIB}/Source"));
+    sources.push(Path::new(BWAPILIB).join("UnitCommand.cpp"));
+    sources.sort();
+    // svnrev.h as BWAPI's revisionUpdate.vbs writes it for the 4.4.0 release.
+    let out = PathBuf::from(std::env::var("OUT_DIR").expect("cargo sets OUT_DIR"));
+    fs::write(
+        out.join("svnrev.h"),
+        "#pragma once\nstatic const int SVN_REV = 5016;\n\n#include \"starcraftver.h\"\n",
+    )
+    .expect("cannot write svnrev.h");
 
-        // BWAPI's code: built with its own settings, not under our warnings.
-        let mut lib = cc::Build::new();
-        lib.cpp(true).std("c++17").warnings(false).include(&out);
-        include_bwapi(&mut lib);
+    // BWAPI's code: built with its own settings, not under our warnings.
+    let mut lib = cc::Build::new();
+    lib.cpp(true).std("c++17").warnings(false).include(&out);
+    include_bwapi(&mut lib);
+    lib.define("NDEBUG", None);
+    if windows {
         for (name, value) in [
             ("NOMINMAX", None),
             ("WIN32", None),
             ("_WIN32_WINNT", Some("0x0501")),
             ("NTDDI_VERSION", Some("0x05010300")),
-            ("NDEBUG", None),
         ] {
             lib.define(name, value);
         }
-        lib.files(&sources).compile("bwapilib");
-        println!("cargo:rerun-if-changed={BWAPILIB}");
     }
+    lib.files(&sources).compile("bwapilib");
+    println!("cargo:rerun-if-changed={BWAPILIB}");
 
     let mut glue = cc::Build::new();
     glue.cpp(true).std("c++17");
