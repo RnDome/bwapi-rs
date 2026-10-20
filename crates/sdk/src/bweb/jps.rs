@@ -16,13 +16,13 @@ use crate::{math, stdsort};
 
 /// `JPS::Position`: unsigned in C++, where a step off the map wraps around and
 /// the grid says it is not walkable; here the grid gets the negative value.
-type Pos = (i32, i32);
+type Cell = (i32, i32);
 
 /// `Internal::Node`.
 struct Node {
     f: u32,
     g: u32,
-    pos: Pos,
+    cell: Cell,
     parent: Option<u32>,
     open: bool,
     closed: bool,
@@ -85,15 +85,15 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
         (self.grid)(x, y)
     }
 
-    /// `getNode`: the node at `pos`, created on first use.
-    fn node(&mut self, pos: Pos) -> u32 {
+    /// `getNode`: the node at `cell`, created on first use.
+    fn node(&mut self, cell: Cell) -> u32 {
         let next = self.nodes.len() as u32;
-        let index = *self.index.entry((pos.1, pos.0)).or_insert(next);
+        let index = *self.index.entry((cell.1, cell.0)).or_insert(next);
         if index == next {
             self.nodes.push(Node {
                 f: 0,
                 g: 0,
-                pos,
+                cell,
                 parent: None,
                 open: false,
                 closed: false,
@@ -102,8 +102,8 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
         index
     }
 
-    fn end_pos(&self) -> Pos {
-        self.nodes[self.end as usize].pos
+    fn end_cell(&self) -> Cell {
+        self.nodes[self.end as usize].cell
     }
 
     /// `OpenList::_compare` for the heap functions: `a->f > b->f`.
@@ -128,20 +128,21 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
         stdsort::make_heap(&mut self.open, Self::heap_less(&self.nodes));
     }
 
-    /// `jumpP`: the next jump point from `p`, reached from `src`.
-    fn jump_p(&mut self, p: Pos, src: Pos) -> Option<Pos> {
-        let (dx, dy) = (p.0 - src.0, p.1 - src.1);
+    /// `jumpP`: the next jump point from `p`, reached from `source`.
+    fn jump_toward(&mut self, p: Cell, source: Cell) -> Option<Cell> {
+        let (dx, dy) = (p.0 - source.0, p.1 - source.1);
         if dx != 0 && dy != 0 {
-            self.jump_d(p, dx, dy)
+            self.jump_diagonal(p, dx, dy)
         } else if dx != 0 {
-            self.jump_x(p, dx)
+            self.jump_horizontal(p, dx)
         } else {
-            self.jump_y(p, dy)
+            self.jump_vertical(p, dy)
         }
     }
 
-    fn jump_d(&mut self, mut p: Pos, dx: i32, dy: i32) -> Option<Pos> {
-        let end = self.end_pos();
+    /// `jumpD`.
+    fn jump_diagonal(&mut self, mut p: Cell, dx: i32, dy: i32) -> Option<Cell> {
+        let end = self.end_cell();
         loop {
             if p == end {
                 return Some(p);
@@ -154,10 +155,10 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
             }
             let gdx = self.walkable(x + dx, y);
             let gdy = self.walkable(x, y + dy);
-            if gdx && self.jump_x((x + dx, y), dx).is_some() {
+            if gdx && self.jump_horizontal((x + dx, y), dx).is_some() {
                 return Some(p);
             }
-            if gdy && self.jump_y((x, y + dy), dy).is_some() {
+            if gdy && self.jump_vertical((x, y + dy), dy).is_some() {
                 return Some(p);
             }
             if (gdx || gdy) && self.walkable(x + dx, y + dy) {
@@ -169,21 +170,23 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
     }
 
     /// The walkability of the cells above and below `(x, y)`, as two bits.
-    fn sides_y(&mut self, x: i32, y: i32) -> u32 {
+    fn vertical_sides(&mut self, x: i32, y: i32) -> u32 {
         u32::from(self.walkable(x, y + 1)) | (u32::from(self.walkable(x, y - 1)) << 1)
     }
 
-    fn sides_x(&mut self, x: i32, y: i32) -> u32 {
+    /// The walkability of the cells right and left of `(x, y)`, as two bits.
+    fn horizontal_sides(&mut self, x: i32, y: i32) -> u32 {
         u32::from(self.walkable(x + 1, y)) | (u32::from(self.walkable(x - 1, y)) << 1)
     }
 
-    fn jump_x(&mut self, mut p: Pos, dx: i32) -> Option<Pos> {
+    /// `jumpX`.
+    fn jump_horizontal(&mut self, mut p: Cell, dx: i32) -> Option<Cell> {
         let y = p.1;
-        let end = self.end_pos();
-        let mut a = !self.sides_y(p.0, y);
+        let end = self.end_cell();
+        let mut a = !self.vertical_sides(p.0, y);
         loop {
             let xx = p.0 + dx;
-            let b = self.sides_y(xx, y);
+            let b = self.vertical_sides(xx, y);
             if (b & a) != 0 || p == end {
                 return Some(p);
             }
@@ -195,13 +198,14 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
         }
     }
 
-    fn jump_y(&mut self, mut p: Pos, dy: i32) -> Option<Pos> {
+    /// `jumpY`.
+    fn jump_vertical(&mut self, mut p: Cell, dy: i32) -> Option<Cell> {
         let x = p.0;
-        let end = self.end_pos();
-        let mut a = !self.sides_x(x, p.1);
+        let end = self.end_cell();
+        let mut a = !self.horizontal_sides(x, p.1);
         loop {
             let yy = p.1 + dy;
-            let b = self.sides_x(x, yy);
+            let b = self.horizontal_sides(x, yy);
             if (a & b) != 0 || p == end {
                 return Some(p);
             }
@@ -214,9 +218,9 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
     }
 
     /// `findNeighbors`: the cells to jump from, in the order of C++.
-    fn find_neighbors(&mut self, n: u32, out: &mut Vec<Pos>) {
-        let (x, y) = self.nodes[n as usize].pos;
-        let check = |s: &mut Self, out: &mut Vec<Pos>, dx: i32, dy: i32| {
+    fn find_neighbors(&mut self, n: u32, out: &mut Vec<Cell>) {
+        let (x, y) = self.nodes[n as usize].cell;
+        let check = |s: &mut Self, out: &mut Vec<Cell>, dx: i32, dy: i32| {
             if s.walkable(x + dx, y + dy) {
                 out.push((x + dx, y + dy));
             }
@@ -237,7 +241,7 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
         };
 
         // The direction of the jump, each -1, 0 or 1.
-        let (px, py) = self.nodes[parent as usize].pos;
+        let (px, py) = self.nodes[parent as usize].cell;
         let dx = (x - px).signum();
         let dy = (y - py).signum();
 
@@ -286,22 +290,22 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
     fn identify_successors(&mut self, n: u32) {
         let mut neighbors = Vec::with_capacity(8);
         self.find_neighbors(n, &mut neighbors);
-        let n_pos = self.nodes[n as usize].pos;
+        let node_cell = self.nodes[n as usize].cell;
         for &cell in neighbors.iter().rev() {
-            let Some(jp) = self.jump_p(cell, n_pos) else {
+            let Some(jump_point) = self.jump_toward(cell, node_cell) else {
                 continue;
             };
-            let jn = self.node(jp);
+            let jn = self.node(jump_point);
             if self.nodes[jn as usize].closed {
                 continue;
             }
-            let extra_g = euclidean(jp, n_pos);
+            let extra_g = euclidean(jump_point, node_cell);
             let new_g = self.nodes[n as usize].g.wrapping_add(extra_g);
-            let end = self.end_pos();
+            let end = self.end_cell();
             let node = &mut self.nodes[jn as usize];
             if !node.open || new_g < node.g {
                 node.g = new_g;
-                node.f = node.g.wrapping_add(manhattan(jp, end));
+                node.f = node.g.wrapping_add(manhattan(jump_point, end));
                 node.parent = Some(n);
                 if !node.open {
                     node.open = true;
@@ -315,13 +319,13 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
 
     /// `findPathGreedy`: diagonally, then straight, if nothing is in the way.
     fn find_path_greedy(&mut self, n: u32) -> bool {
-        let (mut x, mut y) = self.nodes[n as usize].pos;
-        let (ex, ey) = self.end_pos();
+        let (mut x, mut y) = self.nodes[n as usize].cell;
+        let (ex, ey) = self.end_cell();
         let (adx, ady) = ((ex - x).abs(), (ey - y).abs());
         let dx = (ex - x).signum();
         let dy = (ey - y).signum();
 
-        let mut mid = None;
+        let mut middle = None;
         if x != ex && y != ey {
             let tx = x + dx * adx.min(ady);
             while x != tx {
@@ -335,7 +339,7 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
             if !self.walkable(x, y) {
                 return false;
             }
-            mid = Some((x, y));
+            middle = Some((x, y));
         }
 
         while x != ex {
@@ -351,12 +355,12 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
             }
         }
 
-        match mid {
-            Some(pos) => {
-                let mid = self.node(pos);
-                self.nodes[mid as usize].parent = Some(n);
-                if mid != self.end {
-                    self.nodes[self.end as usize].parent = Some(mid);
+        match middle {
+            Some(cell) => {
+                let middle = self.node(cell);
+                self.nodes[middle as usize].parent = Some(n);
+                if middle != self.end {
+                    self.nodes[self.end as usize].parent = Some(middle);
                 }
             }
             None => self.nodes[self.end as usize].parent = Some(n),
@@ -371,7 +375,7 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
         next.parent?;
         let mut path = Vec::new();
         while let Some(parent) = next.parent {
-            path.push(TilePosition::new(next.pos.0, next.pos.1));
+            path.push(TilePosition::new(next.cell.0, next.cell.1));
             next = &self.nodes[parent as usize];
         }
         path.reverse();
@@ -380,14 +384,14 @@ impl<G: FnMut(i32, i32) -> bool> Searcher<G> {
 }
 
 /// `Heuristic::Manhattan`.
-fn manhattan(a: Pos, b: Pos) -> u32 {
+fn manhattan(a: Cell, b: Cell) -> u32 {
     ((a.0 - b.0).abs() + (a.1 - b.1).abs()) as u32
 }
 
 /// `Heuristic::Euclidean`, which takes `sqrtf`. The squares are integers below
 /// 2^24, exact in `f32`; the root of an integer that is not a square is at least
 /// 1/513 away from an integer here, so `f64` truncates to the same value.
-fn euclidean(a: Pos, b: Pos) -> u32 {
+fn euclidean(a: Cell, b: Cell) -> u32 {
     let (dx, dy) = (f64::from(a.0 - b.0), f64::from(a.1 - b.1));
     math::sqrt(dx * dx + dy * dy) as u32
 }

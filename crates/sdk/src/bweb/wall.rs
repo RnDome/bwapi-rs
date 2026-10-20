@@ -2,20 +2,21 @@
 // and Wall.h.
 // Copyright (c) 2017 Christian McCrave. MIT License, see LICENSE-BWEB.
 
-use alloc::collections::{BTreeMap, BTreeSet};
+use alloc::collections::{BTreeMap, BTreeSet, btree_map};
 use alloc::vec::Vec;
+use core::fmt;
 
 use bwapi::{Position, Race, TilePosition, UnitType};
 
 use super::layout::angle;
-use super::{Footprint, Layout, StartState, Stations};
+use super::{Footprint, Layout, StartState, Station, Stations};
 use crate::PositionExt;
 use crate::bwem::{self, AreaId, BaseId, ChokePointId};
 use crate::grid::Grid;
 use crate::math::{self, PI};
 
-const PI_D4: f64 = PI / 4.0;
-const PI_D2: f64 = PI / 2.0;
+const QUARTER_PI: f64 = PI / 4.0;
+const HALF_PI: f64 = PI / 2.0;
 
 /// The footprint of a type the walls name.
 fn known(ty: UnitType) -> Footprint {
@@ -26,8 +27,10 @@ fn known(ty: UnitType) -> Footprint {
 /// openings around it.
 #[derive(Clone, Debug)]
 pub struct Wall {
+    /// The race of the bot, whose wall it is.
+    race: Race,
     area: AreaId,
-    choke: ChokePointId,
+    choke_point: ChokePointId,
     station_base: BaseId,
     /// The location of the first base of the area: defenses line up from it.
     base_location: TilePosition,
@@ -63,7 +66,7 @@ impl Wall {
     }
 
     pub fn choke_point(&self) -> ChokePointId {
-        self.choke
+        self.choke_point
     }
 
     pub fn area(&self) -> AreaId {
@@ -104,15 +107,17 @@ impl Wall {
     }
 
     /// The unit the wall was asked to be tight against. BWEB keeps it only.
-    pub fn tight(&self) -> Footprint {
+    pub fn tight_against(&self) -> Footprint {
         self.tight
     }
 
-    pub fn is_open_wall(&self) -> bool {
+    /// Whether the wall leaves openings for units.
+    pub fn is_open(&self) -> bool {
         self.open_wall
     }
 
-    pub fn requires_tight(&self) -> bool {
+    /// Whether the wall was asked to be tight. BWEB keeps it only.
+    pub fn is_tight_required(&self) -> bool {
         self.require_tight
     }
 
@@ -126,19 +131,8 @@ impl Wall {
         self.defense_angle
     }
 
-    /// `addToWallPieces`: a slot for a building of the size of `footprint`.
-    pub fn add_to_wall_pieces(&mut self, here: TilePosition, footprint: &Footprint) {
-        if footprint.tile_width >= 4 {
-            self.large_tiles.insert(here);
-        } else if footprint.tile_width >= 3 {
-            self.medium_tiles.insert(here);
-        } else if footprint.tile_width >= 2 {
-            self.small_tiles.insert(here);
-        }
-    }
-
     fn count_defenses(&self, layout: &Layout, types: [UnitType; 3]) -> i32 {
-        let used = |tile| layout.is_used(tile, 1, 1);
+        let used = |tile| layout.used_by(tile, 1, 1);
         self.defenses(0)
             .iter()
             .filter(|&&tile| types.iter().any(|t| used(tile) == Some(t.id())))
@@ -175,6 +169,150 @@ impl Wall {
         self.small_tiles.len() + self.medium_tiles.len() + self.large_tiles.len()
     }
 }
+
+/// What wall to make, the arguments of `Walls::createWall`: of `race`, the
+/// race of the bot, across `choke_point` from `area`. By default with no
+/// buildings and no defenses, closed, and tight against nothing.
+#[derive(Clone, Debug)]
+pub struct WallSpec {
+    race: Race,
+    area: AreaId,
+    choke_point: ChokePointId,
+    buildings: Vec<Footprint>,
+    defenses: Vec<Footprint>,
+    tight: Footprint,
+    open: bool,
+    require_tight: bool,
+}
+
+impl WallSpec {
+    pub fn across(race: Race, area: AreaId, choke_point: ChokePointId) -> WallSpec {
+        WallSpec {
+            race,
+            area,
+            choke_point,
+            buildings: Vec::new(),
+            defenses: Vec::new(),
+            tight: Footprint::NONE,
+            open: false,
+            require_tight: false,
+        }
+    }
+
+    /// The buildings of the wall, each a piece of its size.
+    pub fn buildings(mut self, buildings: impl IntoIterator<Item = Footprint>) -> WallSpec {
+        self.buildings = buildings.into_iter().collect();
+        self
+    }
+
+    /// The defenses asked for. BWEB keeps them only: the wall takes the
+    /// defenses of its race.
+    pub fn defenses(mut self, defenses: impl IntoIterator<Item = Footprint>) -> WallSpec {
+        self.defenses = defenses.into_iter().collect();
+        self
+    }
+
+    /// The unit the wall should leave no gap for. BWEB keeps it only.
+    pub fn tight_against(mut self, unit: Footprint) -> WallSpec {
+        self.tight = unit;
+        self
+    }
+
+    /// Leaves openings for units.
+    pub fn open(mut self) -> WallSpec {
+        self.open = true;
+        self
+    }
+
+    /// Asks for a tight wall. BWEB keeps it only.
+    pub fn require_tight(mut self) -> WallSpec {
+        self.require_tight = true;
+        self
+    }
+
+    /// The presets of BWEB, across the choke point of the bot's own natural:
+    /// `createZergWall`, a Hatchery and an Evolution Chamber with Sunken
+    /// Colonies, open; `createProtossWall`, a Forge, a Gateway and a Pylon
+    /// with Photon Cannons, open; `createTerranWall`, for Terran and any other
+    /// race, a Terran wall of a Barracks and two Supply Depots with Missile
+    /// Turrets, closed and tight against a Zergling or, but for Zerg `enemy`, a
+    /// Zealot.
+    pub fn natural(
+        race: Race,
+        enemy: Race,
+        bwem: &bwem::Map,
+        stations: &Stations,
+    ) -> Result<WallSpec, WallError> {
+        let natural = stations.own_natural().ok_or(WallError::NoStation)?;
+        let area = bwem.base(natural.base()).area().id();
+        let choke_point = natural.choke_point().ok_or(WallError::NoChokePoint)?;
+        let spec = |race| WallSpec::across(race, area, choke_point);
+        let known_all = |types: &[UnitType]| types.iter().map(|&t| known(t)).collect::<Vec<_>>();
+        Ok(match race {
+            Race::ZERG => spec(Race::ZERG)
+                .buildings(known_all(&[
+                    UnitType::ZERG_HATCHERY,
+                    UnitType::ZERG_EVOLUTION_CHAMBER,
+                ]))
+                .defenses([known(UnitType::ZERG_SUNKEN_COLONY)])
+                .open(),
+            Race::PROTOSS => spec(Race::PROTOSS)
+                .buildings(known_all(&[
+                    UnitType::PROTOSS_FORGE,
+                    UnitType::PROTOSS_GATEWAY,
+                    UnitType::PROTOSS_PYLON,
+                ]))
+                .defenses([known(UnitType::PROTOSS_PHOTON_CANNON)])
+                .open(),
+            _ => {
+                let tight = match enemy {
+                    Race::ZERG => UnitType::ZERG_ZERGLING,
+                    _ => UnitType::PROTOSS_ZEALOT,
+                };
+                spec(Race::TERRAN)
+                    .buildings(known_all(&[
+                        UnitType::TERRAN_BARRACKS,
+                        UnitType::TERRAN_SUPPLY_DEPOT,
+                        UnitType::TERRAN_SUPPLY_DEPOT,
+                    ]))
+                    .defenses([known(UnitType::TERRAN_MISSILE_TURRET)])
+                    .tight_against(Footprint {
+                        type_id: tight.id(),
+                        ..Footprint::NONE
+                    })
+                    .require_tight()
+            }
+        })
+    }
+}
+
+/// Why there is no wall.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum WallError {
+    /// No station for the wall: the bot has no natural, or the area of the
+    /// wall has no base or no station near it.
+    NoStation,
+    /// No choke point: the natural has none, or the main nearest the station
+    /// of the wall has none.
+    NoChokePoint,
+    /// Not every building fits.
+    NothingFits,
+    /// No wall stands at the choke point.
+    NoWall,
+}
+
+impl fmt::Display for WallError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            WallError::NoStation => "no station for the wall",
+            WallError::NoChokePoint => "no choke point for the wall",
+            WallError::NothingFits => "not every building of the wall fits",
+            WallError::NoWall => "no wall at the choke point",
+        })
+    }
+}
+
+impl core::error::Error for WallError {}
 
 /// Every wall: `BWEB::Walls`.
 #[derive(Clone, Debug)]
@@ -226,55 +364,30 @@ impl Walls {
     }
 
     /// The walls by their choke points.
-    pub fn walls(&self) -> impl Iterator<Item = &Wall> {
+    pub fn iter(&self) -> btree_map::Values<'_, ChokePointId, Wall> {
         self.walls.values()
     }
 
-    pub fn wall(&self, choke: ChokePointId) -> Option<&Wall> {
-        self.walls.get(&choke)
+    pub fn wall(&self, choke_point: ChokePointId) -> Option<&Wall> {
+        self.walls.get(&choke_point)
     }
 
-    /// The wall whose choke point's center is nearest to `here`.
-    pub fn closest_wall(&self, bwem: &bwem::Map, here: impl Into<Position>) -> Option<&Wall> {
-        let here = here.into();
-        let mut dist_best = f64::MAX;
-        let mut best = None;
-        for wall in self.walls.values() {
-            let cp = bwem.choke_point(wall.choke);
-            let dist = here.distance(Position::from(cp.center()));
-            if dist < dist_best {
-                dist_best = dist;
-                best = Some(wall);
-            }
-        }
-        best
-    }
-
-    /// `Walls::createWall`: a wall of `buildings` across `choke` from `area`,
-    /// for the race of the bot, `race`, with its defenses and, for an open
-    /// wall, openings. The wall of `choke` if there is one. A wall found whole
-    /// reserves its tiles in `layout`; otherwise `None`. `tight` and
-    /// `require_tight` are kept only, as in BWEB; so are `defenses`, the wall
-    /// takes those of the race. Where BWEB dereferences a missing base,
+    /// `Walls::createWall`: the wall of `spec` with the defenses of its race
+    /// and, for an open wall, openings; its choke point. If a wall stands at
+    /// the choke point already, that one, as in BWEB. A wall found whole
+    /// reserves its tiles in `layout`. Where BWEB dereferences a missing base,
     /// station or choke point, there is no wall.
-    #[allow(clippy::too_many_arguments)]
-    pub fn create_wall(
+    pub fn build(
         &mut self,
         bwem: &bwem::Map,
         layout: &mut Layout,
         stations: &Stations,
-        race: Race,
-        buildings: &[Footprint],
-        area: AreaId,
-        choke: ChokePointId,
-        tight: Footprint,
-        defenses: &[Footprint],
-        open_wall: bool,
-        require_tight: bool,
         state: &dyn StartState,
-    ) -> Option<&Wall> {
-        if self.walls.contains_key(&choke) {
-            return self.walls.get(&choke);
+        spec: &WallSpec,
+    ) -> Result<ChokePointId, WallError> {
+        let choke_point = spec.choke_point;
+        if self.walls.contains_key(&choke_point) {
+            return Ok(choke_point);
         }
         let ground = Ground {
             bwem,
@@ -282,16 +395,17 @@ impl Walls {
             state,
         };
         let mut wall = Wall {
-            area,
-            choke,
+            race: spec.race,
+            area: spec.area,
+            choke_point,
             // Set by `initialize`.
             station_base: BaseId(0),
             base_location: TilePosition::new(0, 0),
             wall_location: TilePosition::new(0, 0),
             defense: Footprint::NONE,
-            tight,
-            raw_buildings: buildings.to_vec(),
-            raw_defenses: defenses.to_vec(),
+            tight: spec.tight,
+            raw_buildings: spec.buildings.clone(),
+            raw_defenses: spec.defenses.clone(),
             small_tiles: BTreeSet::new(),
             medium_tiles: BTreeSet::new(),
             large_tiles: BTreeSet::new(),
@@ -301,26 +415,29 @@ impl Walls {
             defense_angle: 0.0,
             defense_arrangement: 0,
             pylon_wall: false,
-            open_wall,
-            require_tight,
+            open_wall: spec.open,
+            require_tight: spec.require_tight,
             flip_horizontal: false,
             flip_vertical: false,
         };
         let mut maker = Maker {
             ground: &ground,
             stations,
-            race,
+            race: spec.race,
             reserved: &mut self.reserved,
             orders: Orders::default(),
         };
-        let made = maker.initialize(&mut wall) && maker.add_pieces(&mut wall) && {
-            maker.add_defenses(&mut wall);
-            maker.add_openings(&mut wall);
-            true
-        };
+        let made = maker
+            .initialize(&mut wall)
+            .and_then(|()| maker.add_pieces(&mut wall))
+            .map(|()| {
+                maker.add_defenses(&mut wall);
+                maker.add_openings(&mut wall);
+            });
         maker.cleanup(&wall);
-        if !made || wall.piece_count() != wall.raw_buildings.len() {
-            return None;
+        made?;
+        if wall.piece_count() != wall.raw_buildings.len() {
+            return Err(WallError::NothingFits);
         }
 
         for &tile in &wall.small_tiles {
@@ -338,153 +455,21 @@ impl Walls {
         for &tile in wall.defenses(0) {
             layout.add_reserve(tile, 2, 2);
         }
-        Some(self.walls.entry(choke).or_insert(wall))
+        self.walls.insert(choke_point, wall);
+        Ok(choke_point)
     }
 
-    /// `createZergWall`: a Hatchery and an Evolution Chamber across the choke
-    /// point of the starting natural, with Sunken Colonies, open.
-    pub fn create_zerg_wall(
-        &mut self,
-        bwem: &bwem::Map,
-        layout: &mut Layout,
-        stations: &Stations,
-        state: &dyn StartState,
-    ) -> Option<&Wall> {
-        let buildings = [UnitType::ZERG_HATCHERY, UnitType::ZERG_EVOLUTION_CHAMBER].map(known);
-        let defenses = [known(UnitType::ZERG_SUNKEN_COLONY)];
-        self.create_natural_wall(
-            bwem,
-            layout,
-            stations,
-            Race::ZERG,
-            &buildings,
-            Footprint::NONE,
-            &defenses,
-            true,
-            false,
-            state,
-        )
-    }
-
-    /// `createProtossWall`: a Forge, a Gateway and a Pylon across the choke
-    /// point of the starting natural, with Photon Cannons, open.
-    pub fn create_protoss_wall(
-        &mut self,
-        bwem: &bwem::Map,
-        layout: &mut Layout,
-        stations: &Stations,
-        state: &dyn StartState,
-    ) -> Option<&Wall> {
-        let buildings = [
-            UnitType::PROTOSS_FORGE,
-            UnitType::PROTOSS_GATEWAY,
-            UnitType::PROTOSS_PYLON,
-        ]
-        .map(known);
-        let defenses = [known(UnitType::PROTOSS_PHOTON_CANNON)];
-        self.create_natural_wall(
-            bwem,
-            layout,
-            stations,
-            Race::PROTOSS,
-            &buildings,
-            Footprint::NONE,
-            &defenses,
-            true,
-            false,
-            state,
-        )
-    }
-
-    /// `createTerranWall`: a Barracks and two Supply Depots across the choke
-    /// point of the starting natural, with Missile Turrets, closed and tight
-    /// against a Zergling or, but for Zerg `enemy`, a Zealot.
-    pub fn create_terran_wall(
-        &mut self,
-        bwem: &bwem::Map,
-        layout: &mut Layout,
-        stations: &Stations,
-        enemy: Race,
-        state: &dyn StartState,
-    ) -> Option<&Wall> {
-        let buildings = [
-            UnitType::TERRAN_BARRACKS,
-            UnitType::TERRAN_SUPPLY_DEPOT,
-            UnitType::TERRAN_SUPPLY_DEPOT,
-        ]
-        .map(known);
-        let tight = match enemy {
-            Race::ZERG => Footprint {
-                type_id: UnitType::ZERG_ZERGLING.id(),
-                ..Footprint::NONE
-            },
-            _ => Footprint {
-                type_id: UnitType::PROTOSS_ZEALOT.id(),
-                ..Footprint::NONE
-            },
-        };
-        let defenses = [known(UnitType::TERRAN_MISSILE_TURRET)];
-        self.create_natural_wall(
-            bwem,
-            layout,
-            stations,
-            Race::TERRAN,
-            &buildings,
-            tight,
-            &defenses,
-            false,
-            true,
-            state,
-        )
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    fn create_natural_wall(
-        &mut self,
-        bwem: &bwem::Map,
-        layout: &mut Layout,
-        stations: &Stations,
-        race: Race,
-        buildings: &[Footprint],
-        tight: Footprint,
-        defenses: &[Footprint],
-        open_wall: bool,
-        require_tight: bool,
-        state: &dyn StartState,
-    ) -> Option<&Wall> {
-        let natural = stations.starting_natural()?;
-        let area = natural.base(bwem)?.area().id();
-        let choke = natural.choke_point(bwem)?.id();
-        self.create_wall(
-            bwem,
-            layout,
-            stations,
-            race,
-            buildings,
-            area,
-            choke,
-            tight,
-            defenses,
-            open_wall,
-            require_tight,
-            state,
-        )
-    }
-
-    /// `requestAddedLayer`: the pieces of the wall at `choke` given up for a
-    /// layer of defenses 4 tiles out. Whether there is such a wall.
-    pub fn request_added_layer(
+    /// `requestAddedLayer`: the pieces of the wall at `choke_point` given up
+    /// for a layer of defenses 4 tiles out.
+    pub fn add_defense_layer(
         &mut self,
         bwem: &bwem::Map,
         layout: &Layout,
         stations: &Stations,
-        race: Race,
-        choke: ChokePointId,
         state: &dyn StartState,
-    ) -> bool {
-        let Some(wall) = self.walls.get_mut(&choke) else {
-            return false;
-        };
+        choke_point: ChokePointId,
+    ) -> Result<(), WallError> {
+        let wall = self.walls.get_mut(&choke_point).ok_or(WallError::NoWall)?;
         let ground = Ground {
             bwem,
             layout,
@@ -493,7 +478,7 @@ impl Walls {
         let mut maker = Maker {
             ground: &ground,
             stations,
-            race,
+            race: wall.race,
             reserved: &mut self.reserved,
             orders: Orders::default(),
         };
@@ -510,7 +495,16 @@ impl Walls {
         wall.medium_tiles.clear();
         wall.large_tiles.clear();
         maker.add_defense_layer(wall, -4, 1, 6);
-        true
+        Ok(())
+    }
+}
+
+impl<'a> IntoIterator for &'a Walls {
+    type Item = &'a Wall;
+    type IntoIter = btree_map::Values<'a, ChokePointId, Wall>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
 
@@ -552,29 +546,23 @@ impl Maker<'_, '_, '_> {
     /// `Wall::initialize`: the station of the area, the defense angle and
     /// arrangement, and for a natural whose choke point can be walked around
     /// to the main, the wall moved toward the main's choke point.
-    fn initialize(&mut self, wall: &mut Wall) -> bool {
+    fn initialize(&mut self, wall: &mut Wall) -> Result<(), WallError> {
         let bwem = self.ground.bwem;
-        let (area, choke) = (bwem.area(wall.area), bwem.choke_point(wall.choke));
+        let (area, choke_point) = (bwem.area(wall.area), bwem.choke_point(wall.choke_point));
         wall.pylon_wall = wall
             .raw_buildings
             .iter()
             .filter(|b| b.type_id == UnitType::PROTOSS_PYLON.id())
             .count()
             > 1;
-        let Some(base) = area.bases().next() else {
-            return false;
-        };
-        let Some(station) = self
+        let base = area.bases().next().ok_or(WallError::NoStation)?;
+        let station = self
             .stations
-            .closest_station(TilePosition::from(area.top()))
-        else {
-            return false;
-        };
-        let Some(station_base) = station.base(bwem) else {
-            return false;
-        };
+            .closest(Position::from(TilePosition::from(area.top())), |_| true)
+            .ok_or(WallError::NoStation)?;
+        let station_base = bwem.base(station.base());
         wall.station_base = station_base.id();
-        wall.station_defenses = station.defenses().clone();
+        wall.station_defenses = station.defenses().iter().copied().collect();
         wall.base_location = base.location();
         wall.wall_location = base.location();
         wall.defense_angle = station.defense_angle();
@@ -588,32 +576,35 @@ impl Maker<'_, '_, '_> {
         // Stations without a choke point, or with several, get no angle on
         // start: the angle from the station to the last tile of the geometry.
         if !station.is_main() && !station.is_natural() {
-            let mut best_geo = Position::from(choke.center()) + Position::new(4, 4);
-            for &geo in choke.geometry() {
-                let p = Position::from(geo) + Position::new(4, 4);
+            let mut best_geometry_tile = Position::from(choke_point.center()) + Position::new(4, 4);
+            for &geometry_tile in choke_point.geometry() {
+                let p = Position::from(geometry_tile) + Position::new(4, 4);
                 if p.distance(station_base.center()) < f64::MAX {
-                    best_geo = p;
+                    best_geometry_tile = p;
                 }
             }
-            wall.defense_angle = angle(station_base.center(), best_geo) + PI_D2;
+            wall.defense_angle = angle(station_base.center(), best_geometry_tile) + HALF_PI;
         }
         wall.defense_arrangement = arrangement(wall.defense_angle);
 
         // A natural wall that can be walked around into the main walls at the
         // choke point instead.
         if station.is_natural() {
-            let main = self.stations.closest_main_station(base.center());
-            if let Some(main_choke) = main.and_then(|m| m.choke_point(bwem)) {
+            let main = self.stations.closest(base.center(), Station::is_main);
+            let main_choke = main
+                .and_then(|m| m.choke_point())
+                .map(|cp| bwem.choke_point(cp));
+            if let Some(main_choke) = main_choke {
                 let main_choke_center = Position::from(main_choke.center());
-                let nat_choke_center = Position::from(choke.center());
+                let natural_choke_center = Position::from(choke_point.center());
                 let to_main_choke = station_base.center().distance(main_choke_center);
-                let to_nat_choke = station_base.center().distance(nat_choke_center);
-                if to_nat_choke >= 240.0 && to_main_choke >= 240.0 {
-                    let geometry = choke.geometry();
+                let to_natural_choke = station_base.center().distance(natural_choke_center);
+                if to_natural_choke >= 240.0 && to_main_choke >= 240.0 {
+                    let geometry = choke_point.geometry();
                     let bypass = geometry
                         .iter()
-                        .filter(|&&geo| {
-                            let p = Position::from(geo) + Position::new(4, 4);
+                        .filter(|&&geometry_tile| {
+                            let p = Position::from(geometry_tile) + Position::new(4, 4);
                             p.distance(base.center()) >= p.distance(main_choke_center)
                         })
                         .count();
@@ -642,13 +633,13 @@ impl Maker<'_, '_, '_> {
                         wall.wall_location =
                             base.location() + TilePosition::new(dx.clamp(-8, 8), dy.clamp(-8, 8));
                         let from = Position::from(wall.wall_location) + Position::new(16, 16);
-                        wall.defense_angle = angle(from, nat_choke_center) + PI_D2;
+                        wall.defense_angle = angle(from, natural_choke_center) + HALF_PI;
                         wall.defense_arrangement = arrangement(wall.defense_angle);
                     }
                 }
             }
         }
-        true
+        Ok(())
     }
 
     /// `Wall::tryLocations`: the first offset of `order` where a building of
@@ -695,7 +686,7 @@ impl Maker<'_, '_, '_> {
                     }
                     let border = tile + TilePosition::new(x, y);
                     if let Some(&reserved) = self.reserved.get(border) {
-                        let unbuildable = !self.ground.layout.buildable(border);
+                        let unbuildable = !self.ground.layout.is_buildable(border);
                         if (first && unbuildable) || reserved {
                             valid = true;
                         }
@@ -719,31 +710,27 @@ impl Maker<'_, '_, '_> {
 
     /// `Wall::addPieces`: the pieces at known offsets from the wall location by
     /// the angle of the choke point, moved farther out on each try, until all
-    /// fit. False where BWEB dereferences a missing choke point of the main.
-    fn add_pieces(&mut self, wall: &mut Wall) -> bool {
+    /// fit. An error where BWEB dereferences a missing choke point of the main.
+    fn add_pieces(&mut self, wall: &mut Wall) -> Result<(), WallError> {
         let bwem = self.ground.bwem;
-        let choke = bwem.choke_point(wall.choke);
-        let Some(base) = bwem.area(wall.area).bases().next() else {
-            return false;
-        };
-        let Some(station) = self
+        let choke_point = bwem.choke_point(wall.choke_point);
+        let base = bwem
+            .area(wall.area)
+            .bases()
+            .next()
+            .ok_or(WallError::NoStation)?;
+        let station = self.stations.station(wall.station_base);
+        let station_base = bwem.base(station.base());
+        let closest_main = self
             .stations
-            .stations()
-            .iter()
-            .find(|s| s.base_id() == wall.station_base)
-        else {
-            return false;
-        };
-        let Some(station_base) = station.base(bwem) else {
-            return false;
-        };
-        let closest_main = self.stations.closest_main_station(station_base.location());
-        let Some(main_choke) = closest_main.and_then(|m| m.choke_point(bwem)) else {
-            return false;
-        };
+            .closest(Position::from(station_base.location()), Station::is_main);
+        let main_choke = closest_main
+            .and_then(|m| m.choke_point())
+            .map(|cp| bwem.choke_point(cp))
+            .ok_or(WallError::NoChokePoint)?;
         let main_choke_center = Position::from(main_choke.center());
         let base_center = base.center();
-        let choke_center = Position::from(choke.center());
+        let choke_center = Position::from(choke_point.center());
 
         let (mut iteration, max_iteration) = if station.is_main() {
             (5, 8)
@@ -950,7 +937,7 @@ impl Maker<'_, '_, '_> {
             }
             iteration += 2;
         }
-        true
+        Ok(())
     }
 
     /// `Wall::addDefenseLayer`: defenses along the wall, `offset` tiles out,
@@ -1074,5 +1061,5 @@ impl Wall {
 
 /// `int(round(angle / M_PI_D4)) % 4`.
 fn arrangement(angle: f64) -> i32 {
-    (math::round(angle / PI_D4) as i32) % 4
+    (math::round(angle / QUARTER_PI) as i32) % 4
 }

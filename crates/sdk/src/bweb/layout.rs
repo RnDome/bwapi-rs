@@ -27,12 +27,16 @@ pub struct Layout {
     reserve: Grid<TilePosition, bool>,
     /// The type id of the building on the tile.
     used: Grid<TilePosition, Option<i32>>,
-    walk_large: Grid<TilePosition, bool>,
-    walk_medium: Grid<TilePosition, bool>,
-    walk_small: Grid<TilePosition, bool>,
-    walk_full: Grid<TilePosition, bool>,
+    walkable_large: Grid<TilePosition, bool>,
+    walkable_medium: Grid<TilePosition, bool>,
+    walkable_small: Grid<TilePosition, bool>,
+    walkable_full: Grid<TilePosition, bool>,
     /// The tiles of the geometry of each choke point, by its index, sorted.
-    choke_tiles: Vec<Vec<TilePosition>>,
+    choke_point_tiles: Vec<Vec<TilePosition>>,
+    /// Counts the changes after which BWEB clears its cache of unreachable
+    /// tiles: the events of buildings and neutrals, and the end of
+    /// [`Blocks::find`](super::Blocks::find).
+    changes: u64,
 }
 
 impl Layout {
@@ -47,14 +51,15 @@ impl Layout {
             buildable: input.buildable.clone(),
             reserve: Grid::filled(size.x, size.y, false),
             used: Grid::filled(size.x, size.y, None),
-            walk_large: Grid::filled(size.x, size.y, false),
-            walk_medium: Grid::filled(size.x, size.y, false),
-            walk_small: Grid::filled(size.x, size.y, false),
-            walk_full: Grid::filled(size.x, size.y, false),
-            choke_tiles: Vec::new(),
+            walkable_large: Grid::filled(size.x, size.y, false),
+            walkable_medium: Grid::filled(size.x, size.y, false),
+            walkable_small: Grid::filled(size.x, size.y, false),
+            walkable_full: Grid::filled(size.x, size.y, false),
+            choke_point_tiles: Vec::new(),
+            changes: 0,
         };
         map.initialize_grids(input);
-        map.initialize_choke_geo(bwem);
+        map.initialize_choke_point_geometry(bwem);
         map.initialize_neutrals(input);
         map
     }
@@ -73,7 +78,7 @@ impl Layout {
                         }
                     }
                 }
-                self.walk_full[t] = count >= 14;
+                self.walkable_full[t] = count >= 14;
             }
         }
 
@@ -88,7 +93,7 @@ impl Layout {
                     let t = TilePosition::new(x, y);
                     if self.contains(t) {
                         self.used[t] = Some(n.type_id);
-                        self.walk_full[t] = false;
+                        self.walkable_full[t] = false;
                     }
                 }
             }
@@ -111,11 +116,11 @@ impl Layout {
         for y in 0..self.size.y {
             for x in 0..self.size.x {
                 let t = TilePosition::new(x, y);
-                if self.walk_full[t] {
-                    self.walk_large[t] = self.large_walkable(t);
-                    self.walk_medium[t] = self.medium_walkable(t);
+                if self.walkable_full[t] {
+                    self.walkable_large[t] = self.large_walkable(t);
+                    self.walkable_medium[t] = self.medium_walkable(t);
                     // Small units need a walkable tile only.
-                    self.walk_small[t] = true;
+                    self.walkable_small[t] = true;
                 }
             }
         }
@@ -150,15 +155,15 @@ impl Layout {
     }
 
     /// `initializeChokeGeo`.
-    fn initialize_choke_geo(&mut self, bwem: &bwem::Map) {
-        self.choke_tiles = Vec::new();
+    fn initialize_choke_point_geometry(&mut self, bwem: &bwem::Map) {
+        self.choke_point_tiles = Vec::new();
         for area in bwem.areas() {
             for cp in area.choke_points() {
                 let index = cp.id().index() as usize;
-                if self.choke_tiles.len() <= index {
-                    self.choke_tiles.resize(index + 1, Vec::new());
+                if self.choke_point_tiles.len() <= index {
+                    self.choke_point_tiles.resize(index + 1, Vec::new());
                 }
-                let tiles = &mut self.choke_tiles[index];
+                let tiles = &mut self.choke_point_tiles[index];
                 tiles.extend(cp.geometry().iter().map(|&w| TilePosition::from(w)));
                 tiles.sort_unstable();
                 tiles.dedup();
@@ -199,7 +204,7 @@ impl Layout {
     }
 
     /// `Game::is_buildable`: false outside the map.
-    pub(crate) fn buildable(&self, t: TilePosition) -> bool {
+    pub(crate) fn is_buildable(&self, t: TilePosition) -> bool {
         self.buildable.get(t).copied().unwrap_or(false)
     }
 
@@ -231,8 +236,43 @@ impl Layout {
         })
     }
 
-    /// Marks the tiles of a building of the type as used.
-    pub fn add_used(&mut self, t: TilePosition, footprint: &Footprint) {
+    /// A building appeared at `tile`: its tiles are used. `onUnitDiscover`
+    /// for a building on the ground.
+    pub fn add_building(&mut self, footprint: &Footprint, tile: TilePosition) {
+        self.add_used(tile, footprint);
+        self.changes += 1;
+    }
+
+    /// The building at `tile` is gone: its tiles are free. `onUnitDestroy`
+    /// for a building on the ground.
+    pub fn remove_building(&mut self, footprint: &Footprint, tile: TilePosition) {
+        self.remove_used(tile, footprint.tile_width, footprint.tile_height);
+        self.changes += 1;
+    }
+
+    /// The neutral that does not move at `tile` is gone: its tiles are free,
+    /// whatever uses them, and its reserves stay. `onUnitDestroy` for such a
+    /// neutral after the start. By type and place: BWEB knows neutrals BWEM
+    /// does not.
+    pub fn remove_neutral(&mut self, footprint: &Footprint, tile: TilePosition) {
+        self.remove_used(tile, footprint.tile_width, footprint.tile_height);
+        self.changes += 1;
+    }
+
+    /// The count of the changes after which BWEB clears its cache of
+    /// unreachable tiles.
+    pub(crate) fn changes(&self) -> u64 {
+        self.changes
+    }
+
+    /// A change after which BWEB clears its cache of unreachable tiles, as
+    /// `findBlocks` does at its end.
+    pub(crate) fn note_change(&mut self) {
+        self.changes += 1;
+    }
+
+    /// Marks the tiles of a building of the type as used, without an event.
+    pub(crate) fn add_used(&mut self, t: TilePosition, footprint: &Footprint) {
         self.add_used_rect(
             t,
             footprint.tile_width,
@@ -245,8 +285,8 @@ impl Layout {
         self.fill_used(t, width, height, Some(type_id));
     }
 
-    /// Frees the tiles of the rectangle.
-    pub fn remove_used(&mut self, t: TilePosition, width: i32, height: i32) {
+    /// Frees the tiles of the rectangle, without an event.
+    pub(crate) fn remove_used(&mut self, t: TilePosition, width: i32, height: i32) {
         self.fill_used(t, width, height, None);
     }
 
@@ -262,7 +302,7 @@ impl Layout {
 
     /// The type id of the first building found on the rectangle, column by
     /// column.
-    pub fn is_used(&self, here: TilePosition, width: i32, height: i32) -> Option<i32> {
+    pub fn used_by(&self, here: TilePosition, width: i32, height: i32) -> Option<i32> {
         (here.x..here.x + width).find_map(|x| {
             (here.y..here.y + height)
                 .find_map(|y| self.used.get(TilePosition::new(x, y)).copied().flatten())
@@ -275,13 +315,13 @@ impl Layout {
     /// the map.
     pub fn is_walkable(&self, here: TilePosition, footprint: &Footprint) -> bool {
         let grid = if footprint.width >= 30 || footprint.height >= 30 {
-            &self.walk_large
+            &self.walkable_large
         } else if footprint.width >= 20 || footprint.height >= 20 {
-            &self.walk_medium
+            &self.walkable_medium
         } else if footprint.width >= 10 || footprint.height >= 10 {
-            &self.walk_small
+            &self.walkable_small
         } else {
-            &self.walk_full
+            &self.walkable_full
         };
         grid.get(here).copied().unwrap_or(false)
     }
@@ -299,7 +339,7 @@ impl Layout {
     ) -> bool {
         if footprint.requires_creep {
             for x in location.x..location.x + footprint.tile_width {
-                if !self.buildable(TilePosition::new(x, location.y + footprint.tile_height)) {
+                if !self.is_buildable(TilePosition::new(x, location.y + footprint.tile_height)) {
                     return false;
                 }
             }
@@ -313,9 +353,9 @@ impl Layout {
             for y in location.y..location.y + footprint.tile_height {
                 let tile = TilePosition::new(x, y);
                 if !self.contains(tile)
-                    || !self.buildable(tile)
+                    || !self.is_buildable(tile)
                     || !self.walkable(WalkPosition::from(tile))
-                    || self.is_used(tile, 1, 1).is_some()
+                    || self.used_by(tile, 1, 1).is_some()
                 {
                     return false;
                 }
@@ -349,7 +389,7 @@ impl Layout {
         // No length: no path.
         let path = bwem.choke_point_path(start, end)?;
 
-        let mut dist = 0.0;
+        let mut distance = 0.0;
         let mut last = start;
         // The node of the choke point nearest to the last position.
         let fast_closest_node = |cp: ChokePoint<'_>, last: Position| {
@@ -368,31 +408,31 @@ impl Layout {
         for (i, cp) in path.iter().enumerate() {
             let large = cp.node(Node::End1).distance(cp.node(Node::End2)) > 40.0;
             let next = if i == 0 && !large {
-                self.closest_choke_tile(cp, start)
+                self.closest_choke_point_tile(cp, start)
                     .unwrap_or(INVALID_POSITION)
             } else {
                 fast_closest_node(cp, last)
             };
-            dist += next.distance(last);
+            distance += next.distance(last);
             last = next;
         }
-        Some(dist + last.distance(end))
+        Some(distance + last.distance(end))
     }
 
     /// The center of the tile of the choke point's geometry nearest to `here`.
-    pub fn closest_choke_tile(&self, cp: ChokePoint<'_>, here: Position) -> Option<Position> {
-        let tiles = self.choke_tiles.get(cp.id().index() as usize)?;
-        let mut best = f64::MAX;
-        let mut pos_best = None;
+    pub fn closest_choke_point_tile(&self, cp: ChokePoint<'_>, here: Position) -> Option<Position> {
+        let tiles = self.choke_point_tiles.get(cp.id().index() as usize)?;
+        let mut best_distance = f64::MAX;
+        let mut best_position = None;
         for &tile in tiles {
             let p = Position::from(tile) + Position::new(16, 16);
-            let dist = p.distance(here);
-            if dist < best {
-                pos_best = Some(p);
-                best = dist;
+            let distance = p.distance(here);
+            if distance < best_distance {
+                best_position = Some(p);
+                best_distance = distance;
             }
         }
-        pos_best
+        best_position
     }
 }
 
@@ -427,11 +467,11 @@ pub(crate) fn angle(p1: Position, p2: Position) -> f64 {
 /// perpendicular to it.
 pub fn perpendicular_line(points: (Position, Position), length: f64) -> (Position, Position) {
     let (n1, n2) = points;
-    let dist = n1.distance(n2);
-    let dx1 = (f64::from(n2.x - n1.x) * length / dist) as i32;
-    let dy1 = (f64::from(n2.y - n1.y) * length / dist) as i32;
-    let dx2 = (f64::from(n1.x - n2.x) * length / dist) as i32;
-    let dy2 = (f64::from(n1.y - n2.y) * length / dist) as i32;
+    let distance = n1.distance(n2);
+    let dx1 = (f64::from(n2.x - n1.x) * length / distance) as i32;
+    let dy1 = (f64::from(n2.y - n1.y) * length / distance) as i32;
+    let dx2 = (f64::from(n1.x - n2.x) * length / distance) as i32;
+    let dy2 = (f64::from(n1.y - n2.y) * length / distance) as i32;
     let middle = (n1 + n2) / 2;
     (
         Position::new(-dy1, dx1) + middle,

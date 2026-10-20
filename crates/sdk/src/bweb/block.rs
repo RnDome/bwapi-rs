@@ -45,7 +45,7 @@ pub enum Piece {
 
 /// What a block was found for.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum BlockType {
+pub enum BlockKind {
     None,
     Start,
     Production,
@@ -55,55 +55,86 @@ pub enum BlockType {
     Tech,
 }
 
+/// The id of a block: the order in which it was found, 0 and up. A removed
+/// block keeps its id; no other block gets it.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct BlockId(u32);
+
+impl BlockId {
+    /// The order in which the block was found, 0 and up.
+    pub fn index(self) -> u32 {
+        self.0
+    }
+}
+
 /// A group of building slots that BWEB lays out together.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Block {
+    id: BlockId,
     tile: TilePosition,
     width: i32,
     height: i32,
     center: Position,
-    small_tiles: BTreeSet<TilePosition>,
-    medium_tiles: BTreeSet<TilePosition>,
-    large_tiles: BTreeSet<TilePosition>,
-    wide_tiles: BTreeSet<TilePosition>,
-    kind: BlockType,
+    small_tiles: Vec<TilePosition>,
+    medium_tiles: Vec<TilePosition>,
+    large_tiles: Vec<TilePosition>,
+    wide_tiles: Vec<TilePosition>,
+    kind: BlockKind,
 }
 
 impl Block {
     fn new(
+        id: BlockId,
         tile: TilePosition,
         pieces: &[(TilePosition, Piece)],
         width: i32,
         height: i32,
-        kind: BlockType,
+        kind: BlockKind,
     ) -> Block {
-        let mut block = Block {
+        // Sets, as BWEB keeps them: in increasing order, each tile once.
+        let mut small = BTreeSet::new();
+        let mut medium = BTreeSet::new();
+        let mut large = BTreeSet::new();
+        let mut wide = BTreeSet::new();
+        for &(placement, piece) in pieces {
+            match piece {
+                Piece::Small | Piece::Addon => small.insert(placement),
+                Piece::Medium => medium.insert(placement),
+                Piece::Large => large.insert(placement),
+                Piece::Wide => wide.insert(placement),
+                Piece::Row | Piece::Space => false,
+            };
+        }
+        Block {
+            id,
             tile,
             width,
             height,
             // `h / w`, not `h / 2`, and tiles added to pixels, as BWEB has it.
             center: Position::from(tile) + Position::new(width / 2, height / width),
-            small_tiles: BTreeSet::new(),
-            medium_tiles: BTreeSet::new(),
-            large_tiles: BTreeSet::new(),
-            wide_tiles: BTreeSet::new(),
+            small_tiles: small.into_iter().collect(),
+            medium_tiles: medium.into_iter().collect(),
+            large_tiles: large.into_iter().collect(),
+            wide_tiles: wide.into_iter().collect(),
             kind,
-        };
-        for &(placement, piece) in pieces {
-            match piece {
-                Piece::Small | Piece::Addon => block.small_tiles.insert(placement),
-                Piece::Medium => block.medium_tiles.insert(placement),
-                Piece::Large => block.large_tiles.insert(placement),
-                Piece::Wide => block.wide_tiles.insert(placement),
-                Piece::Row | Piece::Space => false,
-            };
         }
-        block
+    }
+
+    pub fn id(&self) -> BlockId {
+        self.id
     }
 
     /// The top left tile of the block.
-    pub fn tile_position(&self) -> TilePosition {
+    pub fn tile(&self) -> TilePosition {
         self.tile
+    }
+
+    /// Whether `here` is a tile of the block.
+    fn covers(&self, here: TilePosition) -> bool {
+        here.x >= self.tile.x
+            && here.x < self.tile.x + self.width
+            && here.y >= self.tile.y
+            && here.y < self.tile.y + self.height
     }
 
     /// `getCenter`: the top left of the block, moved by half its width and by
@@ -112,28 +143,29 @@ impl Block {
         self.center
     }
 
-    /// The top left tiles of the 2×2 slots, addons among them.
-    pub fn small_tiles(&self) -> &BTreeSet<TilePosition> {
+    /// The top left tiles of the 2×2 slots, addons among them; in increasing
+    /// order, as are the slots of each size.
+    pub fn small_tiles(&self) -> &[TilePosition] {
         &self.small_tiles
     }
 
     /// The top left tiles of the 3×2 slots.
-    pub fn medium_tiles(&self) -> &BTreeSet<TilePosition> {
+    pub fn medium_tiles(&self) -> &[TilePosition] {
         &self.medium_tiles
     }
 
     /// The top left tiles of the 4×3 slots.
-    pub fn large_tiles(&self) -> &BTreeSet<TilePosition> {
+    pub fn large_tiles(&self) -> &[TilePosition] {
         &self.large_tiles
     }
 
     /// The top left tiles of the 4×2 slots.
-    pub fn wide_tiles(&self) -> &BTreeSet<TilePosition> {
+    pub fn wide_tiles(&self) -> &[TilePosition] {
         &self.wide_tiles
     }
 
     /// The slots for a building of the size of `footprint`.
-    pub fn placements(&self, footprint: &Footprint) -> &BTreeSet<TilePosition> {
+    pub fn placements(&self, footprint: &Footprint) -> &[TilePosition] {
         match (footprint.tile_width, footprint.tile_height) {
             (4, 2) => &self.wide_tiles,
             (4, _) => &self.large_tiles,
@@ -143,15 +175,15 @@ impl Block {
     }
 
     pub fn is_proxy(&self) -> bool {
-        self.kind == BlockType::Proxy
+        self.kind == BlockKind::Proxy
     }
 
     pub fn is_defensive(&self) -> bool {
-        self.kind == BlockType::Defensive
+        self.kind == BlockKind::Defensive
     }
 
     /// What the block was found for.
-    pub fn block_type(&self) -> BlockType {
+    pub fn kind(&self) -> BlockKind {
         self.kind
     }
 
@@ -164,28 +196,13 @@ impl Block {
     pub fn height(&self) -> i32 {
         self.height
     }
-
-    pub fn insert_small(&mut self, here: TilePosition) {
-        self.small_tiles.insert(here);
-    }
-
-    pub fn insert_medium(&mut self, here: TilePosition) {
-        self.medium_tiles.insert(here);
-    }
-
-    pub fn insert_large(&mut self, here: TilePosition) {
-        self.large_tiles.insert(here);
-    }
-
-    pub fn insert_wide(&mut self, here: TilePosition) {
-        self.wide_tiles.insert(here);
-    }
 }
 
 /// Every block of the map: `BWEB::Blocks`.
 #[derive(Clone, Debug, Default)]
 pub struct Blocks {
-    blocks: Vec<Block>,
+    /// By id; a removed block leaves `None`.
+    blocks: Vec<Option<Block>>,
 }
 
 /// The pieces of each kind in a list of pieces.
@@ -256,42 +273,61 @@ impl Blocks {
         finder.find_start_blocks();
         finder.find_production_blocks();
         finder.find_supply_blocks();
+        // `Pathfinding::clearCacheFully`: the next search forgets the tiles
+        // found unreachable before.
+        finder.layout.note_change();
         Blocks {
-            blocks: finder.blocks,
+            blocks: finder.blocks.into_iter().map(Some).collect(),
         }
     }
 
-    pub fn blocks(&self) -> &[Block] {
-        &self.blocks
+    /// The blocks not removed, in the order they were found.
+    pub fn iter(&self) -> core::iter::Flatten<core::slice::Iter<'_, Option<Block>>> {
+        self.blocks.iter().flatten()
     }
 
-    /// The block whose middle tile is nearest to `here`.
-    pub fn closest_block(&self, here: TilePosition) -> Option<&Block> {
-        let mut dist_best = f64::MAX;
+    /// The block `id`; `None` once it is removed.
+    pub fn block(&self, id: BlockId) -> Option<&Block> {
+        self.blocks.get(id.0 as usize)?.as_ref()
+    }
+
+    /// `getClosestBlock`: the first block whose middle tile is nearest to
+    /// `here`.
+    pub fn closest(&self, here: TilePosition) -> Option<BlockId> {
+        let mut best_distance = f64::MAX;
         let mut best = None;
-        for block in &self.blocks {
+        for block in self {
             let tile = block.tile + TilePosition::new(block.width / 2, block.height / 2);
-            let dist = here.distance(tile);
-            if dist < dist_best {
-                dist_best = dist;
-                best = Some(block);
+            let distance = here.distance(tile);
+            if distance < best_distance {
+                best_distance = distance;
+                best = Some(block.id);
             }
         }
         best
     }
 
-    /// Erases the first block that covers `here`. Its reserves stay, as in
-    /// BWEB.
-    pub fn erase_block(&mut self, here: TilePosition) {
-        let covers = |b: &Block| {
-            here.x >= b.tile.x
-                && here.x < b.tile.x + b.width
-                && here.y >= b.tile.y
-                && here.y < b.tile.y + b.height
-        };
-        if let Some(i) = self.blocks.iter().position(covers) {
-            self.blocks.remove(i);
-        }
+    /// The first block that covers `here`: what `eraseBlock(here)` erases.
+    pub fn covering(&self, here: TilePosition) -> Option<BlockId> {
+        self.iter().find(|b| b.covers(here)).map(|b| b.id)
+    }
+
+    /// Removes the block `id`; false if it is already gone. Its reserves stay,
+    /// as in BWEB.
+    pub fn remove(&mut self, id: BlockId) -> bool {
+        self.blocks
+            .get_mut(id.0 as usize)
+            .and_then(Option::take)
+            .is_some()
+    }
+}
+
+impl<'a> IntoIterator for &'a Blocks {
+    type Item = &'a Block;
+    type IntoIter = core::iter::Flatten<core::slice::Iter<'a, Option<Block>>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
 
@@ -393,14 +429,13 @@ impl Finder<'_, '_> {
 
     /// `initialize`: the main location and its surroundings reserved, 6×5.
     fn initialize(&mut self) {
-        for station in self.stations.stations() {
+        for station in self.stations {
             if !station.is_main() {
                 continue;
             }
-            if let Some(base) = station.base(self.bwem) {
-                self.layout
-                    .add_reserve(base.location() - TilePosition::new(1, 1), 6, 5);
-            }
+            let base = self.bwem.base(station.base());
+            self.layout
+                .add_reserve(base.location() - TilePosition::new(1, 1), 6, 5);
         }
     }
 
@@ -410,7 +445,7 @@ impl Finder<'_, '_> {
         for x in 0..size.x {
             for y in 0..size.y {
                 let t = TilePosition::new(x, y);
-                if self.layout.buildable(t) {
+                if self.layout.is_buildable(t) {
                     self.available_tiles.push(t);
                 }
             }
@@ -423,9 +458,7 @@ impl Finder<'_, '_> {
         let Some(area) = self.bwem.area_at(t) else {
             return false;
         };
-        let Some(base_area) = station.base(self.bwem).map(|b| b.area()) else {
-            return false;
-        };
+        let base_area = self.bwem.base(station.base()).area();
         if area == base_area {
             return true;
         }
@@ -446,7 +479,7 @@ impl Finder<'_, '_> {
         width: i32,
         height: i32,
         pieces: &[(TilePosition, Piece)],
-        kind: BlockType,
+        kind: BlockKind,
     ) -> bool {
         let hatchery = Footprint::of(UnitType::ZERG_HATCHERY).unwrap_or(Footprint::NONE);
         for &(tile, piece) in pieces {
@@ -459,7 +492,7 @@ impl Finder<'_, '_> {
         }
 
         let border = i32::from(
-            (kind != BlockType::Supply && self.race != Race::ZERG) || kind == BlockType::Production,
+            (kind != BlockKind::Supply && self.race != Race::ZERG) || kind == BlockKind::Production,
         );
         for x in here.x - border..here.x + width + border {
             for y in here.y - border..here.y + height + border {
@@ -467,7 +500,7 @@ impl Finder<'_, '_> {
                 let Some(tile) = self.bwem.tile(t) else {
                     return false;
                 };
-                if kind == BlockType::Supply && tile.min_altitude() > 170 {
+                if kind == BlockKind::Supply && tile.min_altitude() > 170 {
                     return false;
                 }
                 if !tile.is_buildable() || self.layout.is_reserved(t, 1, 1) {
@@ -476,13 +509,14 @@ impl Finder<'_, '_> {
             }
         }
 
-        if kind == BlockType::Supply {
+        if kind == BlockKind::Supply {
             let center = Position::from(here) + Position::new(width * 32, height * 32);
-            let choke = self
+            let choke_point = self
                 .stations
-                .starting_main()
-                .and_then(|s| s.choke_point(self.bwem));
-            if let Some(cp) = choke {
+                .own_main()
+                .and_then(|s| s.choke_point())
+                .map(|cp| self.bwem.choke_point(cp));
+            if let Some(cp) = choke_point {
                 if center.distance(Position::from(cp.center())) < 160.0 {
                     return false;
                 }
@@ -499,10 +533,11 @@ impl Finder<'_, '_> {
         pieces: &[(TilePosition, Piece)],
         width: i32,
         height: i32,
-        kind: BlockType,
+        kind: BlockKind,
     ) {
+        let id = BlockId(self.blocks.len() as u32);
         self.blocks
-            .push(Block::new(here, pieces, width, height, kind));
+            .push(Block::new(id, here, pieces, width, height, kind));
         let area = self.area(here);
         for &(_, piece) in pieces {
             *self
@@ -536,7 +571,7 @@ impl Finder<'_, '_> {
     /// production ones need creep at their corners. Whether one was made.
     fn find_block(
         &mut self,
-        kind: BlockType,
+        kind: BlockKind,
         width: i32,
         height: i32,
         search_tiles: &[TilePosition],
@@ -561,7 +596,7 @@ impl Finder<'_, '_> {
                         continue;
                     }
                     if self.race == Race::ZERG
-                        && kind != BlockType::Production
+                        && kind != BlockKind::Production
                         && !creep_on_corners(tile, w, h)
                     {
                         continue;
@@ -588,13 +623,11 @@ impl Finder<'_, '_> {
     /// fit up to 1 small, 5 medium and 1 wide; Terran a defensive block nearest
     /// the choke point and a start block; Protoss two start blocks.
     fn find_start_blocks(&mut self) {
-        let Some(main) = self.stations.starting_main() else {
+        let Some(main) = self.stations.own_main() else {
             return;
         };
-        let Some(base) = main.base(self.bwem) else {
-            return;
-        };
-        let Some(choke) = main.choke_point(self.bwem) else {
+        let base = self.bwem.base(main.base());
+        let Some(choke_point) = main.choke_point().map(|cp| self.bwem.choke_point(cp)) else {
             return;
         };
         let area = Some(base.area().id());
@@ -611,30 +644,36 @@ impl Finder<'_, '_> {
             Race::TERRAN => c.large >= 1,
             _ => true,
         };
-        let def_ok = |_: &Self, _: TilePosition, _: &Counts| true;
+        let defense_ok = |_: &Self, _: TilePosition, _: &Counts| true;
 
         let main_tile = base.location();
-        let choke_tile = TilePosition::from(choke.center());
-        let mut tiles_dist_start = self.available_tiles.clone();
-        let mut tiles_dist_choke = self.available_tiles.clone();
-        stdsort::sort(&mut tiles_dist_start, |a, b| {
+        let choke_tile = TilePosition::from(choke_point.center());
+        let mut tiles_by_start = self.available_tiles.clone();
+        let mut tiles_by_choke_point = self.available_tiles.clone();
+        stdsort::sort(&mut tiles_by_start, |a, b| {
             a.distance(main_tile) < b.distance(main_tile)
         });
-        stdsort::sort(&mut tiles_dist_choke, |a, b| {
+        stdsort::sort(&mut tiles_by_choke_point, |a, b| {
             a.distance(choke_tile) < b.distance(choke_tile)
         });
 
         match race {
             Race::ZERG => {
-                while self.find_block(BlockType::Start, 4, 3, &tiles_dist_start, &start_ok) {}
+                while self.find_block(BlockKind::Start, 4, 3, &tiles_by_start, &start_ok) {}
             }
             Race::TERRAN => {
-                self.find_block(BlockType::Defensive, 3, 2, &tiles_dist_choke, &def_ok);
-                self.find_block(BlockType::Start, 10, 6, &tiles_dist_start, &start_ok);
+                self.find_block(
+                    BlockKind::Defensive,
+                    3,
+                    2,
+                    &tiles_by_choke_point,
+                    &defense_ok,
+                );
+                self.find_block(BlockKind::Start, 10, 6, &tiles_by_start, &start_ok);
             }
             _ => {
-                self.find_block(BlockType::Start, 8, 5, &tiles_dist_start, &start_ok);
-                self.find_block(BlockType::Start, 8, 5, &tiles_dist_start, &start_ok);
+                self.find_block(BlockKind::Start, 8, 5, &tiles_by_start, &start_ok);
+                self.find_block(BlockKind::Start, 8, 5, &tiles_by_start, &start_ok);
             }
         }
     }
@@ -679,21 +718,21 @@ impl Finder<'_, '_> {
         };
 
         let stations = self.stations;
-        for station in stations.stations() {
-            let (Some(base), Some(choke)) =
-                (station.base(self.bwem), station.choke_point(self.bwem))
+        for station in stations {
+            let base = self.bwem.base(station.base());
+            let Some(choke_point) = station.choke_point().map(|cp| self.bwem.choke_point(cp))
             else {
                 continue;
             };
             if !station.is_main() {
                 continue;
             }
-            let mut desired = TilePosition::from(choke.center());
+            let mut desired = TilePosition::from(choke_point.center());
             if race == Race::ZERG {
                 desired = (desired + base.location()) / 2;
             }
             let tiles = self.tiles_of(station, |a, b| a.distance(desired) < b.distance(desired));
-            while self.find_block(BlockType::Production, 20, 20, &tiles, &production_ok) {}
+            while self.find_block(BlockKind::Production, 20, 20, &tiles, &production_ok) {}
         }
     }
 
@@ -713,17 +752,18 @@ impl Finder<'_, '_> {
 
         let center = TilePosition::from(self.bwem.center());
         let stations = self.stations;
-        for station in stations.stations() {
-            let Some(choke) = station.choke_point(self.bwem) else {
+        for station in stations {
+            let Some(choke_point) = station.choke_point().map(|cp| self.bwem.choke_point(cp))
+            else {
                 continue;
             };
             if !station.is_main() {
                 continue;
             }
-            let desired = TilePosition::from(choke.center());
+            let desired = TilePosition::from(choke_point.center());
             let far = |t: &TilePosition| t.distance(desired) + t.distance(center);
             let tiles = self.tiles_of(station, |a, b| far(a) > far(b));
-            while self.find_block(BlockType::Supply, supply_width, 2, &tiles, &supply_ok) {}
+            while self.find_block(BlockKind::Supply, supply_width, 2, &tiles, &supply_ok) {}
         }
     }
 }

@@ -13,8 +13,8 @@ use crate::PositionExt;
 use crate::bwem::{self, Area, Base, BaseId, ChokePoint, ChokePointId, Node};
 use crate::math::{self, PI};
 
-const PI_D4: f64 = PI / 4.0;
-const PI_D2: f64 = PI / 2.0;
+const QUARTER_PI: f64 = PI / 4.0;
+const HALF_PI: f64 = PI / 2.0;
 
 /// A base with what BWEB finds around it: whether it is a main or a natural,
 /// the choke point to hold, and the race presets: where defenses go, and the
@@ -22,38 +22,40 @@ const PI_D2: f64 = PI / 2.0;
 #[derive(Clone, Debug)]
 pub struct Station {
     base: BaseId,
-    base_center: Position,
-    choke: Option<ChokePointId>,
-    main: bool,
-    natural: bool,
+    center: Position,
+    choke_point: Option<ChokePointId>,
+    is_main: bool,
+    is_natural: bool,
     resource_centroid: Position,
     defense_angle: f64,
-    defenses: BTreeSet<TilePosition>,
-    small_position: Option<TilePosition>,
-    medium_position: Option<TilePosition>,
+    defenses: Vec<TilePosition>,
+    small_slot: Option<TilePosition>,
+    medium_slot: Option<TilePosition>,
 }
 
 impl Station {
-    pub fn base_id(&self) -> BaseId {
+    /// The base of the station: one station on every base.
+    pub fn base(&self) -> BaseId {
         self.base
     }
 
-    pub fn base<'m>(&self, bwem: &'m bwem::Map) -> Option<Base<'m>> {
-        Some(bwem.base(self.base))
+    /// The center of the base.
+    pub fn center(&self) -> Position {
+        self.center
     }
 
     /// The choke point to hold: for a main or a natural, the way out of it;
     /// for another base, the only choke point of its area.
-    pub fn choke_point<'m>(&self, bwem: &'m bwem::Map) -> Option<ChokePoint<'m>> {
-        self.choke.map(|id| bwem.choke_point(id))
+    pub fn choke_point(&self) -> Option<ChokePointId> {
+        self.choke_point
     }
 
     pub fn is_main(&self) -> bool {
-        self.main
+        self.is_main
     }
 
     pub fn is_natural(&self) -> bool {
-        self.natural
+        self.is_natural
     }
 
     /// The mean position of the minerals and geysers of the base.
@@ -69,20 +71,20 @@ impl Station {
     }
 
     /// The top left tiles of the defenses of the race around the base: Photon
-    /// Cannons, Missile Turrets or Creep Colonies.
-    pub fn defenses(&self) -> &BTreeSet<TilePosition> {
+    /// Cannons, Missile Turrets or Creep Colonies; in increasing order.
+    pub fn defenses(&self) -> &[TilePosition] {
         &self.defenses
     }
 
     /// The slot of the ComSat of a Terran base, or of the Spire of a Zerg
     /// main's sim city.
-    pub fn small_position(&self) -> Option<TilePosition> {
-        self.small_position
+    pub fn small_slot(&self) -> Option<TilePosition> {
+        self.small_slot
     }
 
     /// The slot of the Spawning Pool of a Zerg main's sim city.
-    pub fn medium_position(&self) -> Option<TilePosition> {
-        self.medium_position
+    pub fn medium_slot(&self) -> Option<TilePosition> {
+        self.medium_slot
     }
 }
 
@@ -97,9 +99,14 @@ impl Eq for Station {}
 /// Every station of the map: `BWEB::Stations`.
 #[derive(Clone, Debug)]
 pub struct Stations {
+    /// In the order of `findStations`: the mains, the naturals, then the other
+    /// bases. Blocks follow it, and the nearest station of several at the same
+    /// distance is the first.
     stations: Vec<Station>,
-    starting_main: Option<usize>,
-    starting_natural: Option<usize>,
+    /// The index in `stations` of the station of each base, by base.
+    by_base: Vec<usize>,
+    own_main: Option<BaseId>,
+    own_natural: Option<BaseId>,
 }
 
 /// The state `findStations` keeps in globals while it creates the stations.
@@ -115,9 +122,9 @@ struct Finder<'a, 'm> {
     depot: Footprint,
     defense: Footprint,
     main_bases: Vec<Base<'m>>,
-    nat_bases: Vec<Base<'m>>,
-    main_chokes: Vec<ChokePointId>,
-    nonsense_chokes: Vec<ChokePointId>,
+    natural_bases: Vec<Base<'m>>,
+    main_choke_points: Vec<ChokePointId>,
+    nonsense_choke_points: Vec<ChokePointId>,
 }
 
 /// The footprint of a type the presets name.
@@ -126,16 +133,15 @@ fn known(ty: UnitType) -> Footprint {
 }
 
 impl Stations {
-    /// The analysis of `Stations::findStations`: a main at every start
-    /// location, a natural for every main, a station at every other base, with
-    /// the presets of `race`, the race of the bot. `self_start` is its start
-    /// location, whose main and natural are the starting ones. The layout is
-    /// not changed: BWEB marks the tiles of the presets used while it places
-    /// them and frees them at the end of each station, which happens on a copy;
-    /// the reserves of the stations are [`Stations::apply_reserves`].
+    /// `Stations::findStations`: a main at every start location, a natural for
+    /// every main, a station at every other base, with the presets of `race`,
+    /// the race of the bot. `self_start` is its start location, whose main and
+    /// natural are its own. BWEB marks the tiles of the presets used while it
+    /// places them and frees them at the end of each station, which happens on
+    /// a copy of `layout`; then `layout` gets the reserves of the stations.
     pub fn analyze(
         bwem: &bwem::Map,
-        layout: &Layout,
+        layout: &mut Layout,
         self_start: TilePosition,
         race: Race,
     ) -> Stations {
@@ -150,15 +156,15 @@ impl Stations {
         };
         let mut finder = Finder {
             bwem,
-            layout,
+            layout: &*layout,
             used: layout.clone(),
             race,
             depot: known(depot),
             defense: known(defense),
             main_bases: Vec::new(),
-            nat_bases: Vec::new(),
-            main_chokes: Vec::new(),
-            nonsense_chokes: Vec::new(),
+            natural_bases: Vec::new(),
+            main_choke_points: Vec::new(),
+            nonsense_choke_points: Vec::new(),
         };
 
         // Some choke points are nonsense: narrow, and next to another choke
@@ -173,10 +179,10 @@ impl Stations {
                         && other
                             .geometry()
                             .iter()
-                            .any(|&geo| geo.distance(cp.center()) <= 4.0)
+                            .any(|&geometry_tile| geometry_tile.distance(cp.center()) <= 4.0)
                 });
-                if next_to_another && !finder.nonsense_chokes.contains(&cp.id()) {
-                    finder.nonsense_chokes.push(cp.id());
+                if next_to_another && !finder.nonsense_choke_points.contains(&cp.id()) {
+                    finder.nonsense_choke_points.push(cp.id());
                 }
             }
         }
@@ -190,7 +196,7 @@ impl Stations {
         for i in 0..finder.main_bases.len() {
             let main = finder.main_bases[i];
             if let Some(natural) = finder.find_natural(main) {
-                finder.nat_bases.push(natural);
+                finder.natural_bases.push(natural);
             }
         }
 
@@ -198,33 +204,42 @@ impl Stations {
         for i in 0..finder.main_bases.len() {
             stations.push(finder.station(finder.main_bases[i], true, false));
         }
-        for i in 0..finder.nat_bases.len() {
-            stations.push(finder.station(finder.nat_bases[i], false, true));
+        for i in 0..finder.natural_bases.len() {
+            stations.push(finder.station(finder.natural_bases[i], false, true));
         }
         for area in bwem.areas() {
             for base in area.bases() {
                 let listed = |bases: &[Base<'_>]| bases.iter().any(|b| b.id() == base.id());
-                if listed(&finder.nat_bases) || listed(&finder.main_bases) {
+                if listed(&finder.natural_bases) || listed(&finder.main_bases) {
                     continue;
                 }
                 stations.push(finder.station(base, false, false));
             }
         }
 
+        let mut by_base = vec![usize::MAX; bwem.base_count()];
+        for (i, station) in stations.iter().enumerate() {
+            by_base[station.base.0 as usize] = i;
+        }
         let mut result = Stations {
             stations,
-            starting_main: None,
-            starting_natural: None,
+            by_base,
+            own_main: None,
+            own_natural: None,
         };
-        result.starting_main = result.closest(Position::from(self_start), |s| s.main);
-        if let Some(main) = result.starting_main {
-            let main = &result.stations[main];
-            let here = match main.choke_point(bwem) {
-                Some(cp) => TilePosition::from(cp.center()),
-                None => TilePosition::from(main.base_center),
+        result.own_main = result
+            .closest(Position::from(self_start), |s| s.is_main)
+            .map(|s| s.base);
+        if let Some(main) = result.own_main() {
+            let here = match main.choke_point {
+                Some(cp) => TilePosition::from(bwem.choke_point(cp).center()),
+                None => TilePosition::from(main.center),
             };
-            result.starting_natural = result.closest(Position::from(here), |s| s.natural);
+            result.own_natural = result
+                .closest(Position::from(here), |s| s.is_natural)
+                .map(|s| s.base);
         }
+        result.reserve(bwem, layout);
         result
     }
 
@@ -232,13 +247,10 @@ impl Stations {
     /// of each resource and a line of tiles from the depot to it
     /// (`addResourceReserves`), and the base location and the presets reserved
     /// instead of used (`cleanup`, which frees their tiles even of what used
-    /// them before, as BWEB does). Reserves are flags: applying them twice
-    /// changes nothing.
-    pub fn apply_reserves(&self, bwem: &bwem::Map, layout: &mut Layout) {
+    /// them before, as BWEB does).
+    fn reserve(&self, bwem: &bwem::Map, layout: &mut Layout) {
         for station in &self.stations {
-            let Some(base) = station.base(bwem) else {
-                continue;
-            };
+            let base = bwem.base(station.base);
             add_resource_reserves(bwem, layout, base);
             let mut free = |tile: TilePosition, width: i32, height: i32| {
                 layout.remove_used(tile, width, height);
@@ -248,59 +260,66 @@ impl Stations {
                 free(tile, 2, 2);
             }
             free(base.location(), 4, 3);
-            if let Some(tile) = station.medium_position {
+            if let Some(tile) = station.medium_slot {
                 free(tile, 3, 2);
             }
-            if let Some(tile) = station.small_position {
+            if let Some(tile) = station.small_slot {
                 free(tile, 2, 2);
             }
         }
     }
 
-    pub fn stations(&self) -> &[Station] {
-        &self.stations
+    /// The stations in the order of `findStations`: the mains, the naturals,
+    /// then the other bases.
+    pub fn iter(&self) -> core::slice::Iter<'_, Station> {
+        self.stations.iter()
     }
 
-    /// The main nearest to the start location of the bot.
-    pub fn starting_main(&self) -> Option<&Station> {
-        self.starting_main.map(|i| &self.stations[i])
+    /// The station of `base`.
+    pub fn station(&self, base: BaseId) -> &Station {
+        &self.stations[self.by_base[base.0 as usize]]
     }
 
-    /// The natural nearest to the choke point of the starting main.
-    pub fn starting_natural(&self) -> Option<&Station> {
-        self.starting_natural.map(|i| &self.stations[i])
+    /// The main nearest to the start location of the bot: its own main. Not
+    /// [`Station::is_main`], which holds for the main of every start location.
+    pub fn own_main(&self) -> Option<&Station> {
+        self.own_main.map(|base| self.station(base))
     }
 
-    /// The station whose base center is nearest to `here`.
-    pub fn closest_station(&self, here: impl Into<Position>) -> Option<&Station> {
-        self.closest(here.into(), |_| true)
-            .map(|i| &self.stations[i])
+    /// The natural nearest to the choke point of the bot's own main.
+    pub fn own_natural(&self) -> Option<&Station> {
+        self.own_natural.map(|base| self.station(base))
     }
 
-    pub fn closest_main_station(&self, here: impl Into<Position>) -> Option<&Station> {
-        self.closest(here.into(), |s| s.main)
-            .map(|i| &self.stations[i])
-    }
-
-    pub fn closest_natural_station(&self, here: impl Into<Position>) -> Option<&Station> {
-        self.closest(here.into(), |s| s.natural)
-            .map(|i| &self.stations[i])
-    }
-
-    fn closest(&self, here: Position, keep: impl Fn(&Station) -> bool) -> Option<usize> {
-        let mut dist_best = f64::MAX;
+    /// `getClosestStation` and its kinds: the first station `keep` lets
+    /// through whose base center is nearest to `here`.
+    pub(crate) fn closest(
+        &self,
+        here: Position,
+        keep: impl Fn(&Station) -> bool,
+    ) -> Option<&Station> {
+        let mut best_distance = f64::MAX;
         let mut best = None;
-        for (i, station) in self.stations.iter().enumerate() {
+        for station in &self.stations {
             if !keep(station) {
                 continue;
             }
-            let dist = here.distance(station.base_center);
-            if dist < dist_best {
-                dist_best = dist;
-                best = Some(i);
+            let distance = here.distance(station.center);
+            if distance < best_distance {
+                best_distance = distance;
+                best = Some(station);
             }
         }
         best
+    }
+}
+
+impl<'a> IntoIterator for &'a Stations {
+    type Item = &'a Station;
+    type IntoIter = core::slice::Iter<'a, Station>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
 
@@ -318,7 +337,7 @@ impl<'m> Finder<'_, 'm> {
     /// other base.
     fn find_natural(&self, main: Base<'m>) -> Option<Base<'m>> {
         let mut base_best = None;
-        let mut dist_best = f64::MAX;
+        let mut best_distance = f64::MAX;
         for area in self.bwem.areas() {
             for base in area.bases() {
                 if base.is_starting()
@@ -329,16 +348,16 @@ impl<'m> Finder<'_, 'm> {
                     continue;
                 }
 
-                let dist = self.ground_distance(base.center(), main.center());
+                let distance = self.ground_distance(base.center(), main.center());
 
                 // A pocket natural: its area has one choke point.
-                if base.area().choke_points().len() == 1 && dist < 1600.0 {
-                    dist_best = 0.0;
+                if base.area().choke_points().len() == 1 && distance < 1600.0 {
+                    best_distance = 0.0;
                     base_best = Some(base);
                 }
 
-                if dist < dist_best && dist < 1600.0 {
-                    dist_best = dist;
+                if distance < best_distance && distance < 1600.0 {
+                    best_distance = distance;
                     base_best = Some(base);
                 }
             }
@@ -352,9 +371,9 @@ impl<'m> Finder<'_, 'm> {
                 if base.is_starting() {
                     continue;
                 }
-                let dist = self.ground_distance(main.center(), base.center());
-                if dist < dist_best {
-                    dist_best = dist;
+                let distance = self.ground_distance(main.center(), base.center());
+                if distance < best_distance {
+                    best_distance = distance;
                     base_best = Some(base);
                 }
             }
@@ -362,8 +381,8 @@ impl<'m> Finder<'_, 'm> {
         base_best
     }
 
-    /// The constructor of `Station` without the reserves, which are
-    /// [`Stations::apply_reserves`]: `initialize`, `findChoke`, `findAngles`,
+    /// The constructor of `Station` without the reserves, which the stations
+    /// get once all are found: `initialize`, `findChoke`, `findAngles`,
     /// `findSecondaryLocations`, `findDefenses` and `cleanup`.
     fn station(&mut self, base: Base<'m>, main: bool, natural: bool) -> Station {
         // The resource centroid; the defense centroid is that of the minerals,
@@ -389,12 +408,12 @@ impl<'m> Finder<'_, 'm> {
         let depot = self.depot;
         self.used.add_used(base.location(), &depot);
 
-        let choke = self.find_choke(base, main, natural);
-        if let (Some(cp), true) = (choke, main) {
-            self.main_chokes.push(cp.id());
+        let choke_point = self.find_choke_point(base, main, natural);
+        if let (Some(cp), true) = (choke_point, main) {
+            self.main_choke_points.push(cp.id());
         }
-        let (base_angle, defense_angle) = self.find_angles(base, choke, main, natural);
-        let (small_position, medium_position) =
+        let (base_angle, defense_angle) = self.find_angles(base, choke_point, main, natural);
+        let (small_slot, medium_slot) =
             self.find_secondary_locations(base, main, base_angle, resource_centroid);
         let defenses = self.find_defenses(base, natural, defense_centroid);
 
@@ -403,24 +422,24 @@ impl<'m> Finder<'_, 'm> {
             self.used.remove_used(tile, 2, 2);
         }
         self.used.remove_used(base.location(), 4, 3);
-        if let Some(tile) = medium_position {
+        if let Some(tile) = medium_slot {
             self.used.remove_used(tile, 3, 2);
         }
-        if let Some(tile) = small_position {
+        if let Some(tile) = small_slot {
             self.used.remove_used(tile, 2, 2);
         }
 
         Station {
             base: base.id(),
-            base_center: base.center(),
-            choke: choke.map(|cp| cp.id()),
-            main,
-            natural,
+            center: base.center(),
+            choke_point: choke_point.map(|cp| cp.id()),
+            is_main: main,
+            is_natural: natural,
             resource_centroid,
             defense_angle,
-            defenses,
-            small_position,
-            medium_position,
+            defenses: defenses.into_iter().collect(),
+            small_slot,
+            medium_slot,
         }
     }
 
@@ -430,22 +449,23 @@ impl<'m> Finder<'_, 'm> {
     fn find_angles(
         &self,
         base: Base<'m>,
-        choke: Option<ChokePoint<'m>>,
+        choke_point: Option<ChokePoint<'m>>,
         main: bool,
         natural: bool,
     ) -> (f64, f64) {
-        let Some(cp) = choke else {
+        let Some(cp) = choke_point else {
             return (0.0, 0.0);
         };
         let angle_position = Position::from(cp.center()) + Position::new(4, 4);
-        let dist = base.center().distance(angle_position);
+        let distance = base.center().distance(angle_position);
         let ends = (
             Position::from(cp.node(Node::End1)),
             Position::from(cp.node(Node::End2)),
         );
-        let base_angle = math::round(angle(base.center(), angle_position) / PI_D4) * PI_D4;
-        let choke_angle = math::round(angle(ends.0, ends.1) / PI_D4) * PI_D4;
-        let mut defense_angle = base_angle + PI_D2;
+        let base_angle =
+            math::round(angle(base.center(), angle_position) / QUARTER_PI) * QUARTER_PI;
+        let choke_angle = math::round(angle(ends.0, ends.1) / QUARTER_PI) * QUARTER_PI;
+        let mut defense_angle = base_angle + HALF_PI;
 
         // Narrow choke points do not set the angles.
         if f64::from(cp.width()) < 96.0 {
@@ -456,7 +476,7 @@ impl<'m> Finder<'_, 'm> {
         // (a fix for Matchpoint).
         let x = TilePosition::from(cp.center()).x;
         if x < 10 || x > self.bwem.size().x - 10 {
-            let choke_angle = math::round(angle(ends.0, ends.1) / PI_D2) * PI_D2;
+            let choke_angle = math::round(angle(ends.0, ends.1) / HALF_PI) * HALF_PI;
             return (base_angle, choke_angle);
         }
 
@@ -478,10 +498,10 @@ impl<'m> Finder<'_, 'm> {
                 let across = angle(Position::from(cp.center()), Position::from(second.center()));
                 defense_angle = (across + angle(ends.0, ends.1)) / 2.0;
             }
-        } else if (dist >= 320.0 && !main && !natural) || (dist >= 368.0 && natural) {
-            let base_mod = math::fmod(base_angle + PI_D2, PI);
-            let choke_mod = math::fmod(choke_angle, PI);
-            defense_angle = math::fmod((base_mod + choke_mod) / 2.0, PI);
+        } else if (distance >= 320.0 && !main && !natural) || (distance >= 368.0 && natural) {
+            let base_remainder = math::fmod(base_angle + HALF_PI, PI);
+            let choke_remainder = math::fmod(choke_angle, PI);
+            defense_angle = math::fmod((base_remainder + choke_remainder) / 2.0, PI);
         }
         (base_angle, defense_angle)
     }
@@ -641,7 +661,12 @@ impl<'m> Finder<'_, 'm> {
     }
 
     /// `Station::findChoke`.
-    fn find_choke(&self, base: Base<'m>, main: bool, natural: bool) -> Option<ChokePoint<'m>> {
+    fn find_choke_point(
+        &self,
+        base: Base<'m>,
+        main: bool,
+        natural: bool,
+    ) -> Option<ChokePoint<'m>> {
         let area = base.area();
         // Only mains, naturals and bases with one choke point get one.
         if !main && !natural && area.choke_points().len() > 1 {
@@ -650,17 +675,17 @@ impl<'m> Finder<'_, 'm> {
 
         // The nearest partner by ground: a natural for a main, a main otherwise.
         let mut partner = None;
-        let mut dist_best = f64::MAX;
+        let mut best_distance = f64::MAX;
         let partners = if main {
-            &self.nat_bases
+            &self.natural_bases
         } else {
             &self.main_bases
         };
         for &candidate in partners {
-            let dist = self.ground_distance(candidate.center(), base.center());
-            if dist < dist_best {
+            let distance = self.ground_distance(candidate.center(), base.center());
+            if distance < best_distance {
                 partner = Some(candidate);
-                dist_best = dist;
+                best_distance = distance;
             }
         }
         let partner = partner?;
@@ -693,41 +718,41 @@ impl<'m> Finder<'_, 'm> {
         // The neighbouring area toward the center of the map, avoiding areas on
         // the path to the partner and areas behind narrow choke points.
         let mut second: Option<Area<'m>> = None;
-        let mut dist_best = f64::MAX;
+        let mut best_distance = f64::MAX;
         for neighbour in area.accessible_neighbours() {
-            let dist = Position::from(neighbour.top()).distance(self.bwem.center());
+            let distance = Position::from(neighbour.top()).distance(self.bwem.center());
             let wrong_area = neighbour.choke_points().any(|c| {
-                !self.nonsense_chokes.contains(&c.id())
+                !self.nonsense_choke_points.contains(&c.id())
                     && ((!c.is_blocked() && c.node(Node::End1).distance(c.node(Node::End2)) <= 2.0)
                         || path.iter().any(|p| p.id() == c.id()))
             });
             if wrong_area {
                 continue;
             }
-            if dist < dist_best {
+            if distance < best_distance {
                 second = Some(neighbour);
-                dist_best = dist;
+                best_distance = distance;
             }
         }
 
-        let mut choke = None;
-        let mut dist_best = f64::MAX;
+        let mut choke_point = None;
+        let mut best_distance = f64::MAX;
         for c in area.choke_points() {
             let (a, b) = c.areas();
             if c.is_blocked()
-                || self.main_chokes.contains(&c.id())
+                || self.main_choke_points.contains(&c.id())
                 || c.geometry().len() <= 3
                 || (Some(a) != second && Some(b) != second)
             {
                 continue;
             }
-            let dist = Position::from(c.center()).distance(partner.center());
-            if dist < dist_best {
-                choke = Some(c);
-                dist_best = dist;
+            let distance = Position::from(c.center()).distance(partner.center());
+            if distance < best_distance {
+                choke_point = Some(c);
+                best_distance = distance;
             }
         }
-        choke
+        choke_point
     }
 }
 
@@ -758,19 +783,19 @@ fn bigger_reserve(bwem: &bwem::Map, layout: &mut Layout, start: TilePosition, en
         TilePosition::new(0, -1),
     ];
     let mut next = start;
-    let p_end = Position::from(end);
+    let end_position = Position::from(end);
     while next.distance(end) > 1.0 {
-        let mut dist_best = f64::MAX;
+        let mut best_distance = f64::MAX;
         let start = next;
         for d in DIRECTIONS {
             let tile = start + d;
             if !bwem.valid(tile) {
                 continue;
             }
-            let dist = Position::from(tile).distance(p_end);
-            if dist <= dist_best {
+            let distance = Position::from(tile).distance(end_position);
+            if distance <= best_distance {
                 next = tile;
-                dist_best = dist;
+                best_distance = distance;
             }
         }
         layout.add_reserve(next, 1, 1);

@@ -12,7 +12,7 @@ use crate::PositionExt;
 use crate::stdsort;
 
 /// The moves of A*, in the order BWEB tries them.
-const EIGHT_DIR: [TilePosition; 8] = [
+const EIGHT_DIRECTIONS: [TilePosition; 8] = [
     TilePosition::new(0, 1),
     TilePosition::new(1, 0),
     TilePosition::new(-1, 0),
@@ -40,12 +40,15 @@ struct TileData {
 ///
 /// BWEB's cache of unreachable tiles is kept as it is: a search is skipped if
 /// its source and its target both failed before, whatever the walkability it
-/// was searched with. [`Pathfinding::clear_cache_fully`] forgets them; BWEB
-/// calls it when a building appears or goes.
+/// was searched with. A search forgets them first if the layout changed since
+/// the last one: a building appeared or went, a neutral went, or blocks were
+/// found, where BWEB calls `Pathfinding::clearCacheFully`.
 #[derive(Clone, Debug)]
 pub struct Pathfinding {
     size: TilePosition,
     not_reachable: BTreeSet<TilePosition>,
+    /// [`Layout::changes`] as of the cache.
+    layout_changes: u64,
     tile_data: Vec<TileData>,
     current_id: i32,
 }
@@ -56,14 +59,19 @@ impl Pathfinding {
         Pathfinding {
             size,
             not_reachable: BTreeSet::new(),
+            layout_changes: layout.changes(),
             tile_data: vec![TileData::default(); (size.x * size.y).max(0) as usize],
             current_id: 0,
         }
     }
 
-    /// `Pathfinding::clearCacheFully`: forgets the searches that found no path.
-    pub fn clear_cache_fully(&mut self) {
-        self.not_reachable.clear();
+    /// `Pathfinding::clearCacheFully` if `layout` changed since the cache was
+    /// filled.
+    fn follow(&mut self, layout: &Layout) {
+        if self.layout_changes != layout.changes() {
+            self.not_reachable.clear();
+            self.layout_changes = layout.changes();
+        }
     }
 
     fn expect_reachable(&self, source: TilePosition, target: TilePosition) -> bool {
@@ -74,7 +82,7 @@ impl Pathfinding {
         t.x >= 0 && t.y >= 0 && t.x < self.size.x && t.y < self.size.y
     }
 
-    fn one_dim(&self, t: TilePosition) -> usize {
+    fn tile_index(&self, t: TilePosition) -> usize {
         (t.y * self.size.x + t.x) as usize
     }
 }
@@ -83,7 +91,7 @@ impl Pathfinding {
 #[derive(Clone, Debug)]
 pub struct Path {
     tiles: Vec<TilePosition>,
-    dist: f64,
+    distance: f64,
     reachable: bool,
     reverse: bool,
     source: TilePosition,
@@ -115,7 +123,7 @@ impl Path {
     ) -> Path {
         Path {
             tiles: Vec::new(),
-            dist: 0.0,
+            distance: 0.0,
             reachable: false,
             reverse: false,
             source: source.into(),
@@ -141,7 +149,7 @@ impl Path {
 
     /// The length in pixels from JPS; 0 from A*, which BWEB does not measure.
     pub fn distance(&self) -> f64 {
-        self.dist
+        self.distance
     }
 
     pub fn is_reachable(&self) -> bool {
@@ -153,28 +161,35 @@ impl Path {
     }
 
     /// Whether the unit walks through the tile, buildings aside.
-    pub fn terrain_walkable(&self, layout: &Layout, tile: TilePosition) -> bool {
+    pub fn is_terrain_walkable(&self, layout: &Layout, tile: TilePosition) -> bool {
         layout.is_walkable(tile, &self.footprint)
     }
 
     /// Whether the unit walks through the tile and no building is on it; the
     /// source always.
-    pub fn unit_walkable(&self, layout: &Layout, tile: TilePosition) -> bool {
+    pub fn is_unit_walkable(&self, layout: &Layout, tile: TilePosition) -> bool {
         tile == self.source
-            || (layout.is_walkable(tile, &self.footprint) && layout.is_used(tile, 1, 1).is_none())
+            || (layout.is_walkable(tile, &self.footprint) && layout.used_by(tile, 1, 1).is_none())
     }
 
     /// `generateAS`: A* from the target to the source over the tiles
     /// `walkable` lets through, 32 pixels a straight step and 45.248 a diagonal
     /// one plus `cost` of the tile entered (BWEB calls it the heuristic). A
     /// diagonal step needs both tiles beside it walkable. The closures get the
-    /// path, as BWEB's capture it.
-    pub fn generate_as(
+    /// path, as BWEB's capture it. Not always the shortest path: the estimate
+    /// of BWEB may be more than the rest of the way.
+    ///
+    /// # Panics
+    ///
+    /// If `cost` gives a cost that is not finite or is negative.
+    pub fn astar_with_cost(
         &mut self,
         pathfinding: &mut Pathfinding,
+        layout: &Layout,
         mut cost: impl FnMut(&Path, TilePosition) -> f64,
         mut walkable: impl FnMut(&Path, TilePosition) -> bool,
     ) {
+        pathfinding.follow(layout);
         let (source, target) = (self.source, self.target);
         if !pathfinding.valid(source)
             || !pathfinding.valid(target)
@@ -190,7 +205,7 @@ impl Path {
         }
         let id = pathfinding.current_id;
 
-        self.dist = 0.0;
+        self.distance = 0.0;
         self.reachable = false;
         self.tiles.clear();
 
@@ -198,7 +213,7 @@ impl Path {
         let mut open: Vec<(TilePosition, f64)> = Vec::new();
         let greater = |a: &(TilePosition, f64), b: &(TilePosition, f64)| a.1 > b.1;
 
-        let start = pathfinding.one_dim(target);
+        let start = pathfinding.tile_index(target);
         pathfinding.tile_data[start] = TileData {
             parent: target,
             g: 0.0,
@@ -213,7 +228,7 @@ impl Path {
             }
             stdsort::pop_heap(&mut open, greater);
             let (tile, _) = open.pop().unwrap();
-            let current = pathfinding.one_dim(tile);
+            let current = pathfinding.tile_index(tile);
 
             let data = pathfinding.tile_data[current];
             if data.is_closed && data.last_visited_id == id {
@@ -224,13 +239,18 @@ impl Path {
             }
             pathfinding.tile_data[current].is_closed = true;
 
-            for d in EIGHT_DIR {
+            for d in EIGHT_DIRECTIONS {
                 let next = tile + d;
                 if !pathfinding.valid(next) {
                     continue;
                 }
                 let diagonal = d.x != 0 && d.y != 0;
-                let move_cost = if diagonal { 45.248 } else { 32.0 } + cost(self, next);
+                let extra = cost(self, next);
+                assert!(
+                    extra.is_finite() && extra >= 0.0,
+                    "the cost of entering {next:?} is {extra}: it must be finite and not negative"
+                );
+                let move_cost = if diagonal { 45.248 } else { 32.0 } + extra;
                 let current_g = pathfinding.tile_data[current].g + move_cost;
 
                 if !walkable(self, next) {
@@ -243,7 +263,7 @@ impl Path {
                     continue;
                 }
 
-                let index = pathfinding.one_dim(next);
+                let index = pathfinding.tile_index(next);
                 let next_data = &mut pathfinding.tile_data[index];
                 if next_data.last_visited_id != id || current_g < next_data.g {
                     *next_data = TileData {
@@ -263,7 +283,7 @@ impl Path {
             let mut step = source;
             while step != target {
                 self.tiles.push(step);
-                step = pathfinding.tile_data[pathfinding.one_dim(step)].parent;
+                step = pathfinding.tile_data[pathfinding.tile_index(step)].parent;
             }
             self.tiles.push(target);
             if self.reverse {
@@ -275,37 +295,30 @@ impl Path {
         }
     }
 
-    /// `generateAS_h`: A* with a cost and every tile walkable.
-    pub fn generate_as_h(
-        &mut self,
-        pathfinding: &mut Pathfinding,
-        cost: impl FnMut(&Path, TilePosition) -> f64,
-    ) {
-        self.generate_as(pathfinding, cost, |_, _| true);
-    }
-
     /// `generateAS_w`: A* without a cost.
-    pub fn generate_as_w(
+    pub fn astar(
         &mut self,
         pathfinding: &mut Pathfinding,
+        layout: &Layout,
         walkable: impl FnMut(&Path, TilePosition) -> bool,
     ) {
-        self.generate_as(pathfinding, |_, _| 0.0, walkable);
+        self.astar_with_cost(pathfinding, layout, |_, _| 0.0, walkable);
     }
 
     /// `generateJPS`: Jump Point Search over the tiles `walkable` lets through
-    /// (the source and the target always). Unlike [`Path::generate_as`], a
-    /// diagonal step needs only one of the two tiles beside it walkable, so a
-    /// path may cut a corner A* would not; the path is not always the shortest
-    /// one. The tiles
-    /// are the source and the turns; the distance sums the straight lines
+    /// (the source and the target always). Unlike [`Path::astar`], a diagonal
+    /// step needs only one of the two tiles beside it walkable, so a path may
+    /// cut a corner A* would not; the path is not always the shortest one. The
+    /// tiles are the source and the turns; the distance sums the straight lines
     /// between them, from the top left corners of the tiles.
-    pub fn generate_jps(
+    pub fn jps(
         &mut self,
         pathfinding: &mut Pathfinding,
+        layout: &Layout,
         mut walkable: impl FnMut(&Path, TilePosition) -> bool,
     ) {
-        self.dist = 0.0;
+        pathfinding.follow(layout);
+        self.distance = 0.0;
         self.reachable = false;
         self.tiles.clear();
         let (source, target) = (self.source, self.target);
@@ -332,7 +345,7 @@ impl Path {
                 let mut current = Position::from(source);
                 self.tiles.push(source);
                 for t in turns {
-                    self.dist += Position::from(t).distance(current);
+                    self.distance += Position::from(t).distance(current);
                     current = Position::from(t);
                     self.tiles.push(t);
                 }
