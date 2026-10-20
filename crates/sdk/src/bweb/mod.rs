@@ -15,7 +15,8 @@
 //! [`Path`] searches tiles with A* or with the Jump Point Search of
 //! False.Genesis (public domain), which BWEB carries in `JPS.h`;
 //! [`Pathfinding`] holds what BWEB keeps between searches, the cache of
-//! unreachable tiles among it.
+//! unreachable tiles among it, which a search clears after the events of
+//! [`Layout`], as BWEB clears it on `onUnitDiscover` and `onUnitDestroy`.
 //!
 //! Differences from the C++ code:
 //! - the input is data: [`MapInput`] and the analysed [`bwem::Map`], passed to
@@ -26,9 +27,8 @@
 //! - [`Layout::ground_distance_via_choke_points`] gives `None` where BWEB gives
 //!   `DBL_MAX`, and also where BWEB gives the straight distance between two
 //!   positions with no path between them;
-//! - `findStations` is two steps: [`Stations::analyze`] finds the stations,
-//!   taking the start location and the race of the bot as arguments instead of
-//!   `Broodwar->self()`, and [`Stations::apply_reserves`] reserves their tiles;
+//! - [`Stations::analyze`], `findStations`, takes the start location and the
+//!   race of the bot as arguments instead of `Broodwar->self()`;
 //! - the angles of station defenses come from `atan2` of musl, which may differ
 //!   from that of the C library of C++ in the last bit;
 //! - what blocks and walls ask the game, creep and `canBuildHere`, comes from a
@@ -38,7 +38,7 @@
 //!   makes no start blocks or no wall;
 //! - `ChokePoint::Width()`, which BWEB calls, is the one of McRave's fork of
 //!   BWEM: [`bwem::ChokePoint::width`];
-//! - where neutral buildings of several types overlap, [`Layout::is_used`] gives
+//! - where neutral buildings of several types overlap, [`Layout::used_by`] gives
 //!   the type of the last in the order of [`MapInput`]; BWEB gives the last in
 //!   the order of `getNeutralUnits`, an `unordered_set`.
 //!
@@ -61,8 +61,8 @@ mod path;
 mod station;
 mod wall;
 
-pub use block::{Block, BlockType, Blocks, Piece, StartState};
+pub use block::{Block, BlockId, BlockKind, Blocks, Piece, StartState};
 pub use layout::{Layout, perpendicular_line};
 pub use path::{Path, Pathfinding};
 pub use station::{Station, Stations};
-pub use wall::{Wall, Walls};
+pub use wall::{Wall, WallError, WallSpec, Walls};
