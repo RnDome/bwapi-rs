@@ -5,32 +5,37 @@
 //! Static neutrals: minerals, geysers and static buildings.
 
 use alloc::vec::Vec;
-use core::ops::Deref;
 
-use bwapi::{Position, TilePosition, WalkPosition};
+use bwapi::{Position, TilePosition, UnitType, WalkPosition};
 
+use super::map::MapView;
 use super::{Area, Map, NeutralId, NeutralKind};
 
-/// The data of a neutral; [`Neutral`] is its view.
+/// What never changes in a neutral; [`Neutral`] is its view.
 #[derive(Clone, Debug)]
-pub(crate) struct NeutralData {
+pub(crate) struct StaticNeutral {
     pub(crate) kind: NeutralKind,
     pub(crate) unit_id: i32,
     pub(crate) type_id: i32,
-    pub(crate) pos: Position,
+    pub(crate) position: Position,
     pub(crate) top_left: TilePosition,
     pub(crate) size: TilePosition,
     pub(crate) initial_amount: i32,
-    pub(crate) next_stacked: Option<u32>,
     /// One mini tile per area the neutral separates: its true doors.
     pub(crate) blocked_areas: Vec<WalkPosition>,
+}
+
+/// What changes in a neutral: the stack it is in, and whether it is destroyed.
+#[derive(Clone, Debug)]
+pub(crate) struct NeutralState {
+    pub(crate) next_stacked: Option<u32>,
     pub(crate) alive: bool,
 }
 
 /// A static neutral: a mineral, a geyser or a static building.
 #[derive(Clone, Copy)]
 pub struct Neutral<'m> {
-    map: &'m Map,
+    map: MapView<'m>,
     index: u32,
 }
 
@@ -41,36 +46,33 @@ impl core::fmt::Debug for Neutral<'_> {
 }
 
 impl<'m> Neutral<'m> {
-    pub(crate) fn new(map: &'m Map, index: u32) -> Self {
+    pub(crate) fn new(map: MapView<'m>, index: u32) -> Self {
         Neutral { map, index }
     }
 
-    fn data(self) -> &'m NeutralData {
-        &self.map.neutrals[self.index as usize]
+    fn data(self) -> &'m StaticNeutral {
+        &self.map.geometry.neutrals[self.index as usize]
     }
 
     pub fn id(self) -> NeutralId {
         NeutralId(self.index)
     }
 
-    /// `IsRessource`.
-    pub fn as_resource(self) -> Option<Resource<'m>> {
-        (self.data().kind != NeutralKind::StaticBuilding).then_some(Resource(self))
-    }
-
-    /// `IsMineral`.
-    pub fn as_mineral(self) -> Option<Mineral<'m>> {
-        (self.data().kind == NeutralKind::Mineral).then_some(Mineral(self))
-    }
-
-    /// `IsGeyser`.
-    pub fn as_geyser(self) -> Option<Geyser<'m>> {
-        (self.data().kind == NeutralKind::Geyser).then_some(Geyser(self))
-    }
-
+    /// A mineral, a geyser or a static building: `IsMineral`, `IsGeyser`,
     /// `IsStaticBuilding`.
-    pub fn as_static_building(self) -> Option<StaticBuilding<'m>> {
-        (self.data().kind == NeutralKind::StaticBuilding).then_some(StaticBuilding(self))
+    pub fn kind(self) -> NeutralKind {
+        self.data().kind
+    }
+
+    /// Not destroyed.
+    pub fn is_alive(self) -> bool {
+        self.map.state.neutrals[self.index as usize].alive
+    }
+
+    /// The resources of a mineral or a geyser at the start; `None` for a static
+    /// building.
+    pub fn initial_amount(self) -> Option<i32> {
+        (self.data().kind != NeutralKind::StaticBuilding).then_some(self.data().initial_amount)
     }
 
     /// The id of the unit: in a game, `game.unit(id)`.
@@ -78,14 +80,13 @@ impl<'m> Neutral<'m> {
         self.data().unit_id
     }
 
-    /// The id of the unit type: in a game, `UnitType::from_id(id)`.
-    pub fn type_id(self) -> i32 {
-        self.data().type_id
+    pub fn unit_type(self) -> UnitType {
+        UnitType::from_id(self.data().type_id)
     }
 
     /// The initial position of the unit.
-    pub fn pos(self) -> Position {
-        self.data().pos
+    pub fn position(self) -> Position {
+        self.data().position
     }
 
     pub fn top_left(self) -> TilePosition {
@@ -102,7 +103,7 @@ impl<'m> Neutral<'m> {
 
     /// Whether the neutral separates areas: then its mini tiles are in no area
     /// and a pseudo choke point stands for it.
-    pub fn blocking(self) -> bool {
+    pub fn is_blocking(self) -> bool {
         !self.data().blocked_areas.is_empty()
     }
 
@@ -112,12 +113,14 @@ impl<'m> Neutral<'m> {
         self.data()
             .blocked_areas
             .iter()
-            .filter_map(move |&w| map.nearest_area(w))
+            .filter_map(move |&w| map.nearest_area_id(w).map(|id| Area::new(map, id)))
     }
 
     /// The neutral stacked on this one.
     pub fn next_stacked(self) -> Option<Neutral<'m>> {
-        self.data().next_stacked.map(|i| Neutral::new(self.map, i))
+        self.map.state.neutrals[self.index as usize]
+            .next_stacked
+            .map(|i| Neutral::new(self.map, i))
     }
 
     /// The top neutral of the stack from this one up.
@@ -130,130 +133,35 @@ impl<'m> Neutral<'m> {
     }
 }
 
-/// A mineral or a geyser: `Ressource`.
-#[derive(Clone, Copy)]
-pub struct Resource<'m>(pub(crate) Neutral<'m>);
-
-impl Resource<'_> {
-    pub fn initial_amount(self) -> i32 {
-        self.0.data().initial_amount
-    }
-}
-
-impl<'m> Deref for Resource<'m> {
-    type Target = Neutral<'m>;
-
-    fn deref(&self) -> &Neutral<'m> {
-        &self.0
-    }
-}
-
-/// A mineral field.
-#[derive(Clone, Copy)]
-pub struct Mineral<'m>(pub(crate) Neutral<'m>);
-
-impl Mineral<'_> {
-    pub fn initial_amount(self) -> i32 {
-        self.0.data().initial_amount
-    }
-}
-
-impl<'m> Deref for Mineral<'m> {
-    type Target = Neutral<'m>;
-
-    fn deref(&self) -> &Neutral<'m> {
-        &self.0
-    }
-}
-
-/// A vespene geyser.
-#[derive(Clone, Copy)]
-pub struct Geyser<'m>(pub(crate) Neutral<'m>);
-
-impl Geyser<'_> {
-    pub fn initial_amount(self) -> i32 {
-        self.0.data().initial_amount
-    }
-}
-
-impl<'m> Deref for Geyser<'m> {
-    type Target = Neutral<'m>;
-
-    fn deref(&self) -> &Neutral<'m> {
-        &self.0
-    }
-}
-
-/// A special building or a pit door.
-#[derive(Clone, Copy)]
-pub struct StaticBuilding<'m>(pub(crate) Neutral<'m>);
-
-impl<'m> Deref for StaticBuilding<'m> {
-    type Target = Neutral<'m>;
-
-    fn deref(&self) -> &Neutral<'m> {
-        &self.0
-    }
-}
-
 impl Map {
-    /// `Neutral::PutOnTiles`: a neutral on a tile that has one joins the top of
-    /// that stack.
-    pub(crate) fn put_on_tiles(&mut self, index: u32) {
-        let NeutralData { top_left, size, .. } = self.neutrals[index as usize];
-        for dy in 0..size.y {
-            for dx in 0..size.x {
-                let t = top_left + TilePosition::new(dx, dy);
-                match self.tiles[t].neutral {
-                    None => self.tiles[t].neutral = Some(index),
-                    Some(bottom) => {
-                        let top = self.last_stacked(bottom);
-                        self.neutrals[top as usize].next_stacked = Some(index);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
     /// `Neutral::RemoveFromTiles`.
     pub(crate) fn remove_from_tiles(&mut self, index: u32) {
-        let NeutralData {
-            top_left,
-            size,
-            next_stacked,
-            ..
-        } = self.neutrals[index as usize];
+        let StaticNeutral { top_left, size, .. } = self.geometry.neutrals[index as usize];
+        let state = &mut self.state;
+        let next_stacked = state.neutrals[index as usize].next_stacked;
         for dy in 0..size.y {
             for dx in 0..size.x {
                 let t = top_left + TilePosition::new(dx, dy);
-                match self.tiles[t].neutral {
-                    Some(n) if n == index => self.tiles[t].neutral = next_stacked,
+                match state.tiles[t].neutral {
+                    Some(n) if n == index => state.tiles[t].neutral = next_stacked,
                     Some(bottom) => {
                         let mut prev = bottom;
-                        while let Some(next) = self.neutrals[prev as usize].next_stacked {
+                        while let Some(next) = state.neutrals[prev as usize].next_stacked {
                             if next == index {
                                 break;
                             }
                             prev = next;
                         }
-                        if self.neutrals[prev as usize].next_stacked == Some(index) {
-                            self.neutrals[prev as usize].next_stacked = next_stacked;
+                        if state.neutrals[prev as usize].next_stacked == Some(index) {
+                            state.neutrals[prev as usize].next_stacked = next_stacked;
                         }
-                        self.neutrals[index as usize].next_stacked = None;
+                        state.neutrals[index as usize].next_stacked = None;
                         return;
                     }
                     None => {}
                 }
             }
         }
-        self.neutrals[index as usize].next_stacked = None;
-    }
-
-    fn last_stacked(&self, mut index: u32) -> u32 {
-        while let Some(next) = self.neutrals[index as usize].next_stacked {
-            index = next;
-        }
-        index
+        state.neutrals[index as usize].next_stacked = None;
     }
 }

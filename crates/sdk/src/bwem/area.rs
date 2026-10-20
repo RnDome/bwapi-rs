@@ -10,17 +10,16 @@ use alloc::vec::Vec;
 
 use bwapi::{TilePosition, WalkPosition};
 
-use super::base::{BaseData, COMMAND_CENTER_SIZE};
-use super::ext::{dist_to_rectangle, fit_to_box, include_point, rounded_dist};
-use super::map::Scratch;
+use super::base::{BaseState, COMMAND_CENTER_SIZE, StaticBase};
+use super::geometry_helpers::{distance_to_rectangle, fit_to_box, include_point, rounded_distance};
+use super::map::{MapView, Scratch};
 use super::{
-    Altitude, AreaId, Base, ChokePoint, Geyser, Map, Mineral, Neutral, NeutralKind, Node, detail,
+    Altitude, AreaId, Base, ChokePoint, Map, Neutral, NeutralId, NeutralKind, Node, detail,
 };
 
-/// The data of an area; [`Area`] is its view.
+/// What never changes in an area after the analysis; [`Area`] is its view.
 #[derive(Clone, Debug)]
-pub(crate) struct AreaData {
-    pub(crate) group_id: i16,
+pub(crate) struct StaticArea {
     pub(crate) top: WalkPosition,
     pub(crate) top_left: TilePosition,
     pub(crate) bottom_right: TilePosition,
@@ -30,20 +29,27 @@ pub(crate) struct AreaData {
     pub(crate) buildable_tiles: i32,
     pub(crate) high_ground_tiles: i32,
     pub(crate) very_high_ground_tiles: i32,
-    /// The neighbouring areas, by id, and the index of the pair in
-    /// `Map::cp_matrix`.
-    pub(crate) choke_points_by_area: BTreeMap<i16, usize>,
-    pub(crate) accessible_neighbours: Vec<i16>,
+    /// The neighbouring areas, by id, each with the choke points to it.
+    pub(crate) choke_points_by_area: BTreeMap<i16, Vec<u32>>,
     pub(crate) choke_points: Vec<u32>,
-    pub(crate) minerals: Vec<u32>,
     pub(crate) geysers: Vec<u32>,
     pub(crate) bases: Vec<u32>,
+    /// Its minerals as of the analysis.
+    pub(crate) initial_minerals: Vec<NeutralId>,
 }
 
-impl AreaData {
+/// What changes in an area when neutrals are destroyed.
+#[derive(Clone, Debug, Default)]
+pub(crate) struct AreaState {
+    pub(crate) group_id: i16,
+    pub(crate) accessible_neighbours: Vec<i16>,
+    /// Its minerals not mined out.
+    pub(crate) minerals: Vec<u32>,
+}
+
+impl StaticArea {
     pub(crate) fn new(top: WalkPosition, max_altitude: Altitude, mini_tiles: i32) -> Self {
-        AreaData {
-            group_id: 0,
+        StaticArea {
             top,
             top_left: TilePosition::new(i32::MAX, i32::MAX),
             bottom_right: TilePosition::new(i32::MIN, i32::MIN),
@@ -54,25 +60,33 @@ impl AreaData {
             high_ground_tiles: 0,
             very_high_ground_tiles: 0,
             choke_points_by_area: BTreeMap::new(),
-            accessible_neighbours: Vec::new(),
             choke_points: Vec::new(),
-            minerals: Vec::new(),
             geysers: Vec::new(),
             bases: Vec::new(),
+            initial_minerals: Vec::new(),
         }
     }
+}
+
+/// The shares of the tiles of an area by ground height, in percent; 0 when it
+/// has no tile of its own (BWEM divides by zero).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct GroundHeights {
+    pub low: i32,
+    pub high: i32,
+    pub very_high: i32,
 }
 
 /// An area of the map.
 #[derive(Clone, Copy)]
 pub struct Area<'m> {
-    map: &'m Map,
+    map: MapView<'m>,
     id: i16,
 }
 
 impl PartialEq for Area<'_> {
     fn eq(&self, other: &Self) -> bool {
-        core::ptr::eq(self.map, other.map) && self.id == other.id
+        core::ptr::eq(self.map.geometry, other.map.geometry) && self.id == other.id
     }
 }
 
@@ -85,12 +99,16 @@ impl core::fmt::Debug for Area<'_> {
 }
 
 impl<'m> Area<'m> {
-    pub(crate) fn new(map: &'m Map, id: i16) -> Self {
+    pub(crate) fn new(map: MapView<'m>, id: i16) -> Self {
         Area { map, id }
     }
 
-    fn data(self) -> &'m AreaData {
-        &self.map.areas[self.id as usize - 1]
+    fn data(self) -> &'m StaticArea {
+        &self.map.geometry.areas[self.id as usize - 1]
+    }
+
+    fn state(self) -> &'m AreaState {
+        &self.map.state.areas[self.id as usize - 1]
     }
 
     /// 1 and up.
@@ -99,21 +117,14 @@ impl<'m> Area<'m> {
     }
 
     /// Areas of one group are reachable from each other.
-    pub fn group_id(self) -> i16 {
-        self.data().group_id
+    pub fn group(self) -> i16 {
+        self.state().group_id
     }
 
-    /// The bounding box of its tiles.
-    pub fn top_left(self) -> TilePosition {
-        self.data().top_left
-    }
-
-    pub fn bottom_right(self) -> TilePosition {
-        self.data().bottom_right
-    }
-
-    pub fn bounding_box_size(self) -> TilePosition {
-        self.bottom_right() - self.top_left() + TilePosition::new(1, 1)
+    /// The top left and the bottom right tiles of the box around its tiles, as
+    /// of the analysis.
+    pub fn bounds(self) -> (TilePosition, TilePosition) {
+        (self.data().top_left, self.data().bottom_right)
     }
 
     /// The mini tile of the highest altitude.
@@ -125,27 +136,21 @@ impl<'m> Area<'m> {
         self.data().max_altitude
     }
 
-    /// The number of its mini tiles.
-    pub fn mini_tiles(self) -> i32 {
+    /// The number of its mini tiles, as of the analysis.
+    pub fn size_in_mini_tiles(self) -> i32 {
         self.data().mini_tiles
     }
 
-    /// Percentages of its tiles; 0 when it has no tile of its own (BWEM divides
-    /// by zero).
-    pub fn low_ground_percentage(self) -> i32 {
+    pub fn ground_heights(self) -> GroundHeights {
         let d = self.data();
-        percentage(
-            d.tiles - d.high_ground_tiles - d.very_high_ground_tiles,
-            d.tiles,
-        )
-    }
-
-    pub fn high_ground_percentage(self) -> i32 {
-        percentage(self.data().high_ground_tiles, self.data().tiles)
-    }
-
-    pub fn very_high_ground_percentage(self) -> i32 {
-        percentage(self.data().very_high_ground_tiles, self.data().tiles)
+        GroundHeights {
+            low: percentage(
+                d.tiles - d.high_ground_tiles - d.very_high_ground_tiles,
+                d.tiles,
+            ),
+            high: percentage(d.high_ground_tiles, d.tiles),
+            very_high: percentage(d.very_high_ground_tiles, d.tiles),
+        }
     }
 
     /// Its choke points: those to each neighbouring area.
@@ -154,75 +159,70 @@ impl<'m> Area<'m> {
         self.data()
             .choke_points
             .iter()
-            .map(move |&cp| ChokePoint::new(map, cp))
+            .map(move |&i| ChokePoint::new(map, i))
     }
 
-    /// Its choke points to `area`; none if `area` is no neighbour.
-    pub fn choke_points_with(
+    /// Its choke points to `other`; none if `other` is no neighbour.
+    pub fn choke_points_to(
         self,
-        area: Area<'_>,
+        other: AreaId,
     ) -> impl ExactSizeIterator<Item = ChokePoint<'m>> + 'm {
         let map = self.map;
-        let cps: &'m [u32] = match self.data().choke_points_by_area.get(&area.id) {
-            Some(&pair) => &map.cp_matrix[pair],
-            None => &[],
-        };
-        cps.iter().map(move |&cp| ChokePoint::new(map, cp))
+        let choke_points: &'m [u32] = self
+            .data()
+            .choke_points_by_area
+            .get(&other.get())
+            .map_or(&[], Vec::as_slice);
+        choke_points.iter().map(move |&i| ChokePoint::new(map, i))
     }
 
-    /// The neighbouring areas, by id, each with the choke points to it.
-    pub fn choke_points_by_area(
-        self,
-    ) -> impl Iterator<Item = (Area<'m>, impl ExactSizeIterator<Item = ChokePoint<'m>> + 'm)> + 'm
-    {
+    /// The neighbouring areas, through any choke point, by id.
+    pub fn neighbours(self) -> impl ExactSizeIterator<Item = Area<'m>> + 'm {
         let map = self.map;
         self.data()
             .choke_points_by_area
-            .iter()
-            .map(move |(&id, &pair)| {
-                let cps = map.cp_matrix[pair]
-                    .iter()
-                    .map(move |&cp| ChokePoint::new(map, cp));
-                (Area::new(map, id), cps)
-            })
+            .keys()
+            .map(move |&id| Area::new(map, id))
     }
 
     /// The neighbouring areas through a choke point that is not blocked.
     pub fn accessible_neighbours(self) -> impl ExactSizeIterator<Item = Area<'m>> + 'm {
         let map = self.map;
-        self.data()
+        self.state()
             .accessible_neighbours
             .iter()
             .map(move |&id| Area::new(map, id))
     }
 
-    pub fn accessible_from(self, area: Area<'_>) -> bool {
-        self.group_id() == area.group_id()
+    pub fn is_reachable_from(self, other: AreaId) -> bool {
+        self.group() == Area::new(self.map, other.get()).group()
     }
 
-    pub fn minerals(self) -> impl ExactSizeIterator<Item = Mineral<'m>> + 'm {
+    /// Its minerals not mined out, in the order BWEM keeps them.
+    pub fn minerals(self) -> impl ExactSizeIterator<Item = Neutral<'m>> + 'm {
         let map = self.map;
-        self.data()
+        self.state()
             .minerals
             .iter()
-            .map(move |&i| Mineral(Neutral::new(map, i)))
+            .map(move |&i| Neutral::new(map, i))
     }
 
-    pub fn geysers(self) -> impl ExactSizeIterator<Item = Geyser<'m>> + 'm {
+    /// Its minerals as of the analysis.
+    pub fn initial_minerals(self) -> &'m [NeutralId] {
+        &self.data().initial_minerals
+    }
+
+    pub fn geysers(self) -> impl ExactSizeIterator<Item = Neutral<'m>> + 'm {
         let map = self.map;
         self.data()
             .geysers
             .iter()
-            .map(move |&i| Geyser(Neutral::new(map, i)))
+            .map(move |&i| Neutral::new(map, i))
     }
 
     pub fn bases(self) -> impl ExactSizeIterator<Item = Base<'m>> + 'm {
         let map = self.map;
         self.data().bases.iter().map(move |&i| Base::new(map, i))
-    }
-
-    pub fn map(self) -> &'m Map {
-        self.map
     }
 }
 
@@ -246,25 +246,26 @@ impl Map {
     /// `start` to the middle of each target, inside `area`.
     pub(crate) fn area_compute_distances(
         &self,
-        s: &mut Scratch,
+        scratch: &mut Scratch,
         area: i16,
         start: u32,
         targets: &[u32],
     ) -> Vec<i32> {
-        let in_area = |cp: u32| {
-            let pos = ChokePoint::new(self, cp).pos_in_area(Node::Middle, Area::new(self, area));
-            let from = TilePosition::from(pos);
+        let in_area = |choke_point: u32| {
+            let node =
+                ChokePoint::new(self.view(), choke_point).node_in_area(Node::Middle, AreaId(area));
+            let from = TilePosition::from(node);
             self.bfs(
                 from,
-                |map, t| map.tiles[t].area_id == area,
+                |map, t| map.state.tiles[t].area_id == area,
                 |_, _| true,
                 true,
             )
             .unwrap_or(from)
         };
         let start = in_area(start);
-        let targets: Vec<TilePosition> = targets.iter().map(|&cp| in_area(cp)).collect();
-        self.tile_distances(s, area, start, &targets)
+        let targets: Vec<TilePosition> = targets.iter().map(|&i| in_area(i)).collect();
+        self.tile_distances(scratch, area, start, &targets)
     }
 
     /// `Area::ComputeDistances(TilePosition, TilePositions)`: Dijkstra over the
@@ -272,28 +273,28 @@ impl Map {
     /// unreachable targets.
     fn tile_distances(
         &self,
-        s: &mut Scratch,
+        scratch: &mut Scratch,
         area: i16,
         start: TilePosition,
         targets: &[TilePosition],
     ) -> Vec<i32> {
         let mut distances = vec![0; targets.len()];
-        s.unmark_all();
+        scratch.unmark_all();
 
-        let mut seq = 0u64;
+        let mut order = 0u64;
         let mut to_visit = BTreeSet::new();
-        to_visit.insert((0, seq, start));
-        s.seq[start] = seq;
-        seq += 1;
+        to_visit.insert((0, order, start));
+        scratch.insertion_order[start] = order;
+        order += 1;
 
         let mut remaining_targets = targets.len() as isize;
-        while let Some((current_dist, _, current)) = to_visit.pop_first() {
-            s.internal[current] = 0;
-            s.set_marked(current);
+        while let Some((current_distance, _, current)) = to_visit.pop_first() {
+            scratch.internal[current] = 0;
+            scratch.set_marked(current);
 
             for (i, &target) in targets.iter().enumerate() {
                 if current == target {
-                    distances[i] = (0.5 + f64::from(current_dist * 32) / 10000.0) as i32;
+                    distances[i] = (0.5 + f64::from(current_distance * 32) / 10000.0) as i32;
                     remaining_targets -= 1;
                 }
             }
@@ -303,56 +304,59 @@ impl Map {
 
             for (dx, dy) in DIRS8 {
                 let diagonal_move = dx != 0 && dy != 0;
-                let new_next_dist = current_dist + if diagonal_move { 14142 } else { 10000 };
+                let new_next_distance =
+                    current_distance + if diagonal_move { 14142 } else { 10000 };
 
                 let next = current + TilePosition::new(dx, dy);
-                if !self.valid(next) || s.marked(next) {
+                if !self.valid(next) || scratch.marked(next) {
                     continue;
                 }
-                let old_dist = s.internal[next];
-                if old_dist != 0 {
+                let old_distance = scratch.internal[next];
+                if old_distance != 0 {
                     // Already in the queue.
-                    if new_next_dist < old_dist {
-                        to_visit.remove(&(old_dist, s.seq[next], next));
-                        s.internal[next] = new_next_dist;
-                        to_visit.insert((new_next_dist, seq, next));
-                        s.seq[next] = seq;
-                        seq += 1;
+                    if new_next_distance < old_distance {
+                        to_visit.remove(&(old_distance, scratch.insertion_order[next], next));
+                        scratch.internal[next] = new_next_distance;
+                        to_visit.insert((new_next_distance, order, next));
+                        scratch.insertion_order[next] = order;
+                        order += 1;
                     }
-                } else if self.tiles[next].area_id == area || self.tiles[next].area_id == -1 {
-                    s.internal[next] = new_next_dist;
-                    to_visit.insert((new_next_dist, seq, next));
-                    s.seq[next] = seq;
-                    seq += 1;
+                } else if self.state.tiles[next].area_id == area
+                    || self.state.tiles[next].area_id == -1
+                {
+                    scratch.internal[next] = new_next_distance;
+                    to_visit.insert((new_next_distance, order, next));
+                    scratch.insertion_order[next] = order;
+                    order += 1;
                 }
             }
         }
 
         for &(_, _, t) in &to_visit {
-            s.internal[t] = 0;
+            scratch.internal[t] = 0;
         }
         distances
     }
 
     /// `Area::UpdateAccessibleNeighbours`.
     pub(crate) fn update_accessible_neighbours(&mut self, area: usize) {
-        let neighbours: Vec<i16> = self.areas[area]
+        let neighbours: Vec<i16> = self.geometry.areas[area]
             .choke_points_by_area
             .iter()
-            .filter(|&(_, &pair)| {
-                self.cp_matrix[pair]
+            .filter(|(_, choke_points)| {
+                choke_points
                     .iter()
-                    .any(|&cp| !self.choke_points[cp as usize].blocked)
+                    .any(|&i| !self.state.choke_points[i as usize].blocked)
             })
             .map(|(&id, _)| id)
             .collect();
-        self.areas[area].accessible_neighbours = neighbours;
+        self.state.areas[area].accessible_neighbours = neighbours;
     }
 
     /// `Area::AddTileInformation`, for each tile of the area.
     pub(crate) fn add_tile_information(&mut self, area: usize, t: TilePosition) {
-        let tile = self.tiles[t];
-        let a = &mut self.areas[area];
+        let tile = self.geometry.tiles[t];
+        let a = &mut self.geometry.areas[area];
         a.tiles += 1;
         if tile.buildable {
             a.buildable_tiles += 1;
@@ -369,18 +373,23 @@ impl Map {
     /// `Area::OnMineralDestroyed`: also for the bases of an area the mineral is
     /// not in.
     pub(crate) fn area_on_mineral_destroyed(&mut self, area: usize, mineral: u32) {
-        let a = &mut self.areas[area];
+        let a = &mut self.state.areas[area];
         if let Some(i) = a.minerals.iter().position(|&m| m == mineral) {
             a.minerals.swap_remove(i);
         }
-        for &base in &self.areas[area].bases {
-            self.bases[base as usize].on_mineral_destroyed(mineral);
+        for &base in &self.geometry.areas[area].bases {
+            self.state.bases[base as usize].on_mineral_destroyed(mineral);
         }
     }
 
     /// The score of a depot at `location`: the sum of the potential fields under
     /// it, or -1 where a depot cannot stand. `ComputeBaseLocationScore`.
-    fn compute_base_location_score(&self, s: &Scratch, area: i16, location: TilePosition) -> i32 {
+    fn compute_base_location_score(
+        &self,
+        scratch: &Scratch,
+        area: i16,
+        location: TilePosition,
+    ) -> i32 {
         let mut sum_score = 0;
         for dy in 0..COMMAND_CENTER_SIZE.y {
             for dx in 0..COMMAND_CENTER_SIZE.x {
@@ -388,23 +397,23 @@ impl Map {
                 if !self.valid(t) {
                     return -1;
                 }
-                let tile = &self.tiles[t];
-                if !tile.buildable {
+                let tile = &self.state.tiles[t];
+                if !self.geometry.tiles[t].buildable {
                     return -1;
                 }
                 // A resource at most 3 tiles away, which Starcraft forbids.
-                if s.internal[t] == -1 {
+                if scratch.internal[t] == -1 {
                     return -1;
                 }
                 if tile.area_id != area {
                     return -1;
                 }
                 if let Some(n) = tile.neutral
-                    && self.neutrals[n as usize].kind == NeutralKind::StaticBuilding
+                    && self.geometry.neutrals[n as usize].kind == NeutralKind::StaticBuilding
                 {
                     return -1;
                 }
-                sum_score += s.internal[t];
+                sum_score += scratch.internal[t];
             }
         }
         sum_score
@@ -427,8 +436,8 @@ impl Map {
                 if !self.valid(t) {
                     continue;
                 }
-                if let Some(n) = self.tiles[t].neutral {
-                    let neutral = &self.neutrals[n as usize];
+                if let Some(n) = self.state.tiles[t].neutral {
+                    let neutral = &self.geometry.neutrals[n as usize];
                     match neutral.kind {
                         NeutralKind::Geyser => return false,
                         NeutralKind::Mineral if neutral.initial_amount <= 8 => {
@@ -441,29 +450,32 @@ impl Map {
             }
         }
 
-        self.areas[area as usize - 1].bases.iter().all(|&base| {
-            rounded_dist(self.bases[base as usize].location, location)
-                >= detail::MIN_TILES_BETWEEN_BASES
-        })
+        self.geometry.areas[area as usize - 1]
+            .bases
+            .iter()
+            .all(|&base| {
+                rounded_distance(self.geometry.bases[base as usize].location, location)
+                    >= detail::MIN_TILES_BETWEEN_BASES
+            })
     }
 
     /// Repeatedly finds the best depot location for the remaining resources of
     /// the area, with potential fields, and assigns it the resources near it.
     /// `Area::CreateBases`.
-    pub(crate) fn create_bases_in_area(&mut self, s: &mut Scratch, area: i16) {
-        const MAX_DIST: i32 = detail::MAX_TILES_BETWEEN_COMMAND_CENTER_AND_RESOURCES;
-        let dim_cc = COMMAND_CENTER_SIZE;
+    pub(crate) fn create_bases_in_area(&mut self, scratch: &mut Scratch, area: i16) {
+        const MAX_DISTANCE: i32 = detail::MAX_TILES_BETWEEN_COMMAND_CENTER_AND_RESOURCES;
+        let depot_size = COMMAND_CENTER_SIZE;
         let index = area as usize - 1;
 
         let mut remaining: Vec<u32> = Vec::new();
-        for &m in &self.areas[index].minerals {
-            let n = &self.neutrals[m as usize];
+        for &m in &self.state.areas[index].minerals {
+            let n = &self.geometry.neutrals[m as usize];
             if n.initial_amount >= 40 && n.blocked_areas.is_empty() {
                 remaining.push(m);
             }
         }
-        for &g in &self.areas[index].geysers {
-            let n = &self.neutrals[g as usize];
+        for &g in &self.geometry.areas[index].geysers {
+            let n = &self.geometry.neutrals[g as usize];
             if n.initial_amount >= 300 && n.blocked_areas.is_empty() {
                 remaining.push(g);
             }
@@ -474,7 +486,7 @@ impl Map {
             let mut top_left_resources = TilePosition::new(i32::MAX, i32::MAX);
             let mut bottom_right_resources = TilePosition::new(i32::MIN, i32::MIN);
             for &r in &remaining {
-                let n = &self.neutrals[r as usize];
+                let n = &self.geometry.neutrals[r as usize];
                 include_point(
                     &mut top_left_resources,
                     &mut bottom_right_resources,
@@ -487,33 +499,35 @@ impl Map {
                     bottom_right,
                 );
             }
-            let (area_top_left, area_bottom_right) =
-                (self.areas[index].top_left, self.areas[index].bottom_right);
-            let fit_bottom_right = area_bottom_right - dim_cc + TilePosition::new(1, 1);
+            let (area_top_left, area_bottom_right) = (
+                self.geometry.areas[index].top_left,
+                self.geometry.areas[index].bottom_right,
+            );
+            let fit_bottom_right = area_bottom_right - depot_size + TilePosition::new(1, 1);
             let mut top_left_search =
-                top_left_resources - dim_cc - TilePosition::new(MAX_DIST, MAX_DIST);
+                top_left_resources - depot_size - TilePosition::new(MAX_DISTANCE, MAX_DISTANCE);
             let mut bottom_right_search = bottom_right_resources
                 + TilePosition::new(1, 1)
-                + TilePosition::new(MAX_DIST, MAX_DIST);
+                + TilePosition::new(MAX_DISTANCE, MAX_DISTANCE);
             fit_to_box(&mut top_left_search, area_top_left, fit_bottom_right);
             fit_to_box(&mut bottom_right_search, area_top_left, fit_bottom_right);
 
             // 2) Potential fields: the closer to each resource, the higher.
             for &r in &remaining {
-                let n = &self.neutrals[r as usize];
-                for dy in -dim_cc.y - MAX_DIST..n.size.y + dim_cc.y + MAX_DIST {
-                    for dx in -dim_cc.x - MAX_DIST..n.size.x + dim_cc.x + MAX_DIST {
+                let n = &self.geometry.neutrals[r as usize];
+                for dy in -depot_size.y - MAX_DISTANCE..n.size.y + depot_size.y + MAX_DISTANCE {
+                    for dx in -depot_size.x - MAX_DISTANCE..n.size.x + depot_size.x + MAX_DISTANCE {
                         let t = n.top_left + TilePosition::new(dx, dy);
                         if self.valid(t) {
-                            let dist =
-                                (dist_to_rectangle(t.center(), n.top_left, n.size) + 16) / 32;
-                            let mut score = (MAX_DIST + 3 - dist).max(0);
+                            let distance =
+                                (distance_to_rectangle(t.center(), n.top_left, n.size) + 16) / 32;
+                            let mut score = (MAX_DISTANCE + 3 - distance).max(0);
                             if n.kind == NeutralKind::Geyser {
                                 // Somewhat compensates a lone geyser against minerals.
                                 score *= 3;
                             }
-                            if self.tiles[t].area_id == area {
-                                s.internal[t] += score;
+                            if self.state.tiles[t].area_id == area {
+                                scratch.internal[t] += score;
                             }
                         }
                     }
@@ -522,12 +536,12 @@ impl Map {
 
             // 3) No depot within 3 tiles of a resource.
             for &r in &remaining {
-                let n = &self.neutrals[r as usize];
+                let n = &self.geometry.neutrals[r as usize];
                 for dy in -3..n.size.y + 3 {
                     for dx in -3..n.size.x + 3 {
                         let t = n.top_left + TilePosition::new(dx, dy);
                         if self.valid(t) {
-                            s.internal[t] = -1;
+                            scratch.internal[t] = -1;
                         }
                     }
                 }
@@ -540,7 +554,7 @@ impl Map {
             for y in top_left_search.y..=bottom_right_search.y {
                 for x in top_left_search.x..=bottom_right_search.x {
                     let location = TilePosition::new(x, y);
-                    let score = self.compute_base_location_score(s, area, location);
+                    let score = self.compute_base_location_score(scratch, area, location);
                     if score > best_score
                         && self.validate_base_location(area, location, &mut blocking_minerals)
                     {
@@ -552,12 +566,12 @@ impl Map {
 
             // 5) Clear the potential fields.
             for &r in &remaining {
-                let n = &self.neutrals[r as usize];
-                for dy in -dim_cc.y - MAX_DIST..n.size.y + dim_cc.y + MAX_DIST {
-                    for dx in -dim_cc.x - MAX_DIST..n.size.x + dim_cc.x + MAX_DIST {
+                let n = &self.geometry.neutrals[r as usize];
+                for dy in -depot_size.y - MAX_DISTANCE..n.size.y + depot_size.y + MAX_DISTANCE {
+                    for dx in -depot_size.x - MAX_DISTANCE..n.size.x + depot_size.x + MAX_DISTANCE {
                         let t = n.top_left + TilePosition::new(dx, dy);
                         if self.valid(t) {
-                            s.internal[t] = 0;
+                            scratch.internal[t] = 0;
                         }
                     }
                 }
@@ -572,8 +586,12 @@ impl Map {
                 .iter()
                 .copied()
                 .filter(|&r| {
-                    dist_to_rectangle(self.neutrals[r as usize].pos, best_location, dim_cc) + 2
-                        <= MAX_DIST * 32
+                    distance_to_rectangle(
+                        self.geometry.neutrals[r as usize].position,
+                        best_location,
+                        depot_size,
+                    ) + 2
+                        <= MAX_DISTANCE * 32
                 })
                 .collect();
             remaining.retain(|r| !assigned.contains(r));
@@ -584,16 +602,16 @@ impl Map {
 
             let (minerals, geysers): (Vec<u32>, Vec<u32>) = assigned
                 .iter()
-                .partition(|&&r| self.neutrals[r as usize].kind == NeutralKind::Mineral);
-            let base = self.bases.len() as u32;
-            self.bases.push(BaseData::new(
-                area,
-                best_location,
+                .partition(|&&r| self.geometry.neutrals[r as usize].kind == NeutralKind::Mineral);
+            let base = self.geometry.bases.len() as u32;
+            self.geometry
+                .bases
+                .push(StaticBase::new(area, best_location, geysers));
+            self.state.bases.push(BaseState {
                 minerals,
-                geysers,
                 blocking_minerals,
-            ));
-            self.areas[index].bases.push(base);
+            });
+            self.geometry.areas[index].bases.push(base);
         }
     }
 }

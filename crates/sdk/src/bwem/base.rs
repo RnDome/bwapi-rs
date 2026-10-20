@@ -8,40 +8,41 @@ use alloc::vec::Vec;
 
 use bwapi::{Position, TilePosition};
 
-use super::{Area, BaseId, Geyser, Map, Mineral, Neutral};
+use super::map::MapView;
+use super::{Area, BaseId, Neutral, NeutralId};
 
 /// `UnitType(Terran_Command_Center).tileSize()`: the footprint BWEM places bases
 /// with.
 pub(crate) const COMMAND_CENTER_SIZE: TilePosition = TilePosition::new(4, 3);
 
-/// The data of a base; [`Base`] is its view.
+/// What never changes in a base after the analysis; [`Base`] is its view.
 #[derive(Clone, Debug)]
-pub(crate) struct BaseData {
+pub(crate) struct StaticBase {
     pub(crate) area: i16,
     pub(crate) location: TilePosition,
     pub(crate) center: Position,
-    pub(crate) minerals: Vec<u32>,
     pub(crate) geysers: Vec<u32>,
-    pub(crate) blocking_minerals: Vec<u32>,
     pub(crate) starting: bool,
+    /// Its minerals as of the analysis.
+    pub(crate) initial_minerals: Vec<NeutralId>,
 }
 
-impl BaseData {
-    pub(crate) fn new(
-        area: i16,
-        location: TilePosition,
-        minerals: Vec<u32>,
-        geysers: Vec<u32>,
-        blocking_minerals: Vec<u32>,
-    ) -> Self {
-        BaseData {
+/// What changes in a base: its minerals not mined out.
+#[derive(Clone, Debug)]
+pub(crate) struct BaseState {
+    pub(crate) minerals: Vec<u32>,
+    pub(crate) blocking_minerals: Vec<u32>,
+}
+
+impl StaticBase {
+    pub(crate) fn new(area: i16, location: TilePosition, geysers: Vec<u32>) -> Self {
+        StaticBase {
             area,
             location,
             center: base_center(location),
-            minerals,
             geysers,
-            blocking_minerals,
             starting: false,
+            initial_minerals: Vec::new(),
         }
     }
 
@@ -51,7 +52,9 @@ impl BaseData {
         self.location = actual_location;
         self.center = base_center(actual_location);
     }
+}
 
+impl BaseState {
     /// `Base::OnMineralDestroyed`.
     pub(crate) fn on_mineral_destroyed(&mut self, mineral: u32) {
         if let Some(i) = self.minerals.iter().position(|&m| m == mineral) {
@@ -74,7 +77,7 @@ fn base_center(location: TilePosition) -> Position {
 /// A base: where a resource depot can stand near a group of resources.
 #[derive(Clone, Copy)]
 pub struct Base<'m> {
-    map: &'m Map,
+    map: MapView<'m>,
     index: u32,
 }
 
@@ -85,12 +88,16 @@ impl core::fmt::Debug for Base<'_> {
 }
 
 impl<'m> Base<'m> {
-    pub(crate) fn new(map: &'m Map, index: u32) -> Self {
+    pub(crate) fn new(map: MapView<'m>, index: u32) -> Self {
         Base { map, index }
     }
 
-    fn data(self) -> &'m BaseData {
-        &self.map.bases[self.index as usize]
+    fn data(self) -> &'m StaticBase {
+        &self.map.geometry.bases[self.index as usize]
+    }
+
+    fn state(self) -> &'m BaseState {
+        &self.map.state.bases[self.index as usize]
     }
 
     pub fn id(self) -> BaseId {
@@ -98,8 +105,8 @@ impl<'m> Base<'m> {
     }
 
     /// Whether a start location was assigned to the base by
-    /// [`Map::find_bases_for_starting_locations`].
-    pub fn starting(self) -> bool {
+    /// [`Map::find_bases_for_starting_locations`](super::Map::find_bases_for_starting_locations).
+    pub fn is_starting(self) -> bool {
         self.data().starting
     }
 
@@ -117,29 +124,35 @@ impl<'m> Base<'m> {
         self.data().center
     }
 
-    pub fn minerals(self) -> impl Iterator<Item = Mineral<'m>> + 'm {
+    /// Its minerals not mined out, in the order BWEM keeps them.
+    pub fn minerals(self) -> impl Iterator<Item = Neutral<'m>> + 'm {
         let map = self.map;
-        self.data()
+        self.state()
             .minerals
             .iter()
-            .map(move |&i| Mineral(Neutral::new(map, i)))
+            .map(move |&i| Neutral::new(map, i))
     }
 
-    pub fn geysers(self) -> impl Iterator<Item = Geyser<'m>> + 'm {
+    /// Its minerals as of the analysis.
+    pub fn initial_minerals(self) -> &'m [NeutralId] {
+        &self.data().initial_minerals
+    }
+
+    pub fn geysers(self) -> impl Iterator<Item = Neutral<'m>> + 'm {
         let map = self.map;
         self.data()
             .geysers
             .iter()
-            .map(move |&i| Geyser(Neutral::new(map, i)))
+            .map(move |&i| Neutral::new(map, i))
     }
 
-    /// Small minerals (at most 8) inside the depot or close to it: they must be
-    /// mined out before the depot can be built.
-    pub fn blocking_minerals(self) -> impl Iterator<Item = Mineral<'m>> + 'm {
+    /// Small minerals (at most 8) inside the depot or close to it, not mined
+    /// out yet: they must be before the depot can be built.
+    pub fn blocking_minerals(self) -> impl Iterator<Item = Neutral<'m>> + 'm {
         let map = self.map;
-        self.data()
+        self.state()
             .blocking_minerals
             .iter()
-            .map(move |&i| Mineral(Neutral::new(map, i)))
+            .map(move |&i| Neutral::new(map, i))
     }
 }

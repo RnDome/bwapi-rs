@@ -6,8 +6,11 @@
 //!
 //! [`Map::initialize`] analyses a map once: altitudes, seas and lakes, blocking
 //! neutrals, areas, choke points, the distances between choke points and the
-//! bases. Views ([`Area`], [`ChokePoint`], [`Base`], [`Neutral`], [`Tile`])
-//! borrow the map and navigate it as BWEM does.
+//! bases. The map keeps what never changes after the analysis ([`Geometry`])
+//! apart from what changes when neutrals are destroyed ([`State`]). Ids
+//! ([`AreaId`], [`ChokePointId`], [`BaseId`], [`NeutralId`]) name objects and
+//! borrow nothing; views ([`Area`], [`ChokePoint`], [`Base`], [`Neutral`],
+//! [`Tile`]) borrow the map and read both parts as they are now.
 //!
 //! Differences from the C++ code:
 //! - the input is data, [`MapInput`], not a `BWAPI::Game`;
@@ -38,17 +41,17 @@
 mod area;
 mod base;
 mod cp;
-mod ext;
+mod geometry_helpers;
 mod graph;
 mod map;
 mod neutral;
 mod tiles;
 
-pub use area::Area;
+pub use area::{Area, GroundHeights};
 pub use base::Base;
-pub use cp::{ChokePoint, CpPath, Node};
-pub use map::{AreaKey, CellPosition, Map, MapPosition};
-pub use neutral::{Geyser, Mineral, Neutral, Resource, StaticBuilding};
+pub use cp::{ChokePoint, ChokePointPath, Node};
+pub use map::{CellPosition, Changes, Geometry, Map, MapPosition, State, TileRect};
+pub use neutral::Neutral;
 pub use tiles::{MiniTile, Tile};
 
 use alloc::vec::Vec;
@@ -106,7 +109,8 @@ impl ChokePointId {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct BaseId(pub(crate) u32);
 
-/// The id of a neutral. A destroyed neutral keeps its id; it gives no view.
+/// The id of a neutral. A destroyed neutral keeps its id and its view, which
+/// tells it is no longer alive.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NeutralId(pub(crate) u32);
 
