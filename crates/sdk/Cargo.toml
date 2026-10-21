@@ -7,10 +7,12 @@ edition.workspace = true
 rust-version.workspace = true
 authors.workspace = true
 repository.workspace = true
+readme = "README.md"
 # Ports of MIT code: their notices must stay with it, so no Unlicense option.
 license = "MIT"
 include = [
     "/Cargo.toml",
+    "/README.md",
     "/src/**",
     "/LICENSE-BWEM",
     "/LICENSE-BWEB",
