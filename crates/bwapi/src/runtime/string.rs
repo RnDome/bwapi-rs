@@ -1,5 +1,8 @@
 //! Brood War strings: bytes in Latin-1 or CP949 with color control codes, not UTF-8.
 
+use alloc::borrow::Cow;
+use alloc::string::String;
+use alloc::vec::Vec;
 use core::fmt;
 use core::ops::Deref;
 
@@ -53,7 +56,7 @@ impl BwStr {
     }
 
     /// Decodes the bytes as UTF-8, replacing invalid sequences.
-    pub fn to_string_lossy(&self) -> std::borrow::Cow<'_, str> {
+    pub fn to_string_lossy(&self) -> Cow<'_, str> {
         String::from_utf8_lossy(&self.0)
     }
 }

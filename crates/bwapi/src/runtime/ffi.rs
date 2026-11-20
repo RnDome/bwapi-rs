@@ -7,6 +7,8 @@
 //! allocation of a `Vec<E>` with length and capacity `n`, and `Slice::into_vec`
 //! takes it over without copying.
 
+use alloc::alloc::{alloc, handle_alloc_error};
+use alloc::vec::Vec;
 use core::alloc::Layout;
 use core::ffi::c_void;
 use core::ptr;
@@ -75,15 +77,14 @@ extern "C" fn bwapi_c_alloc_slice(
         .filter(|&size| size > 0)
         .and_then(|size| Layout::from_size_align(size, elem_align).ok());
     let Some(layout) = layout else {
-        eprintln!(
+        panic!(
             "bwapi-rs: a thunk asked for a slice of {count} x {elem_size} bytes aligned to {elem_align}"
         );
-        std::process::abort();
     };
     // SAFETY: the size is not zero.
-    let data = unsafe { std::alloc::alloc(layout) };
+    let data = unsafe { alloc(layout) };
     if data.is_null() {
-        std::alloc::handle_alloc_error(layout);
+        handle_alloc_error(layout);
     }
     data.cast()
 }

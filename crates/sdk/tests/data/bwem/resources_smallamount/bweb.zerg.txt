@@ -1,0 +1,35 @@
+answers bweb 1
+map bwem/resources_smallamount.scm
+race 0
+used 50 919c99d05f980905
+reserved 204 494320c8ed327025
+used at stage 0 50 919c99d05f980905
+reserved at stage 0 50 57e754fa76870205
+used at stage 1 50 919c99d05f980905
+reserved at stage 1 189 c069d48e852b3904
+used at stage 2 50 919c99d05f980905
+reserved at stage 2 189 c069d48e852b3904
+placeable 156 3791 63ac9b59ea4e7664
+placeable 109 3712 796c331665858665
+placeable 160 3525 1283353e7a0cfa64
+placeable 142 3650 a41d9ee97bd3fc45
+placeable 106 3076 7ee3dbf084525d05
+placeable 131 3076 7ee3dbf084525d05
+starting_main 45,4
+starting_natural 35,9
+stations 4
+0,0 main choke - centroid 96,208 small - medium - angle 0.000000000 defenses 1,3 4,0 4,3 angle_bits 0000000000000000
+45,4 main choke - centroid 1568,336 small - medium - angle 0.000000000 defenses 46,7 49,4 49,7 angle_bits 0000000000000000
+15,7 natural choke - centroid 530,324 small - medium - angle 0.000000000 defenses 13,7 13,10 16,10 angle_bits 0000000000000000
+35,9 natural choke - centroid 1305,265 small - medium - angle 0.000000000 defenses 33,7 33,10 36,7 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 15,7: 48a54faac30abead
+37 mode 3 from 35,9: a3d5645000f26018
+37 mode 3 from 0,0: 4737df568afc3551
+37 mode 3 from 45,4: 8b7e5d82936cc0f2
+66 mode 3 from 15,7: 48a54faac30abead
+66 mode 3 from 35,9: a3d5645000f26018
+66 mode 3 from 0,0: 4737df568afc3551
+66 mode 3 from 45,4: 8b7e5d82936cc0f2

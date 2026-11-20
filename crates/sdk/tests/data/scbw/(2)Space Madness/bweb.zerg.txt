@@ -1,0 +1,53 @@
+answers bweb 1
+map scbw/(2)Space Madness.scm
+race 0
+used 76 8c7bae1faaf68c65
+reserved 464 e49b7bad8f52fb65
+used at stage 0 76 8c7bae1faaf68c65
+reserved at stage 0 76 aa2da7191e53da65
+used at stage 1 76 8c7bae1faaf68c65
+reserved at stage 1 234 17d3dacf87facd05
+used at stage 2 76 8c7bae1faaf68c65
+reserved at stage 2 279 8f42427c3f0bc284
+placeable 156 2420 7deb10121e2fece5
+placeable 109 2201 6fdd79ba38c1cbe4
+placeable 160 1738 a7f566dfa046bd85
+placeable 142 1951 4fefd3f918951784
+placeable 106 1345 44dc78eea914b064
+placeable 131 1345 44dc78eea914b064
+starting_main 7,6
+starting_natural 48,18
+stations 4
+7,6 main choke 1 centroid 109,173 small 11,4 medium 11,2 angle 1.570796327 defenses 5,2 5,4 5,7 8,4 angle_bits 3ff921fb54442d18
+53,55 main choke 0 centroid 1938,1874 small - medium - angle 4.712388980 defenses 54,58 57,55 57,58 angle_bits 4012d97c7f3321d2
+48,18 natural choke 1 centroid 1792,701 small - medium - angle 3.926990817 defenses 49,21 52,18 52,21 angle_bits 400f6a7a2955385e
+14,40 natural choke 0 centroid 314,1432 small - medium - angle 0.785398163 defenses 12,40 12,43 15,43 angle_bits 3fe921fb54442d18
+blocks 17
+7,10 size 4 2 center 226,320 small  | medium  | large  | wide 7,10
+3,9 size 3 2 center 97,288 small  | medium 3,9 | large  | wide 
+12,6 size 3 2 center 385,192 small  | medium 12,6 | large  | wide 
+12,8 size 3 2 center 385,256 small  | medium 12,8 | large  | wide 
+11,10 size 3 2 center 353,320 small  | medium 11,10 | large  | wide 
+4,11 size 3 2 center 129,352 small  | medium 4,11 | large  | wide 
+7,12 size 2 2 center 225,385 small 7,12 | medium  | large  | wide 
+23,5 size 4 3 center 738,160 small  | medium  | large 23,5 | wide 
+23,1 size 4 3 center 738,32 small  | medium  | large 23,1 | wide 
+23,9 size 4 3 center 738,288 small  | medium  | large 23,9 | wide 
+28,5 size 4 3 center 898,160 small  | medium  | large 28,5 | wide 
+18,7 size 4 3 center 578,224 small  | medium  | large 18,7 | wide 
+37,57 size 4 3 center 1186,1824 small  | medium  | large 37,57 | wide 
+39,53 size 4 3 center 1250,1696 small  | medium  | large 39,53 | wide 
+32,57 size 4 3 center 1026,1824 small  | medium  | large 32,57 | wide 
+42,57 size 4 3 center 1346,1824 small  | medium  | large 42,57 | wide 
+44,53 size 4 3 center 1410,1696 small  | medium  | large 44,53 | wide 
+walls 1
+angle 3.926990817 small  | medium 49,12 | large 46,14 | openings  | defenses 0: 45,19 45,21 47,17 50,14 50,16 52,12 52,14 / 1: 47,17 / 2: 45,19 50,14 52,12 / 3: 45,21 50,16 52,14 | choke 1 area 4 angle_bits 400f6a7a2955385e
+searches
+37 mode 3 from 14,40: cefb5e798310ce1d
+37 mode 3 from 7,6: 0243cfa845185aa5
+37 mode 3 from 53,55: 0243cfa845185aa5
+37 mode 3 from 48,18: 0243cfa845185aa5
+66 mode 3 from 14,40: 0243cfa845185aa5
+66 mode 3 from 7,6: 0243cfa845185aa5
+66 mode 3 from 53,55: 0243cfa845185aa5
+66 mode 3 from 48,18: 0243cfa845185aa5

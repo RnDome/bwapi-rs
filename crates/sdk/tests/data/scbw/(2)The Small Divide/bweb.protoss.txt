@@ -1,0 +1,35 @@
+answers bweb 1
+map scbw/(2)The Small Divide.scm
+race 2
+used 72 77e007f479afaaa5
+reserved 259 cc1f353858a48c44
+used at stage 0 72 77e007f479afaaa5
+reserved at stage 0 72 923cb3f4dcf3d6a5
+used at stage 1 72 77e007f479afaaa5
+reserved at stage 1 241 50882acb646a0064
+used at stage 2 72 77e007f479afaaa5
+reserved at stage 2 241 50882acb646a0064
+placeable 156 2286 008b4656f85eafc5
+placeable 109 1999 f5f2e1c150e418a4
+placeable 160 1543 8c9fd397d49fe744
+placeable 142 1768 1692bd54711d7845
+placeable 106 1140 e653a6d2524197a5
+placeable 131 1140 e653a6d2524197a5
+starting_main 8,6
+starting_natural -
+stations 4
+52,54 main choke - centroid 1874,1810 small - medium - angle 0.000000000 defenses 50,54 50,57 53,57 angle_bits 0000000000000000
+8,6 main choke - centroid 173,205 small - medium - angle 0.000000000 defenses 9,4 12,4 12,7 19,3 angle_bits 0000000000000000
+45,31 choke - centroid 1273,1004 small - medium - angle 0.000000000 defenses 43,31 43,34 46,34 angle_bits 0000000000000000
+23,17 choke - centroid 876,774 small - medium - angle 0.000000000 defenses 24,20 27,17 27,20 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 52,54: ab8c85e7530a23e7
+37 mode 3 from 8,6: 0243cfa845185aa5
+37 mode 3 from 45,31: 0243cfa845185aa5
+37 mode 3 from 23,17: 0243cfa845185aa5
+66 mode 3 from 52,54: 0243cfa845185aa5
+66 mode 3 from 8,6: 0243cfa845185aa5
+66 mode 3 from 45,31: 0243cfa845185aa5
+66 mode 3 from 23,17: 0243cfa845185aa5
