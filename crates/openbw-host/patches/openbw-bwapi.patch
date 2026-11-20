@@ -1,0 +1,69 @@
+diff --git a/bwapi/BWAPI/Source/BWAPI/UnitImpl.cpp b/bwapi/BWAPI/Source/BWAPI/UnitImpl.cpp
+index feadeb51..d4d3fdc8 100755
+--- a/bwapi/BWAPI/Source/BWAPI/UnitImpl.cpp
++++ b/bwapi/BWAPI/Source/BWAPI/UnitImpl.cpp
+@@ -17,6 +17,49 @@
+ 
+ namespace BWAPI
+ {
++  //---------------------------------------------- UNIT POOL -------------------------------------------------
++  // Local patch. A dead unit gets a fresh UnitImpl from operator new during the
++  // game; from the heap, its address depended on what the process had allocated
++  // before, network buffers included, and Unitsets, which hash by address, came
++  // out in another order from run to run. The pool lives in .bss and is handed
++  // out in the order of the calls, which the game decides.
++  namespace
++  {
++    constexpr std::size_t poolCapacity = 1 << 16;
++    alignas(UnitImpl) unsigned char pool[poolCapacity * sizeof(UnitImpl)];
++    std::size_t poolUsed = 0;
++    void* poolFree = nullptr; // freed slots, each holding the next one
++
++    bool inPool(void* p)
++    {
++      return p >= static_cast<void*>(pool) && p < static_cast<void*>(pool + sizeof(pool));
++    }
++  }
++  void* UnitImpl::operator new(std::size_t size)
++  {
++    if (size == sizeof(UnitImpl))
++    {
++      if (poolFree)
++      {
++        void* p = poolFree;
++        poolFree = *static_cast<void**>(p);
++        return p;
++      }
++      if (poolUsed < poolCapacity)
++        return pool + sizeof(UnitImpl) * poolUsed++;
++    }
++    return ::operator new(size);
++  }
++  void UnitImpl::operator delete(void* p)
++  {
++    if (!inPool(p))
++    {
++      ::operator delete(p);
++      return;
++    }
++    *static_cast<void**>(p) = poolFree;
++    poolFree = p;
++  }
+   //--------------------------------------------- CONSTRUCTOR ------------------------------------------------
+   UnitImpl::UnitImpl(BW::Unit bwunit, u16 index)
+       : bwunit(bwunit)
+diff --git a/bwapi/BWAPI/Source/BWAPI/UnitImpl.h b/bwapi/BWAPI/Source/BWAPI/UnitImpl.h
+index 1bcf8fb9..d51b1940 100755
+--- a/bwapi/BWAPI/Source/BWAPI/UnitImpl.h
++++ b/bwapi/BWAPI/Source/BWAPI/UnitImpl.h
+@@ -250,6 +250,10 @@ namespace BWAPI
+ 
+       //Internal BWAPI commands:
+       UnitImpl(BW::Unit bwunit, u16 index);
++      // Local patch: units come from a fixed pool, so that their addresses,
++      // and with them the order of Unitsets, are the same in every run.
++      static void* operator new(std::size_t size);
++      static void operator delete(void* p);
+       void die();
+       void setID(int newID);
+       bool canAccess() const;

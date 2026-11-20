@@ -1,0 +1,23 @@
+[package]
+name = "openbw-host"
+description = "Games of the OpenBW fork of BWAPI inside host test processes"
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+links = "openbw_host"
+
+[lib]
+doctest = false
+
+[dependencies]
+
+[dev-dependencies]
+bwapi = { path = "../bwapi" }
+bwapi-sdk = { path = "../sdk" }
+
+[build-dependencies]
+cc = "1.2"

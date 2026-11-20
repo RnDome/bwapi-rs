@@ -3,11 +3,13 @@ resolver = "3"
 members = [
     "crates/bwapi",
     "crates/codegen",
+    "crates/openbw-host",
     "crates/sdk",
     "crates/xtask",
     "examples/bot_rust",
 ]
 # Plain `cargo build/clippy/test` skip the generator; `cargo xtask` and `--workspace` reach it.
+# openbw-host needs a build of the OpenBW fork and MPQs: CI excludes it from `--workspace`.
 default-members = ["crates/bwapi", "crates/sdk", "examples/bot_rust"]
 
 [workspace.package]

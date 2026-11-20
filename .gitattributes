@@ -2,4 +2,5 @@ crates/bwapi/src/generated/** linguist-generated
 crates/bwapi/cpp/generated/** linguist-generated
 crates/bwapi/cpp/include/bwapi_c.h linguist-generated
 crates/sdk/tests/data/** linguist-generated -diff
+crates/openbw-host/patches/*.patch -text
 bwapi.api linguist-language=Rust

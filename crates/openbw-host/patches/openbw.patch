@@ -1,0 +1,25 @@
+diff --git a/sync.h b/sync.h
+index 19cbab6..7a791c4 100644
+--- a/sync.h
++++ b/sync.h
+@@ -687,6 +687,8 @@ struct sync_functions: action_functions {
+ 			a_string seed_str;
+ 			for (auto& v : sync_st.clients) seed_str += v.uid.str();
+ 			uint32_t rand_state = seed ^ data_loading::crc32_t()((const uint8_t*)seed_str.data(), seed_str.size());
++			// Local patch: a fixed seed for reproducible games, the same in every client.
++			if (const char* fixed = std::getenv("OPENBW_GAME_SEED")) rand_state = (uint32_t)std::strtoul(fixed, nullptr, 0);
+ 			st.lcg_rand_state = rand_state;
+ 
+ 			for (int i = 0; i != 12; ++i) {
+@@ -735,7 +737,10 @@ struct sync_functions: action_functions {
+ 				}
+ 			};
+ 
+-			if (sync_st.game_type_melee) {
++			// Local patch: with OPENBW_FIXED_SLOTS set, every client stays in the
++			// slot it took, and so at the start location of that slot.
++			if (std::getenv("OPENBW_FIXED_SLOTS")) {
++			} else if (sync_st.game_type_melee) {
+ 				randomize_slots([](size_t){return true;});
+ 			} else {
+ 				for (int force = 1; force <= 4; ++force) {

@@ -1,0 +1,98 @@
+diff --git a/BWEM/include/cp.h b/BWEM/include/cp.h
+index 5fcdbb3..4190ae0 100644
+--- a/BWEM/include/cp.h
++++ b/BWEM/include/cp.h
+@@ -78,6 +78,10 @@ public:
+ 	// Note: the returned value is contained in Geometry()
+ 	const BWAPI::WalkPosition &				Pos(node n) const		{ bwem_assert(n < node_count); return m_nodes[n]; }
+ 
++	// Local patch: the width in pixels, which BWEB calls, as the fork of BWEM in
++	// McRave defines it (github.com/Cmccrave/McRave, Source/BWEM/cp.h, MIT).
++	int										Width() const			{ return int(Pos(end1).getDistance(Pos(end2))) * 8; }
++
+ 	// Pretty much the same as Pos(n), except that the returned MiniTile position is guaranteed to be part of pArea.
+ 	// That is: Map::GetArea(PosInArea(n, pArea)) == pArea.
+ 	const BWAPI::WalkPosition &				PosInArea(node n, const Area * pArea) const;
+diff --git a/BWEM/include/map.h b/BWEM/include/map.h
+index 8582736..63f03d2 100644
+--- a/BWEM/include/map.h
++++ b/BWEM/include/map.h
+@@ -13,6 +13,7 @@
+ #include <vector>
+ #include <memory>
+ #include <queue>
++#include <type_traits>
+ #include "tiles.h"
+ #include "area.h"
+ #include "cp.h"
+@@ -255,11 +256,16 @@ inline TPosition Map::BreadthFirstSearch(TPosition start, Pred1 findCond, Pred2
+ 	typedef typename utils::TileOfPosition<TPosition>::type Tile_t;
+ 	if (findCond(GetTTile(start), start)) return start;
+ 
+-	std::vector<TPosition> Visited;
++	// Local patch: the visited positions in a grid, not a vector searched
++	// linearly, which made the search quadratic.
++	TPosition size;
++	if constexpr (std::is_same<TPosition, BWAPI::TilePosition>::value) size = Size(); else size = WalkSize();
++	std::vector<bool> Visited(std::size_t(size.x) * std::size_t(size.y));
++	const auto cell = [&](TPosition p) { return std::size_t(p.y) * std::size_t(size.x) + std::size_t(p.x); };
+ 	std::queue<TPosition> ToVisit;
+ 
+ 	ToVisit.push(start);
+-	Visited.push_back(start);
++	Visited[cell(start)] = true;
+ 
+ 	auto dir8 = {	TPosition(-1, -1), TPosition(0, -1), TPosition(+1, -1),
+ 					TPosition(-1,  0),                   TPosition(+1,  0),
+@@ -281,10 +287,10 @@ inline TPosition Map::BreadthFirstSearch(TPosition start, Pred1 findCond, Pred2
+ 				const Tile_t & Next = GetTTile(next, utils::check_t::no_check); 
+ 				if (findCond(Next, next)) return next;
+ 
+-				if (visitCond(Next, next) && !utils::contains(Visited, next))
++				if (visitCond(Next, next) && !Visited[cell(next)])
+ 				{
+ 					ToVisit.push(next);
+-					Visited.push_back(next);
++					Visited[cell(next)] = true;
+ 				}
+ 			}
+ 		}
+diff --git a/BWEM/src/base.cpp b/BWEM/src/base.cpp
+index 0114a80..be46679 100644
+--- a/BWEM/src/base.cpp
++++ b/BWEM/src/base.cpp
+@@ -73,6 +73,10 @@ void Base::OnMineralDestroyed(const Mineral * pMineral)
+ 	iMineral = find(m_BlockingMinerals.begin(), m_BlockingMinerals.end(), pMineral);
+ 	if (iMineral != m_BlockingMinerals.end())
+ 		fast_erase(m_BlockingMinerals, distance(m_BlockingMinerals.begin(), iMineral));
++	// Local patch: the other copies too. ValidateBaseLocation lists a mineral
++	// once per tile, and a copy left behind dangles once the mineral is
++	// destroyed.
++	really_remove_if(m_BlockingMinerals, [pMineral](const Mineral * m) { return m == pMineral; });
+ }
+ 
+ 	
+diff --git a/BWEM/src/neutral.cpp b/BWEM/src/neutral.cpp
+index 2a4b368..0cdd6b3 100644
+--- a/BWEM/src/neutral.cpp
++++ b/BWEM/src/neutral.cpp
+@@ -104,14 +104,16 @@ void Neutral::RemoveFromTiles()
+ 		else if (tile.GetNeutral())
+ 		{
+ 			Neutral * pPrevStacked = tile.GetNeutral();
+-			while (pPrevStacked->NextStacked() != this)
++			// Local patch: stop at the end of the stack, which a neutral that
++			// overlaps another without being aligned with it is not in.
++			while (pPrevStacked->NextStacked() && pPrevStacked->NextStacked() != this)
+ 			{
+ 				pPrevStacked = pPrevStacked->NextStacked();
+ 			}
+-			
++
+ 			bwem_assert((dx == 0) && (dy == 0));
+ 
+-			if (pPrevStacked)
++			if (pPrevStacked->NextStacked() == this)
+ 			{
+ 				bwem_assert(pPrevStacked->Type() == Type());
+ 				bwem_assert(pPrevStacked->TopLeft() == TopLeft());

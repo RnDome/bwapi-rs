@@ -1,0 +1,85 @@
+diff --git a/FAP/include/FAP.hpp b/FAP/include/FAP.hpp
+index e37f414..e6b0878 100644
+--- a/FAP/include/FAP.hpp
++++ b/FAP/include/FAP.hpp
+@@ -11,6 +11,14 @@ namespace FAP {
+     return v;
+   }
+ 
++  // Local patch: report executed frames and why the simulation stopped;
++  // simulation semantics unchanged.
++  struct SimulationOutcome {
++    enum Reason { LimitReached, SideEliminated, Idle };
++    Reason reason;
++    int frames;
++  };
++
+   template<typename UnitExtension = std::tuple<>>
+   struct FastAPproximation {
+     /**
+@@ -44,7 +52,7 @@ namespace FAP {
+      * \param nFrames the number of frames to simulate. A negative number runs the sim until combat is over.
+      */
+     template<bool tankSplash = false>
+-    void simulate(int nFrames = 96); // = 24*4, 4 seconds on fastest
++    SimulationOutcome simulate(int nFrames = 96); // = 24*4, 4 seconds on fastest
+ 
+     /**
+      * \brief Gets the internal state of the simulator. You can use this to get any info about the unit participating in the simulation or edit the state.
+@@ -160,18 +168,23 @@ namespace FAP {
+ 
+   template<typename UnitExtension>
+   template<bool tankSplash>
+-  void FastAPproximation<UnitExtension>::simulate(int nFrames) {
++  SimulationOutcome FastAPproximation<UnitExtension>::simulate(int nFrames) {
++    // Local patch: report executed frames and why the simulation stopped;
++    // simulation semantics unchanged.
++    int frames = 0;
+     while (nFrames--) {
+       if (player1.empty() || player2.empty())
+-        break;
++        return { SimulationOutcome::SideEliminated, frames };
+ 
+       didSomething = false;
+ 
+       isimulate<tankSplash>();
++      ++frames;
+ 
+       if (!didSomething)
+-        break;
++        return { nFrames ? SimulationOutcome::Idle : SimulationOutcome::LimitReached, frames };
+     }
++    return { SimulationOutcome::LimitReached, frames };
+   }
+ 
+   template<typename UnitExtension>
+@@ -296,14 +309,19 @@ namespace FAP {
+             const int siegeTankBlastRadiusMedianSquared = siegeTankBlastRadiusMedian * siegeTankBlastRadiusMedian;
+             const int siegeTankBlastRadiusOuterSquared = siegeTankBlastRadiusOuter * siegeTankBlastRadiusOuter;
+ 
++            // Local patch: the target by its index, which follows it when a
++            // kill moves it into the slot of the dead unit; an iterator would
++            // stay at the slot it left, past the end.
++            auto closestIdx = static_cast<std::size_t>(closestEnemy - enemyUnits.begin());
+             for (auto enemyidx = 0ull; enemyidx < enemyUnits.size();) {
+               auto &eu = enemyUnits[enemyidx];
+-              if (!eu.flying && &eu != &*closestEnemy) {
++              if (!eu.flying && enemyidx != closestIdx) {
+                 bool killed = false;
+-                auto const effectiveDistToClosestEnemySquared = distSquared(*closestEnemy, eu) / 4; // shell hit point to unit edge
++                auto const effectiveDistToClosestEnemySquared = distSquared(enemyUnits[closestIdx], eu) / 4; // shell hit point to unit edge
+                 auto underTaker = [&]() {
+                   if (eu.health < 1) {
+                     killed = true;
++                    if (closestIdx == enemyUnits.size() - 1) closestIdx = enemyidx;
+                     auto temp = eu;
+                     eu = enemyUnits.back();
+                     enemyUnits.pop_back();
+@@ -328,6 +346,7 @@ namespace FAP {
+               }
+               else ++enemyidx;
+             }
++            closestEnemy = enemyUnits.begin() + closestIdx;
+           }
+         }
+ 

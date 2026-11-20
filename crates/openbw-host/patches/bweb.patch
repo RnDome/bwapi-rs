@@ -1,0 +1,149 @@
+diff --git a/Source/BWEB.cpp b/Source/BWEB.cpp
+index ed73450..5ebeee2 100644
+--- a/Source/BWEB.cpp
++++ b/Source/BWEB.cpp
+@@ -95,8 +95,10 @@ namespace BWEB::Map
+ 
+ 
+             // Initialize walk grids for each rough unit size
+-            for (int x = 0; x <= Broodwar->mapWidth(); x++) {
+-                for (int y = 0; y <= Broodwar->mapHeight(); y++) {
++            // Local patch: up to the map, not one past it, which wrote past the
++            // end of the grids on maps 256 tiles wide or high.
++            for (int x = 0; x < Broodwar->mapWidth(); x++) {
++                for (int y = 0; y < Broodwar->mapHeight(); y++) {
+                     TilePosition t(x, y);
+                     if (walkGridFull[x][y]) {
+                         if (isLargeWalkable(t))
+@@ -348,9 +350,6 @@ namespace BWEB::Map
+             }
+         }
+ 
+-        if (type.isResourceDepot() && !Broodwar->canBuildHere(location, type))
+-            return false;
+-
+         for (auto x = location.x; x < location.x + type.tileWidth(); x++) {
+             for (auto y = location.y; y < location.y + type.tileHeight(); y++) {
+ 
+@@ -362,6 +361,10 @@ namespace BWEB::Map
+                     return false;
+             }
+         }
++
++        // Local patch: after the tiles, not before, as it is the slowest check.
++        if (type.isResourceDepot() && !Broodwar->canBuildHere(location, type))
++            return false;
+         return true;
+     }
+ 
+diff --git a/Source/BWEB.h b/Source/BWEB.h
+index c309a7e..b1ab06f 100644
+--- a/Source/BWEB.h
++++ b/Source/BWEB.h
+@@ -1,6 +1,11 @@
+ #pragma once
+ #include <BWAPI.h>
+ 
++// Local patch: written for MSVC, whose headers bring these along.
++#include <cfloat>
++#include <climits>
++#include <cstring>
++
+ #include <bwem.h>
+ 
+ #include "Block.h"
+@@ -71,6 +76,10 @@ namespace BWEB::Map {
+     /// Returns two BWAPI::Positions perpendicular to a line at a given distance away in pixels.
+     std::pair<BWAPI::Position, BWAPI::Position> perpendicularLine(std::pair<BWAPI::Position, BWAPI::Position>, double);
+ 
++    // Local patch: MSVC finds `getAngle(T, T)`, declared after its caller; GCC
++    // needs it declared first.
++    template <class T> double getAngle(T p1, T p2);
++
+     /// Returns the angle of a pair of BWAPI::Point in degrees.
+     template <class T> //
+     double getAngle(std::pair<T, T> p)
+diff --git a/Source/Block.cpp b/Source/Block.cpp
+index 38fbe61..98829da 100644
+--- a/Source/Block.cpp
++++ b/Source/Block.cpp
+@@ -291,7 +291,8 @@ namespace BWEB::Blocks {
+         }
+ 
+         // Can't place too close to main choke
+-        if (type == BlockType::Supply) {
++        // Local patch: only where the main has a choke point.
++        if (type == BlockType::Supply && Stations::getStartingMain() && Stations::getStartingMain()->getChokepoint()) {
+             auto center = Position(here) + Position(width * 32, height * 32);
+             if (center.getDistance(Position(Stations::getStartingMain()->getChokepoint()->Center())) < 160.0)
+                 return false;
+@@ -368,11 +369,14 @@ namespace BWEB::Blocks {
+ 
+         for (int w = width; w > 1; w--) {
+             for (int h = height; h > 1; h--) {
++                // Local patch: the pieces once per size, not once per tile.
++                const auto pieces = whichPieces(w, h);
++                if (pieces.empty())
++                    continue;
+                 for (auto tile : searchTiles) {
+                     const auto blockCenter = Position(tile) + Position(w * 16, h * 16);
+ 
+                     // Check if we have pieces and a layout to use
+-                    const auto pieces = whichPieces(w, h);
+                     const auto layout = wherePieces(tile, pieces);
+                     if (!tile.isValid() || pieces.empty() || layout.empty() || !conditions(tile, pieces))
+                         continue;
+@@ -394,6 +398,9 @@ namespace BWEB::Blocks {
+ 
+     void findStartBlocks()
+     {
++        // Local patch: no start blocks where the main has no choke point.
++        if (!Stations::getStartingMain() || !Stations::getStartingMain()->getChokepoint())
++            return;
+         const auto race        = Broodwar->self()->getRace();
+         const auto firstStart  = Stations::getStartingMain()->getBase()->Center();
+         const auto secondStart = (Position(Stations::getStartingMain()->getChokepoint()->Center()) + Stations::getStartingMain()->getBase()->Center()) / 2;
+diff --git a/Source/Block.h b/Source/Block.h
+index d928b6b..f8b1927 100644
+--- a/Source/Block.h
++++ b/Source/Block.h
+@@ -84,6 +84,9 @@ namespace BWEB {
+         /// <summary> Returns true if this Block was generated for defensive usage. </summary>
+         bool isDefensive() { return type == BlockType::Defensive; }
+ 
++        // Local patch: the type, for the checks of the Rust port.
++        BlockType getType() const { return type; }
++
+         /// <summary> Returns the width of the Block in TilePositions. </summary>
+         int width() { return w; }
+ 
+diff --git a/Source/PathFind.cpp b/Source/PathFind.cpp
+index e530536..15df9da 100644
+--- a/Source/PathFind.cpp
++++ b/Source/PathFind.cpp
+@@ -47,7 +47,9 @@ namespace BWEB {
+ 
+         const auto isWalkable = [&](const int x, const int y) {
+             const TilePosition tile(x, y);
+-            if (x > width || y > height || x < 0 || y < 0)
++            // Local patch: `>=`, or the column and row past the map read past
++            // the end of the grids.
++            if (x >= width || y >= height || x < 0 || y < 0)
+                 return false;
+             if (tile == source || tile == target)
+                 return true;
+diff --git a/Source/Wall.h b/Source/Wall.h
+index a8e00bb..41962e8 100644
+--- a/Source/Wall.h
++++ b/Source/Wall.h
+@@ -85,6 +85,10 @@ namespace BWEB {
+             return {};
+         }
+ 
++        // Local patch: `getDefenses(row)` returns a reference to a temporary for
++        // a row the wall has none of; this reads every row at once.
++        const map<int, set<TilePosition>>& getAllDefenses() const { return defenses; }
++
+         /// <summary> Returns the TilePosition belonging to the opening of the wall. </summary>
+         const set<TilePosition>& getOpenings() const { return openings; }
+ 
