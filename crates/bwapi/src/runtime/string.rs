@@ -78,3 +78,11 @@ impl fmt::Display for crate::TextColor {
         fmt::Write::write_char(f, char::from(code))
     }
 }
+
+/// Writes the BWAPI name: `format!("{}", Error::INSUFFICIENT_MINERALS)` is
+/// `Insufficient_Minerals`.
+impl fmt::Display for crate::Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(&self.name(), f)
+    }
+}
