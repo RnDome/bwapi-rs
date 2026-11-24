@@ -3,11 +3,12 @@ resolver = "3"
 members = [
     "crates/bwapi",
     "crates/codegen",
+    "crates/sdk",
     "crates/xtask",
     "examples/bot_rust",
 ]
 # Plain `cargo build/clippy/test` skip the generator; `cargo xtask` and `--workspace` reach it.
-default-members = ["crates/bwapi", "examples/bot_rust"]
+default-members = ["crates/bwapi", "crates/sdk", "examples/bot_rust"]
 
 [workspace.package]
 version = "0.3.0"
@@ -19,3 +20,8 @@ authors = [
 ]
 repository = "https://github.com/RnDome/bwapi-rs"
 license = "Unlicense OR MIT"
+
+# The tests of bwapi-sdk run its analyses on hundreds of real maps: unoptimised
+# they take tens of seconds.
+[profile.test.package.bwapi-sdk]
+opt-level = 3

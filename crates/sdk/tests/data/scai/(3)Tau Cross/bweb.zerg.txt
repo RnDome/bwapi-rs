@@ -1,0 +1,74 @@
+answers bweb 1
+map scai/(3)Tau Cross.scx
+race 0
+used 258 155653c6acfe2e05
+reserved 1157 4a09013b587ee064
+used at stage 0 258 155653c6acfe2e05
+reserved at stage 0 258 de72b6859441e905
+used at stage 1 258 155653c6acfe2e05
+reserved at stage 1 850 635dd7f49e440a05
+used at stage 2 258 155653c6acfe2e05
+reserved at stage 2 908 aadf515ef97b53c5
+placeable 156 9616 6bc1f23699f1cdc5
+placeable 109 9068 acf005d7466071c5
+placeable 160 7865 b150167e7e0f6c04
+placeable 142 8479 de2ad800cdd69dc4
+placeable 106 6728 20bae8a8e743a9e5
+placeable 131 6728 20bae8a8e743a9e5
+starting_main 7,44
+starting_natural 14,13
+stations 12
+7,44 main choke 9 centroid 115,1464 small 7,41 medium 4,40 angle 3.141592654 defenses 5,42 5,45 11,40 angle_bits 400921fb54442d18
+93,118 main choke 10 centroid 3184,3857 small - medium - angle 4.712388980 defenses 91,118 91,121 94,121 angle_bits 4012d97c7f3321d2
+117,9 main choke 11 centroid 3987,334 small 118,12 medium 119,14 angle 6.283185307 defenses 115,5 118,7 121,5 121,7 121,10 angle_bits 401921fb54442d18
+14,13 natural choke 14 centroid 324,474 small - medium - angle 1.178097245 defenses 12,11 12,14 15,11 angle_bits 3ff2d97c7f3321d2
+51,113 natural choke 8 centroid 1716,3818 small - medium - angle 3.141592654 defenses 49,113 49,116 52,116 angle_bits 400921fb54442d18
+103,37 natural choke 4 centroid 3360,1074 small - medium - angle 7.068583471 defenses 101,35 101,38 104,35 angle_bits 401c463abeccb2bb
+116,68 choke - centroid 3975,2222 small - medium - angle 0.000000000 defenses 117,66 119,64 120,66 120,69 125,64 angle_bits 0000000000000000
+50,6 choke - centroid 1777,117 small - medium - angle 0.000000000 defenses 44,2 51,4 54,4 54,7 angle_bits 0000000000000000
+82,6 choke 18 centroid 2893,217 small - medium - angle 1.178097245 defenses 83,4 86,4 86,7 angle_bits 3ff2d97c7f3321d2
+23,100 choke - centroid 640,3320 small - medium - angle 0.000000000 defenses 21,100 21,103 24,103 28,107 angle_bits 0000000000000000
+7,78 choke - centroid 132,2443 small - medium - angle 0.000000000 defenses 5,76 5,79 8,76 angle_bits 0000000000000000
+112,93 choke - centroid 3744,3170 small - medium - angle 0.000000000 defenses 113,96 116,93 116,96 angle_bits 0000000000000000
+blocks 22
+8,48 size 4 2 center 258,1536 small  | medium  | large  | wide 8,48
+12,44 size 3 2 center 385,1408 small  | medium 12,44 | large  | wide 
+12,46 size 3 2 center 385,1472 small  | medium 12,46 | large  | wide 
+12,42 size 3 2 center 385,1344 small  | medium 12,42 | large  | wide 
+8,50 size 3 2 center 257,1600 small  | medium 8,50 | large  | wide 
+12,48 size 3 2 center 385,1536 small  | medium 12,48 | large  | wide 
+9,41 size 2 2 center 289,1313 small 9,41 | medium  | large  | wide 
+10,33 size 4 3 center 322,1056 small  | medium  | large 10,33 | wide 
+14,37 size 4 3 center 450,1184 small  | medium  | large 14,37 | wide 
+5,33 size 4 3 center 162,1056 small  | medium  | large 5,33 | wide 
+15,33 size 4 3 center 482,1056 small  | medium  | large 15,33 | wide 
+7,29 size 4 3 center 226,928 small  | medium  | large 7,29 | wide 
+79,116 size 4 3 center 2530,3712 small  | medium  | large 79,116 | wide 
+80,112 size 4 3 center 2562,3584 small  | medium  | large 80,112 | wide 
+79,120 size 4 3 center 2530,3840 small  | medium  | large 79,120 | wide 
+74,116 size 4 3 center 2370,3712 small  | medium  | large 74,116 | wide 
+75,112 size 4 3 center 2402,3584 small  | medium  | large 75,112 | wide 
+117,22 size 4 3 center 3746,704 small  | medium  | large 117,22 | wide 
+117,26 size 4 3 center 3746,832 small  | medium  | large 117,26 | wide 
+115,18 size 4 3 center 3682,576 small  | medium  | large 115,18 | wide 
+122,22 size 4 3 center 3906,704 small  | medium  | large 122,22 | wide 
+122,26 size 4 3 center 3906,832 small  | medium  | large 122,26 | wide 
+walls 1
+angle 1.178097245 small  | medium 21,15 | large 21,17 | openings  | defenses 0: 16,9 16,16 16,18 18,7 18,9 18,11 18,13 18,15 18,17 18,19 / 1: 18,11 18,13 18,15 / 2: 18,7 18,9 18,17 18,19 / 3: 16,9 16,16 16,18 | choke 14 area 13 angle_bits 3ff2d97c7f3321d2
+searches
+37 mode 3 from 116,68: bb8a77545de54ff9
+37 mode 3 from 7,44: 407ee5e4446685c9
+37 mode 3 from 93,118: e9e5cd59e96c8f28
+37 mode 3 from 117,9: 308a2f4e5b8ae4e9
+37 mode 3 from 50,6: 552d7c94eb252f65
+37 mode 3 from 82,6: 1c18f0332a209a2b
+37 mode 3 from 23,100: 12fc9e10360d3106
+37 mode 3 from 7,78: 7fd6993d8cdc40e2
+66 mode 3 from 116,68: cd568e087bdebe16
+66 mode 3 from 7,44: 36e10e66532dc46e
+66 mode 3 from 93,118: d00e028959a29350
+66 mode 3 from 117,9: 7313b0957fe25fdf
+66 mode 3 from 50,6: 0fba88232cd67aca
+66 mode 3 from 82,6: f579c0ff40b83222
+66 mode 3 from 23,100: 00baae83f7ed1da9
+66 mode 3 from 7,78: dae0f4ed22b59fff

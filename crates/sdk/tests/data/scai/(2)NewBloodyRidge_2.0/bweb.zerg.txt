@@ -1,0 +1,67 @@
+answers bweb 1
+map scai/(2)NewBloodyRidge_2.0.scx
+race 0
+used 260 4f69d1f83dbcb4e5
+reserved 961 d800a7ddc1855524
+used at stage 0 260 4f69d1f83dbcb4e5
+reserved at stage 0 260 65a2b4ea8ea80ae5
+used at stage 1 260 4f69d1f83dbcb4e5
+reserved at stage 1 780 5d6e992ea7c88865
+used at stage 2 260 4f69d1f83dbcb4e5
+reserved at stage 2 780 5d6e992ea7c88865
+placeable 156 4371 5ff6b9ca00188d84
+placeable 109 3965 b5207a97d0b89324
+placeable 160 3079 739088a9ef240624
+placeable 142 3497 4baa33eff9a04b24
+placeable 106 2264 f164da3cbf54afc5
+placeable 131 2264 f164da3cbf54afc5
+starting_main 117,6
+starting_natural 97,24
+stations 11
+117,6 main choke 3 centroid 3987,235 small 118,9 medium 120,11 angle 5.497787144 defenses 115,2 118,4 121,2 121,4 121,7 angle_bits 4015fdbbe9bba775
+7,86 main choke 8 centroid 108,2795 small 7,83 medium 4,82 angle 2.356194490 defenses 5,84 5,87 11,82 angle_bits 4002d97c7f3321d2
+97,24 natural choke 12 centroid 3168,662 small - medium - angle 0.392699082 defenses 95,22 95,25 98,22 angle_bits 3fd921fb54442d18
+27,70 natural choke 17 centroid 928,2442 small - medium - angle 3.926990817 defenses 28,73 31,70 31,73 angle_bits 400f6a7a2955385e
+71,5 choke 21 centroid 2352,58 small - medium - angle 6.283185307 defenses 72,3 75,3 75,6 angle_bits 401921fb54442d18
+53,87 choke 19 centroid 1744,2986 small - medium - angle 2.356194490 defenses 51,87 51,90 54,90 angle_bits 4002d97c7f3321d2
+6,53 choke 18 centroid 77,1778 small - medium - angle 2.356194490 defenses 4,53 4,56 7,56 angle_bits 4002d97c7f3321d2
+118,40 choke 13 centroid 4018,1321 small - medium - angle 5.497787144 defenses 119,38 122,36 122,38 122,41 angle_bits 4015fdbbe9bba775
+6,5 choke - centroid 76,194 small - medium - angle 0.000000000 defenses 4,1 4,3 4,6 7,3 10,1 angle_bits 0000000000000000
+62,47 choke - centroid 2045,1552 small - medium - angle 0.000000000 defenses 60,45 60,48 63,45 angle_bits 0000000000000000
+118,87 choke - centroid 4024,2846 small - medium - angle 0.000000000 defenses 119,90 122,87 122,90 angle_bits 0000000000000000
+blocks 17
+112,6 size 4 2 center 3586,192 small  | medium  | large  | wide 112,6
+115,10 size 3 2 center 3681,320 small  | medium 115,10 | large  | wide 
+113,8 size 3 2 center 3617,256 small  | medium 113,8 | large  | wide 
+113,4 size 3 2 center 3617,128 small  | medium 113,4 | large  | wide 
+117,12 size 3 2 center 3745,384 small  | medium 117,12 | large  | wide 
+112,10 size 3 2 center 3585,320 small  | medium 112,10 | large  | wide 
+113,2 size 2 2 center 3617,65 small 113,2 | medium  | large  | wide 
+112,14 size 4 3 center 3586,448 small  | medium  | large 112,14 | wide 
+112,18 size 4 3 center 3586,576 small  | medium  | large 112,18 | wide 
+107,13 size 4 3 center 3426,416 small  | medium  | large 107,13 | wide 
+117,16 size 4 3 center 3746,512 small  | medium  | large 117,16 | wide 
+107,9 size 4 3 center 3426,288 small  | medium  | large 107,9 | wide 
+14,80 size 4 3 center 450,2560 small  | medium  | large 14,80 | wide 
+14,84 size 4 3 center 450,2688 small  | medium  | large 14,84 | wide 
+14,76 size 4 3 center 450,2432 small  | medium  | large 14,76 | wide 
+19,82 size 4 3 center 610,2624 small  | medium  | large 19,82 | wide 
+9,75 size 4 3 center 290,2400 small  | medium  | large 9,75 | wide 
+walls 0
+searches
+37 mode 3 from 117,6: 383f4d7290a19ba8
+37 mode 3 from 7,86: 1c13f15b28f74821
+37 mode 3 from 71,5: 62e99792f6bbab4c
+37 mode 3 from 53,87: cff577bec5d56a68
+37 mode 3 from 97,24: 35de5b37a97406a8
+37 mode 3 from 27,70: 609c7ddc8729af8a
+37 mode 3 from 6,53: c14c242a59f5eb04
+37 mode 3 from 118,40: b6d017c7a70516dc
+66 mode 3 from 117,6: 8f36fc90c3843442
+66 mode 3 from 7,86: 099657c803e1c188
+66 mode 3 from 71,5: 9bfb3ca61bc7b598
+66 mode 3 from 53,87: afbb8ebe22d5bdc6
+66 mode 3 from 97,24: bff1f2256f5cbd9f
+66 mode 3 from 27,70: bf94bf016480b4d8
+66 mode 3 from 6,53: 103ad9f8cb4eddaa
+66 mode 3 from 118,40: f62282e78fcdac0a

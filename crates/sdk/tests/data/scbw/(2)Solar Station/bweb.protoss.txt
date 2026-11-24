@@ -1,0 +1,51 @@
+answers bweb 1
+map scbw/(2)Solar Station.scm
+race 2
+used 180 3c25ccb406cd0de5
+reserved 599 80bfcb881b6a57a4
+used at stage 0 180 3c25ccb406cd0de5
+reserved at stage 0 180 a92c872ac2cbbbe5
+used at stage 1 180 3c25ccb406cd0de5
+reserved at stage 1 580 a7cd9346898cac05
+used at stage 2 180 3c25ccb406cd0de5
+reserved at stage 2 580 a7cd9346898cac05
+placeable 156 3420 a487d4f4bea6dda5
+placeable 109 3076 e9bdd4af1f390fe5
+placeable 160 2204 2d449c5cae2c0c45
+placeable 142 2535 8053feaba814c2e4
+placeable 106 1747 c6da8af6705bc5c4
+placeable 131 1747 c6da8af6705bc5c4
+starting_main 61,6
+starting_natural -
+stations 12
+61,6 main choke - centroid 2060,81 small - medium - angle 0.000000000 defenses 62,4 65,4 65,7 angle_bits 0000000000000000
+58,118 main choke - centroid 1920,3982 small - medium - angle 0.000000000 defenses 56,118 56,121 59,121 angle_bits 0000000000000000
+62,55 choke - centroid 2048,2004 small - medium - angle 0.000000000 defenses 60,48 60,53 60,56 63,53 66,48 angle_bits 0000000000000000
+19,33 choke - centroid 928,976 small - medium - angle 0.000000000 defenses 23,31 angle_bits 0000000000000000
+114,37 choke - centroid 3942,1366 small - medium - angle 0.000000000 defenses 118,40 angle_bits 0000000000000000
+105,33 choke - centroid 3168,982 small - medium - angle 0.000000000 defenses 103,31 angle_bits 0000000000000000
+10,87 choke - centroid 128,2710 small - medium - angle 0.000000000 defenses 8,85 8,88 angle_bits 0000000000000000
+104,93 choke - centroid 3155,3100 small - medium - angle 0.000000000 defenses 102,93 102,96 angle_bits 0000000000000000
+115,87 choke - centroid 3968,2752 small - medium - angle 0.000000000 defenses 113,88 angle_bits 0000000000000000
+84,62 choke - centroid 2976,1984 small - medium - angle 0.000000000 defenses 82,63 angle_bits 0000000000000000
+59,71 choke - centroid 2048,2496 small - medium - angle 0.000000000 defenses 57,72 60,69 angle_bits 0000000000000000
+42,61 choke - centroid 1184,1984 small - medium - angle 0.000000000 defenses 40,62 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 62,55: b1b8ba02a34f396c
+37 mode 3 from 61,6: ab0c262759a1d225
+37 mode 3 from 58,118: ab0c262759a1d225
+37 mode 3 from 19,33: ab0c262759a1d225
+37 mode 3 from 114,37: ab0c262759a1d225
+37 mode 3 from 105,33: ab0c262759a1d225
+37 mode 3 from 10,87: ab0c262759a1d225
+37 mode 3 from 104,93: ab0c262759a1d225
+66 mode 3 from 62,55: ab0c262759a1d225
+66 mode 3 from 61,6: ab0c262759a1d225
+66 mode 3 from 58,118: ab0c262759a1d225
+66 mode 3 from 19,33: ab0c262759a1d225
+66 mode 3 from 114,37: ab0c262759a1d225
+66 mode 3 from 105,33: ab0c262759a1d225
+66 mode 3 from 10,87: ab0c262759a1d225
+66 mode 3 from 104,93: ab0c262759a1d225

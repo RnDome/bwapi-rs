@@ -1,0 +1,78 @@
+answers bweb 1
+map scai/(2)PolarisRhapsody.scx
+race 0
+used 260 f216cf4ba12b86e5
+reserved 1100 eab0f36573e0b925
+used at stage 0 260 f216cf4ba12b86e5
+reserved at stage 0 260 13ed8abde14b02e5
+used at stage 1 260 f216cf4ba12b86e5
+reserved at stage 1 800 0e45833760cea645
+used at stage 2 260 f216cf4ba12b86e5
+reserved at stage 2 800 0e45833760cea645
+placeable 156 4999 db2c55006d2bcc84
+placeable 109 4542 c977d12b55123c25
+placeable 160 3773 550b2be8ede13ac4
+placeable 142 4237 97ecbe530533d7c4
+placeable 106 3061 776f32c892ca3ac4
+placeable 131 3061 776f32c892ca3ac4
+starting_main 7,7
+starting_natural 27,16
+stations 12
+7,7 main choke 23 centroid 108,264 small 11,5 medium 11,3 angle 7.068583471 defenses 5,3 5,5 5,8 8,5 angle_bits 401c463abeccb2bb
+101,118 main choke 24 centroid 3475,3816 small 99,116 medium 98,114 angle 3.926990817 defenses 102,116 105,114 105,116 105,119 angle_bits 400f6a7a2955385e
+27,16 natural choke 32 centroid 828,426 small - medium - angle 7.068583471 defenses 25,14 25,17 28,14 angle_bits 401c463abeccb2bb
+81,110 natural choke 27 centroid 2756,3702 small - medium - angle 3.926990817 defenses 82,113 85,110 85,113 angle_bits 400f6a7a2955385e
+100,6 choke - centroid 3395,124 small - medium - angle 0.000000000 defenses 101,4 104,4 104,7 angle_bits 0000000000000000
+8,119 choke - centroid 192,3971 small - medium - angle 0.000000000 defenses 6,119 6,122 9,122 angle_bits 0000000000000000
+102,71 choke 8 centroid 3504,2378 small - medium - angle 0.000000000 defenses 101,78 103,74 106,71 106,74 angle_bits 0000000000000000
+6,54 choke 16 centroid 80,1718 small - medium - angle 3.141592654 defenses 4,52 4,55 7,52 9,50 angle_bits 400921fb54442d18
+53,119 choke - centroid 1782,4034 small - medium - angle 0.000000000 defenses 54,122 57,119 57,122 angle_bits 0000000000000000
+54,5 choke - centroid 1801,29 small - medium - angle 0.000000000 defenses 55,3 58,3 58,6 angle_bits 0000000000000000
+28,55 choke - centroid 1097,1666 small - medium - angle 0.000000000 defenses 29,53 32,53 32,56 angle_bits 0000000000000000
+80,70 choke - centroid 2486,2429 small - medium - angle 0.000000000 defenses 78,70 78,73 81,73 angle_bits 0000000000000000
+blocks 27
+8,11 size 4 2 center 258,352 small  | medium  | large  | wide 8,11
+12,7 size 3 2 center 385,224 small  | medium 12,7 | large  | wide 
+12,9 size 3 2 center 385,288 small  | medium 12,9 | large  | wide 
+7,13 size 3 2 center 225,416 small  | medium 7,13 | large  | wide 
+13,5 size 3 2 center 417,160 small  | medium 13,5 | large  | wide 
+12,11 size 3 2 center 385,352 small  | medium 12,11 | large  | wide 
+10,13 size 2 2 center 321,417 small 10,13 | medium  | large  | wide 
+10,16 size 4 3 center 322,512 small  | medium  | large 10,16 | wide 
+10,21 size 4 3 center 322,672 small  | medium  | large 10,21 | wide 
+15,24 size 4 3 center 482,768 small  | medium  | large 15,24 | wide 
+5,17 size 4 3 center 162,544 small  | medium  | large 5,17 | wide 
+10,25 size 4 3 center 322,800 small  | medium  | large 10,25 | wide 
+5,21 size 4 3 center 162,672 small  | medium  | large 5,21 | wide 
+17,4 size 4 3 center 546,128 small  | medium  | large 17,4 | wide 
+15,28 size 4 3 center 482,896 small  | medium  | large 15,28 | wide 
+22,3 size 4 3 center 706,96 small  | medium  | large 22,3 | wide 
+27,3 size 4 3 center 866,96 small  | medium  | large 27,3 | wide 
+94,117 size 4 3 center 3010,3744 small  | medium  | large 94,117 | wide 
+98,106 size 4 3 center 3138,3392 small  | medium  | large 98,106 | wide 
+94,121 size 4 3 center 3010,3872 small  | medium  | large 94,121 | wide 
+95,102 size 4 3 center 3042,3264 small  | medium  | large 95,102 | wide 
+103,106 size 4 3 center 3298,3392 small  | medium  | large 103,106 | wide 
+89,122 size 4 3 center 2850,3904 small  | medium  | large 89,122 | wide 
+100,102 size 4 3 center 3202,3264 small  | medium  | large 100,102 | wide 
+99,123 size 4 3 center 3170,3936 small  | medium  | large 99,123 | wide 
+94,98 size 4 3 center 3010,3136 small  | medium  | large 94,98 | wide 
+84,122 size 4 3 center 2690,3904 small  | medium  | large 84,122 | wide 
+walls 0
+searches
+37 mode 3 from 7,7: 585d7d9077be11d6
+37 mode 3 from 101,118: 1949805d55b8392f
+37 mode 3 from 100,6: d4e9148760fb2e31
+37 mode 3 from 8,119: d24abce4be87068b
+37 mode 3 from 102,71: 1c97037680b92ccf
+37 mode 3 from 6,54: 1d15e3128cc2be16
+37 mode 3 from 81,110: 6dddb5d4ace044a1
+37 mode 3 from 53,119: 2c0fa54bd29d4dfb
+66 mode 3 from 7,7: 6156a28a5a1bf989
+66 mode 3 from 101,118: e4c15e09c678679d
+66 mode 3 from 100,6: 18cde9e3acd64038
+66 mode 3 from 8,119: a0a8a83ff3d2bb6a
+66 mode 3 from 102,71: 8491cfe30e2ed9e0
+66 mode 3 from 6,54: 3e4883a9f4c56e5a
+66 mode 3 from 81,110: d5d1fc8bc80f7ed4
+66 mode 3 from 53,119: 93c44e9f42cdaa1b

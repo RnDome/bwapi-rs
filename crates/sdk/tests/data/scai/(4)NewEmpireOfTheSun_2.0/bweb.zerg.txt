@@ -1,0 +1,81 @@
+answers bweb 1
+map scai/(4)NewEmpireOfTheSun_2.0.scm
+race 0
+used 338 7309bd5a42c96505
+reserved 1387 1f49632e3d594124
+used at stage 0 340 03b6ed4a228d47e5
+reserved at stage 0 340 aa21cce6429b01e5
+used at stage 1 338 7309bd5a42c96505
+reserved at stage 1 1025 a2ac26aabadf9ec4
+used at stage 2 338 7309bd5a42c96505
+reserved at stage 2 1069 9599db8152ed96e4
+placeable 156 6769 6f7876e91541cc24
+placeable 109 6043 67486e38fa02d4a4
+placeable 160 4603 c4dc03c511cb43e4
+placeable 142 5338 96be27fa807a8885
+placeable 106 3523 945d6f963dabc424
+placeable 131 3523 945d6f963dabc424
+starting_main 7,6
+starting_natural 31,6
+stations 14
+7,118 main choke 6 centroid 112,3800 small 11,116 medium 11,114 angle 1.570796327 defenses 5,114 5,116 5,119 8,116 angle_bits 3ff921fb54442d18
+117,116 main choke 7 centroid 3987,3736 small 115,114 medium 114,112 angle 4.712388980 defenses 118,114 121,112 121,114 121,117 angle_bits 4012d97c7f3321d2
+7,6 main choke 8 centroid 112,216 small 11,4 medium 11,2 angle 7.853981634 defenses 5,2 5,4 5,7 8,4 angle_bits 401f6a7a2955385e
+117,6 main choke 9 centroid 3984,216 small 115,4 medium 114,2 angle 4.712388980 defenses 118,4 121,2 121,4 121,7 angle_bits 4012d97c7f3321d2
+31,118 natural choke 14 centroid 1201,3921 small - medium - angle 2.356194490 defenses 32,121 35,118 35,121 angle_bits 4002d97c7f3321d2
+93,118 natural choke 17 centroid 2901,3921 small - medium - angle 3.141592654 defenses 91,118 91,121 94,121 angle_bits 400921fb54442d18
+31,6 natural choke 32 centroid 1201,142 small - medium - angle 6.283185307 defenses 32,4 35,4 35,7 angle_bits 401921fb54442d18
+93,6 natural choke 25 centroid 2894,145 small - medium - angle 6.283185307 defenses 91,4 91,7 94,4 angle_bits 401921fb54442d18
+116,84 choke - centroid 3911,2645 small - medium - angle 0.000000000 defenses 117,82 120,82 120,85 angle_bits 0000000000000000
+8,84 choke - centroid 181,2645 small - medium - angle 0.000000000 defenses 6,82 6,85 9,82 angle_bits 0000000000000000
+116,42 choke - centroid 3928,1479 small - medium - angle 0.000000000 defenses 117,40 120,40 120,43 angle_bits 0000000000000000
+8,42 choke - centroid 177,1486 small - medium - angle 0.000000000 defenses 6,42 6,45 9,45 angle_bits 0000000000000000
+62,5 choke - centroid 2043,338 small - medium - angle 0.000000000 defenses 60,5 60,8 60,12 63,8 66,12 angle_bits 0000000000000000
+62,121 choke - centroid 2057,3794 small - medium - angle 0.000000000 defenses 63,119 66,117 66,119 66,122 angle_bits 0000000000000000
+blocks 27
+7,10 size 4 2 center 226,320 small  | medium  | large  | wide 7,10
+12,6 size 3 2 center 385,192 small  | medium 12,6 | large  | wide 
+12,8 size 3 2 center 385,256 small  | medium 12,8 | large  | wide 
+11,10 size 3 2 center 353,320 small  | medium 11,10 | large  | wide 
+7,12 size 3 2 center 225,384 small  | medium 7,12 | large  | wide 
+13,4 size 3 2 center 417,128 small  | medium 13,4 | large  | wide 
+5,11 size 2 2 center 161,353 small 5,11 | medium  | large  | wide 
+16,118 size 4 3 center 514,3776 small  | medium  | large 16,118 | wide 
+16,114 size 4 3 center 514,3648 small  | medium  | large 16,114 | wide 
+16,122 size 4 3 center 514,3904 small  | medium  | large 16,122 | wide 
+11,123 size 4 3 center 354,3936 small  | medium  | large 11,123 | wide 
+16,110 size 4 3 center 514,3520 small  | medium  | large 16,110 | wide 
+109,117 size 4 3 center 3490,3744 small  | medium  | large 109,117 | wide 
+109,113 size 4 3 center 3490,3616 small  | medium  | large 109,113 | wide 
+109,121 size 4 3 center 3490,3872 small  | medium  | large 109,121 | wide 
+104,117 size 4 3 center 3330,3744 small  | medium  | large 104,117 | wide 
+114,121 size 4 3 center 3650,3872 small  | medium  | large 114,121 | wide 
+16,7 size 4 3 center 514,224 small  | medium  | large 16,7 | wide 
+16,11 size 4 3 center 514,352 small  | medium  | large 16,11 | wide 
+17,3 size 4 3 center 546,96 small  | medium  | large 17,3 | wide 
+11,13 size 4 3 center 354,416 small  | medium  | large 11,13 | wide 
+16,15 size 4 3 center 514,480 small  | medium  | large 16,15 | wide 
+109,7 size 4 3 center 3490,224 small  | medium  | large 109,7 | wide 
+109,3 size 4 3 center 3490,96 small  | medium  | large 109,3 | wide 
+109,11 size 4 3 center 3490,352 small  | medium  | large 109,11 | wide 
+104,7 size 4 3 center 3330,224 small  | medium  | large 104,7 | wide 
+114,11 size 4 3 center 3650,352 small  | medium  | large 114,11 | wide 
+walls 1
+angle 6.283185307 small  | medium 35,12 | large 31,12 | openings 38,12 39,12 | defenses 0: 29,7 29,9 31,9 33,9 35,7 35,9 37,9 / 1: 29,9 31,9 33,9 / 2: 35,9 37,9 / 3: 29,7 35,7 | choke 32 area 18 angle_bits 401921fb54442d18
+searches
+37 mode 3 from 7,118: 27fbf66f14773e43
+37 mode 3 from 117,116: 6a255d5e80d7c82f
+37 mode 3 from 7,6: 20a9a81c23dcdc2f
+37 mode 3 from 117,6: ab982322b49b041c
+37 mode 3 from 116,84: 4165f746836f3e3f
+37 mode 3 from 8,84: 9c371bf6bbc4096d
+37 mode 3 from 116,42: 0157aead66d0165d
+37 mode 3 from 8,42: 9481ec03874d4172
+66 mode 3 from 7,118: 7f68c96337bff9f1
+66 mode 3 from 117,116: a1ee33e0cbb4c315
+66 mode 3 from 7,6: 950768d8108d133e
+66 mode 3 from 117,6: eac6bdf1a36c97d9
+66 mode 3 from 116,84: 8f3568cc2fb3d8a4
+66 mode 3 from 8,84: 1c340297bd2add0b
+66 mode 3 from 116,42: 7c2121b1bd0aa72b
+66 mode 3 from 8,42: 5192ffcc4dddc60a

@@ -1,0 +1,52 @@
+answers bweb 1
+map scbw/(4)Dire Straits.scm
+race 1
+used 268 1d7795ff63e54465
+reserved 973 617b0a3723a10cc4
+used at stage 0 268 1d7795ff63e54465
+reserved at stage 0 268 d5d366e15226ca65
+used at stage 1 268 1d7795ff63e54465
+reserved at stage 1 935 2b2c5d825f5a18e4
+used at stage 2 268 1d7795ff63e54465
+reserved at stage 2 935 2b2c5d825f5a18e4
+placeable 156 6541 91fe9f8fb77c7d84
+placeable 109 6156 f5e88ba7eb1a2d25
+placeable 160 5289 b059db47451637e4
+placeable 142 5763 246bd139fd27e2c4
+placeable 106 4040 6ad8f51050ccb7a5
+placeable 131 4040 6ad8f51050ccb7a5
+starting_main 17,17
+starting_natural -
+stations 13
+101,107 main choke - centroid 3399,3591 small 105,108 medium - angle 0.000000000 defenses 102,110 105,110 angle_bits 0000000000000000
+100,18 main choke - centroid 3352,483 small 104,19 medium - angle 0.000000000 defenses 101,16 104,16 angle_bits 0000000000000000
+17,17 main choke - centroid 440,533 small 21,18 medium - angle 0.000000000 defenses 15,15 15,18 16,13 18,15 22,13 angle_bits 0000000000000000
+22,105 main choke - centroid 600,3388 small 26,106 medium - angle 0.000000000 defenses 20,105 20,108 21,112 23,108 27,112 angle_bits 0000000000000000
+75,49 choke - centroid 2444,1476 small 79,50 medium - angle 0.000000000 defenses 73,47 73,50 76,47 angle_bits 0000000000000000
+53,31 choke - centroid 1809,924 small 57,32 medium - angle 0.000000000 defenses 48,39 51,31 51,34 54,34 54,39 angle_bits 0000000000000000
+114,61 choke - centroid 3864,1962 small 118,62 medium - angle 0.000000000 defenses 112,59 112,62 115,59 angle_bits 0000000000000000
+50,72 choke - centroid 1844,2362 small 54,73 medium - angle 0.000000000 defenses 51,70 54,70 angle_bits 0000000000000000
+80,64 choke - centroid 2688,2238 small 84,65 medium - angle 0.000000000 defenses 81,62 83,59 84,62 angle_bits 0000000000000000
+50,60 choke - centroid 1660,1752 small 54,61 medium - angle 0.000000000 defenses 48,58 48,61 51,58 angle_bits 0000000000000000
+60,91 choke - centroid 2156,3008 small 64,92 medium - angle 0.000000000 defenses 61,94 62,98 64,94 angle_bits 0000000000000000
+51,87 choke - centroid 1528,2976 small 55,88 medium - angle 0.000000000 defenses 49,87 49,90 52,90 angle_bits 0000000000000000
+14,62 choke - centroid 320,1988 small 18,63 medium - angle 0.000000000 defenses 12,60 12,63 15,60 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 101,107: eed1f5d25052ed0b
+37 mode 3 from 100,18: ab0c262759a1d225
+37 mode 3 from 17,17: ab0c262759a1d225
+37 mode 3 from 22,105: ab0c262759a1d225
+37 mode 3 from 75,49: ab0c262759a1d225
+37 mode 3 from 53,31: ab0c262759a1d225
+37 mode 3 from 114,61: ab0c262759a1d225
+37 mode 3 from 50,72: ab0c262759a1d225
+66 mode 3 from 101,107: ab0c262759a1d225
+66 mode 3 from 100,18: ab0c262759a1d225
+66 mode 3 from 17,17: ab0c262759a1d225
+66 mode 3 from 22,105: ab0c262759a1d225
+66 mode 3 from 75,49: ab0c262759a1d225
+66 mode 3 from 53,31: ab0c262759a1d225
+66 mode 3 from 114,61: ab0c262759a1d225
+66 mode 3 from 50,72: ab0c262759a1d225

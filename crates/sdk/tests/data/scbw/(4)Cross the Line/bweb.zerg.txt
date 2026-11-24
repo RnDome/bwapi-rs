@@ -1,0 +1,49 @@
+answers bweb 1
+map scbw/(4)Cross the Line.scx
+race 0
+used 220 138d1ad81371cd65
+reserved 721 45be69d9d10af624
+used at stage 0 220 138d1ad81371cd65
+reserved at stage 0 220 9eac1cab6ae60165
+used at stage 1 220 138d1ad81371cd65
+reserved at stage 1 677 3f5f4c8d302dac04
+used at stage 2 220 138d1ad81371cd65
+reserved at stage 2 677 3f5f4c8d302dac04
+placeable 156 4550 1f7068c426451845
+placeable 109 4129 a5778f2b231f9204
+placeable 160 3284 badcd03f3729ee45
+placeable 142 3721 242fddbedf0c5ae4
+placeable 106 2506 c4d7e62257f484e5
+placeable 131 2506 c4d7e62257f484e5
+starting_main 8,24
+starting_natural -
+stations 10
+8,24 main choke - centroid 252,658 small - medium - angle 0.000000000 defenses 6,22 6,25 9,22 angle_bits 0000000000000000
+84,55 main choke - centroid 2868,1938 small - medium - angle 0.000000000 defenses 85,58 88,55 88,58 angle_bits 0000000000000000
+70,87 main choke - centroid 2500,2902 small - medium - angle 0.000000000 defenses 71,85 74,85 74,88 angle_bits 0000000000000000
+30,4 main choke - centroid 820,170 small - medium - angle 0.000000000 defenses 28,4 28,7 31,7 31,11 angle_bits 0000000000000000
+44,76 choke - centroid 1556,2630 small - medium - angle 0.000000000 defenses 45,79 48,76 48,79 angle_bits 0000000000000000
+16,52 choke - centroid 468,1594 small - medium - angle 0.000000000 defenses 14,50 14,53 17,50 24,47 angle_bits 0000000000000000
+75,35 choke - centroid 2552,1314 small - medium - angle 0.000000000 defenses 68,43 73,35 73,38 76,38 angle_bits 0000000000000000
+84,6 choke - centroid 2908,118 small - medium - angle 0.000000000 defenses 85,4 88,4 88,7 angle_bits 0000000000000000
+53,20 choke - centroid 1716,538 small - medium - angle 0.000000000 defenses 51,18 51,21 54,18 angle_bits 0000000000000000
+7,83 choke - centroid 108,2766 small - medium - angle 0.000000000 defenses 5,79 5,81 5,84 8,81 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 44,76: e07e30c295c8f6fe
+37 mode 3 from 8,24: ab0c262759a1d225
+37 mode 3 from 16,52: ab0c262759a1d225
+37 mode 3 from 84,55: ab0c262759a1d225
+37 mode 3 from 75,35: ab0c262759a1d225
+37 mode 3 from 84,6: ab0c262759a1d225
+37 mode 3 from 70,87: ab0c262759a1d225
+37 mode 3 from 53,20: ab0c262759a1d225
+66 mode 3 from 44,76: ab0c262759a1d225
+66 mode 3 from 8,24: ab0c262759a1d225
+66 mode 3 from 16,52: ab0c262759a1d225
+66 mode 3 from 84,55: ab0c262759a1d225
+66 mode 3 from 75,35: ab0c262759a1d225
+66 mode 3 from 84,6: ab0c262759a1d225
+66 mode 3 from 70,87: ab0c262759a1d225
+66 mode 3 from 53,20: ab0c262759a1d225

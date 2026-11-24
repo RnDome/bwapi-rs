@@ -1,0 +1,35 @@
+answers bweb 1
+map scbw/(2)Midnight Lagoon.scx
+race 2
+used 92 6a21b49f099f3965
+reserved 292 85d847f366bf2c65
+used at stage 0 92 6a21b49f099f3965
+reserved at stage 0 92 3d3961988aa08165
+used at stage 1 92 6a21b49f099f3965
+reserved at stage 1 268 0e18b5659e25c9a5
+used at stage 2 92 6a21b49f099f3965
+reserved at stage 2 268 0e18b5659e25c9a5
+placeable 156 2150 a0acaca09c02c025
+placeable 109 1990 0d000e6e62762205
+placeable 160 1669 a23ad8fced4908e4
+placeable 142 1864 1a4b1d16f4232845
+placeable 106 1161 a6d5b57a3f23e5c4
+placeable 131 1161 a6d5b57a3f23e5c4
+starting_main 13,10
+starting_natural -
+stations 4
+13,10 main choke - centroid 281,350 small - medium - angle 0.000000000 defenses 11,8 11,11 12,6 14,8 18,6 angle_bits 0000000000000000
+47,51 main choke - centroid 1772,1697 small - medium - angle 0.000000000 defenses 46,58 48,54 51,51 51,54 52,58 angle_bits 0000000000000000
+53,6 choke - centroid 1947,201 small - medium - angle 0.000000000 defenses 53,2 54,4 57,4 57,7 angle_bits 0000000000000000
+7,55 choke - centroid 105,1846 small - medium - angle 0.000000000 defenses 5,55 5,58 8,58 angle_bits 0000000000000000
+blocks 0
+walls 0
+searches
+37 mode 3 from 13,10: 34e7319364bc8e42
+37 mode 3 from 47,51: 0243cfa845185aa5
+37 mode 3 from 53,6: 0243cfa845185aa5
+37 mode 3 from 7,55: 0243cfa845185aa5
+66 mode 3 from 13,10: 0243cfa845185aa5
+66 mode 3 from 47,51: 0243cfa845185aa5
+66 mode 3 from 53,6: 0243cfa845185aa5
+66 mode 3 from 7,55: 0243cfa845185aa5
