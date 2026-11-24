@@ -47,10 +47,20 @@ fn main() {
     let mut glue = cc::Build::new();
     glue.cpp(true).std("c++17");
     include_bwapi(&mut glue);
+    if glue.get_compiler().is_like_msvc() {
+        // /w14242 'identifier': conversion from 'type1' to 'type2', possible loss of data
+        // /w14254 'operator': conversion from 'type1':'field_bits' to 'type2':'field_bits', possible loss of data
+        // /w15219 implicit conversion from 'type-1' to 'type-2', possible loss of data
+        // /w14365 'action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
+        glue.flag("/w14242")
+            .flag("/w14254")
+            .flag("/w15219")
+            .flag("/w14365");
+    } else {
+        glue.flag("-Wconversion").flag("-Wsign-conversion");
+    }
     glue.warnings(true)
         .extra_warnings(true)
-        .flag("-Wconversion")
-        .flag("-Wsign-conversion")
         .warnings_into_errors(true)
         .file("cpp/runtime.cpp")
         .file("cpp/sets.cpp")
@@ -66,7 +76,9 @@ fn main() {
 /// BWAPI headers as system headers: their warnings must not break `-Werror`.
 fn include_bwapi(build: &mut cc::Build) {
     if build.get_compiler().is_like_msvc() {
-        build.flag("/imsvc").flag(BWAPI_INCLUDE);
+        // cl.exe rejects cc-rs's `/imsvc` form (D9002, include path dropped);
+        // a plain /I works — header warnings are moot without -Werror on MSVC.
+        build.include(BWAPI_INCLUDE);
     } else {
         build.flag(format!("-isystem{BWAPI_INCLUDE}"));
     }
