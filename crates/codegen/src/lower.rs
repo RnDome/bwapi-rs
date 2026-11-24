@@ -187,7 +187,10 @@ impl Lowering {
                 }
                 Entry::Const(_) => continue,
             };
-            let attrs = self.attrs(&f.attrs, &["skip", "non_null", "stable_address"]);
+            let attrs = self.attrs(
+                &f.attrs,
+                &["skip", "non_null", "stable_address", "bool_as_result"],
+            );
             let name = RustIdent(f.name.to_string());
             let cpp = CppIdent(f.cpp.to_string());
             let Some(sig) = &f.sig else {
@@ -287,6 +290,13 @@ impl Lowering {
                     "`Set<T>` and `#[stable_address = \"why the set stays at one address for the whole match\"]` go together: `const XSet&` alone does not prove it",
                 );
             }
+            let bool_as_result = attrs.get("bool_as_result").cloned();
+            if bool_as_result.is_some() && ret != Type::Bool {
+                self.error(
+                    f.name.span(),
+                    "`#[bool_as_result = \"why BWAPI returns false\"]` applies only to a method that returns `bool`",
+                );
+            }
             // An overload is named in C by the types of the arguments a call cannot
             // omit: `Unit_attack_Position`, `Unit_canBuild_UnitType_TilePosition`.
             let mut c_name = format!("{c_prefix}_{}", cpp.0);
@@ -308,6 +318,7 @@ impl Lowering {
                     cpp: cpp.clone(),
                     args: args[..required].to_vec(),
                     ret: ret.clone(),
+                    bool_as_result: bool_as_result.clone(),
                 });
                 methods.push(Method {
                     name: RustIdent(format!("{}_with", name.0)),
@@ -315,6 +326,7 @@ impl Lowering {
                     cpp,
                     args,
                     ret,
+                    bool_as_result,
                 });
             } else {
                 self.c_name(c_name.clone(), f.name.span());
@@ -324,6 +336,7 @@ impl Lowering {
                     cpp,
                     args,
                     ret,
+                    bool_as_result,
                 });
             }
         }
