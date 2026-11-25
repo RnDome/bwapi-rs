@@ -206,8 +206,8 @@ unsafe extern "C" {
         target: *mut Unit,
         shift_queue_command: bool,
     ) -> bool;
-    pub(crate) fn Unit_burrow(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_unburrow(self_: *mut Unit) -> bool;
+    pub(crate) fn Unit_burrow(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_unburrow(self_: *mut Unit) -> i32;
     pub(crate) fn Unit_cloak(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_decloak(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_siege(self_: *mut Unit) -> bool;
@@ -249,7 +249,7 @@ unsafe extern "C" {
     pub(crate) fn Unit_useTech_TechType_Position(self_: *mut Unit, tech: i32, target: Pos) -> bool;
     pub(crate) fn Unit_useTech_TechType_d(self_: *mut Unit, tech: i32) -> bool;
     pub(crate) fn Unit_useTech_TechType(self_: *mut Unit, tech: i32, target: *mut Unit) -> bool;
-    pub(crate) fn Unit_placeCOP(self_: *mut Unit, target: Pos) -> bool;
+    pub(crate) fn Unit_placeCOP(self_: *mut Unit, target: Pos) -> i32;
     pub(crate) fn Unit_canCommand(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_canCommandGrouped_d(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_canCommandGrouped(self_: *mut Unit, check_commandibility: bool) -> bool;

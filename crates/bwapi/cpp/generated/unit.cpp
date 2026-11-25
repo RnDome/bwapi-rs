@@ -831,15 +831,17 @@ bool Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of repair");
   return ret;
 }
-bool Unit_burrow(Unit* self) noexcept {
+int32_t Unit_burrow(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->burrow();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of burrow");
-  return ret;
+  if (ret) return -1;
+  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
 }
-bool Unit_unburrow(Unit* self) noexcept {
+int32_t Unit_unburrow(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unburrow();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unburrow");
-  return ret;
+  if (ret) return -1;
+  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
 }
 bool Unit_cloak(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cloak();
@@ -981,10 +983,11 @@ bool Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) noexcept {
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of useTech");
   return ret;
 }
-bool Unit_placeCOP(Unit* self, TilePosition target) noexcept {
+int32_t Unit_placeCOP(Unit* self, TilePosition target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->placeCOP(BWAPI::TilePosition(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of placeCOP");
-  return ret;
+  if (ret) return -1;
+  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
 }
 bool Unit_canCommand(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->canCommand();

@@ -883,13 +883,27 @@ impl<'game> Unit<'game> {
     }
 
     /// BWAPI: `BWAPI::UnitInterface::burrow`
-    pub fn burrow(self) -> bool {
-        unsafe { raw::Unit_burrow(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn burrow(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_burrow(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unburrow`
-    pub fn unburrow(self) -> bool {
-        unsafe { raw::Unit_unburrow(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unburrow(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_unburrow(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cloak`
@@ -1043,8 +1057,15 @@ impl<'game> Unit<'game> {
     }
 
     /// BWAPI: `BWAPI::UnitInterface::placeCOP`
-    pub fn place_cop(self, target: TilePosition) -> bool {
-        unsafe { raw::Unit_placeCOP(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn place_cop(self, target: TilePosition) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_placeCOP(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::canCommand`

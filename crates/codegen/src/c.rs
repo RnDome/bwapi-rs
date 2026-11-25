@@ -49,8 +49,8 @@ pub fn slice_elem(api: &Api, ret: &Type) -> String {
 pub struct Signature {
     pub ret: String,
     pub params: Vec<String>,
-    /// What the function writes to `Slice* out`, for the comment of the declaration.
-    pub slice: Option<String>,
+    /// Trailing comment of the declaration: a command's return or the `Slice* out` content.
+    pub comment: Option<String>,
 }
 
 /// The C signature of a function of the manifest.
@@ -68,12 +68,18 @@ pub fn signature(api: &Api, recv: Option<&str>, m: &Method) -> Signature {
             t => format!("{} {p}", c_type(api, t)),
         });
     }
-    let slice = match &m.ret {
+    let out = match &m.ret {
         Type::CxxString => Some("uint8_t, a string without a terminating zero".to_owned()),
         Type::Vec(_) => Some(slice_elem(api, &m.ret)),
         _ => None,
     };
+    let comment = if m.bool_as_result.is_some() {
+        Some("-1 = queued, else a BWAPI::Error".to_owned())
+    } else {
+        out.map(|elem| format!("out: {elem}"))
+    };
     let ret = match &m.ret {
+        Type::Bool if m.bool_as_result.is_some() => "int32_t".into(),
         Type::Void => "void".into(),
         Type::CxxString | Type::Vec(_) => {
             params.push("Slice* out".into());
@@ -81,7 +87,11 @@ pub fn signature(api: &Api, recv: Option<&str>, m: &Method) -> Signature {
         }
         t => c_type(api, t),
     };
-    Signature { ret, params, slice }
+    Signature {
+        ret,
+        params,
+        comment,
+    }
 }
 
 /// The C parameter of an argument. A string is `const char* name, size_t nameLen`:
@@ -275,8 +285,8 @@ fn declaration(out: &mut String, api: &Api, recv: Option<&str>, m: &Method) {
         sig.params.join(", ")
     };
     let comment = sig
-        .slice
-        .map(|elem| format!(" /* out: {elem} */"))
+        .comment
+        .map(|c| format!(" /* {c} */"))
         .unwrap_or_default();
     writeln!(
         out,

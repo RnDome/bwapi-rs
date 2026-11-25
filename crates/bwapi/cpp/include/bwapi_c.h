@@ -333,8 +333,8 @@ bool Unit_returnCargo_d(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_returnCargo(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
 bool Unit_repair_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
 bool Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_burrow(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_unburrow(Unit* self) BWAPI_C_NOEXCEPT;
+int32_t Unit_burrow(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unburrow(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
 bool Unit_cloak(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_decloak(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_siege(Unit* self) BWAPI_C_NOEXCEPT;
@@ -363,7 +363,7 @@ bool Unit_cancelUpgrade(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) BWAPI_C_NOEXCEPT;
 bool Unit_useTech_TechType_d(Unit* self, TechType tech) BWAPI_C_NOEXCEPT;
 bool Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_placeCOP(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT;
+int32_t Unit_placeCOP(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
 bool Unit_canCommand(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_canCommandGrouped_d(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_canCommandGrouped(Unit* self, bool checkCommandibility) BWAPI_C_NOEXCEPT;

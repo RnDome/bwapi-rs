@@ -2,8 +2,9 @@
 //!
 //! Every thunk is `noexcept`, checks the declared return type with
 //! `static_assert` before converting it to its C type, and passes arguments
-//! without casts so that `-Wconversion -Werror` rejects narrowing. Handles cross
-//! as opaque C pointers: a thunk casts them to and from the BWAPI class the
+//! without casts so that `-Wconversion -Werror` rejects narrowing. A command
+//! returns `-1` or the id of the last error (0 is `Unit_Does_Not_Exist`). Handles
+//! cross as opaque C pointers: a thunk casts them to and from the BWAPI class the
 //! manifest names. Set iteration is hand-written in `cpp/sets.h` and `cpp/sets.cpp`.
 
 use std::fmt::Write;
@@ -190,6 +191,10 @@ fn thunk(out: &mut String, api: &Api, recv: &Recv, m: &Method) {
     let body = match &m.ret {
         // Returning a value from a void function does not compile: the void return is checked too.
         Type::Void => format!("  return {call};\n"),
+        Type::Bool if m.bool_as_result.is_some() => format!(
+            "{get}{}  if (ret) return -1;\n  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());\n",
+            check(expected(api, &m.ret))
+        ),
         Type::Bool
         | Type::F64
         | Type::Handle { .. }

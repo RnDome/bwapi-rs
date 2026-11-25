@@ -10,6 +10,13 @@
 // Every public method of the BWAPI headers is either bound here or marked
 // `#[skip = "reason"]`.
 //
+// Attributes of a method, each with its reason:
+// - `#[bool_as_result = "..."]`: a command. BWAPI returns `false` and records
+//   why as the last error, the Rust method returns that error in a `Result`.
+//   Queries (`can_*`, `is_*`, `has_*`) keep their `bool`.
+// - `#[non_null = "..."]`: the return is `NonNull<T>`. `#[stable_address = "..."]`:
+//   the return is `Set<T>`.
+//
 // Naming of overloads with a target: `attack_position` / `attack_unit` for
 // commands; `can_x_at` (one kind of target) or `can_x_at_position` /
 // `can_x_at_unit` (two kinds) for the `can*` checks; `_type` when the overload
@@ -185,7 +192,9 @@ bwapi_api! {
         fn gather(target: Unit, #[default] shift_queue_command: bool) -> bool = gather;
         fn return_cargo(#[default] shift_queue_command: bool) -> bool = returnCargo;
         fn repair(target: Unit, #[default] shift_queue_command: bool) -> bool = repair;
+        #[bool_as_result = "`false` return is interpreted as a BWAPI error"]
         fn burrow() -> bool = burrow;
+        #[bool_as_result = "`false` return is interpreted as a BWAPI error"]
         fn unburrow() -> bool = unburrow;
         fn cloak() -> bool = cloak;
         fn decloak() -> bool = decloak;
@@ -208,6 +217,7 @@ bwapi_api! {
         fn cancel_upgrade() -> bool = cancelUpgrade;
         fn use_tech_position(tech: TechType, target: Position) -> bool = useTech;
         fn use_tech_unit(tech: TechType, #[default] target: Option<Unit>) -> bool = useTech;
+        #[bool_as_result = "`false` return is interpreted as a BWAPI error"]
         fn place_cop(target: TilePosition) -> bool = placeCOP;
 
         // Command checks.
