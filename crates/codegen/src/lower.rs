@@ -189,7 +189,13 @@ impl Lowering {
             };
             let attrs = self.attrs(
                 &f.attrs,
-                &["skip", "non_null", "stable_address", "bool_as_result"],
+                &[
+                    "skip",
+                    "non_null",
+                    "stable_address",
+                    "bool_as_result",
+                    "deprecated",
+                ],
             );
             let name = RustIdent(f.name.to_string());
             let cpp = CppIdent(f.cpp.to_string());
@@ -297,6 +303,7 @@ impl Lowering {
                     "`#[bool_as_result = \"why BWAPI returns false\"]` applies only to a method that returns `bool`",
                 );
             }
+            let deprecated = attrs.get("deprecated").cloned();
             // An overload is named in C by the types of the arguments a call cannot
             // omit: `Unit_attack_Position`, `Unit_canBuild_UnitType_TilePosition`.
             let mut c_name = format!("{c_prefix}_{}", cpp.0);
@@ -319,6 +326,7 @@ impl Lowering {
                     args: args[..required].to_vec(),
                     ret: ret.clone(),
                     bool_as_result: bool_as_result.clone(),
+                    deprecated: deprecated.clone(),
                 });
                 methods.push(Method {
                     name: RustIdent(format!("{}_with", name.0)),
@@ -327,6 +335,7 @@ impl Lowering {
                     args,
                     ret,
                     bool_as_result,
+                    deprecated,
                 });
             } else {
                 self.c_name(c_name.clone(), f.name.span());
@@ -337,6 +346,7 @@ impl Lowering {
                     args,
                     ret,
                     bool_as_result,
+                    deprecated,
                 });
             }
         }

@@ -810,7 +810,7 @@ fn bool_as_result_is_accepted() {
         fn frame() -> i32 = getFrameCount;"#,
     ));
     let methods = &api.handle("Game").class.methods;
-    // Both methods of a call with defaults carry the directive.
+    // A call with defaults gives two methods.
     assert_eq!(methods.len(), 4);
     for m in &methods[..3] {
         assert_eq!(
@@ -820,4 +820,23 @@ fn bool_as_result_is_accepted() {
         assert!(m.ret == Type::Bool);
     }
     assert_eq!(methods[3].bool_as_result, None);
+}
+
+// ------------------------------------------------------------------ deprecated
+
+#[test]
+fn deprecated_is_accepted() {
+    let api = accepts(&game(
+        r#"#[deprecated = "commands return their error"]
+        fn last_error() -> i32 = getLastError;
+        #[deprecated = "commands return their error"]
+        fn hold_position(#[default] shift_queue_command: bool) -> bool = holdPosition;"#,
+    ));
+    let methods = &api.handle("Game").class.methods;
+    // A call with defaults gives two methods.
+    assert_eq!(methods.len(), 3);
+    for m in methods {
+        assert_eq!(m.deprecated.as_deref(), Some("commands return their error"));
+        assert_eq!(m.bool_as_result, None);
+    }
 }
