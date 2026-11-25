@@ -14,6 +14,7 @@
 // - `#[bool_as_result = "..."]`: a command. BWAPI returns `false` and records
 //   why as the last error, the Rust method returns that error in a `Result`.
 //   Queries (`can_*`, `is_*`, `has_*`) keep their `bool`.
+// - `#[deprecated = "..."]`: the Rust method is deprecated, with the reason.
 // - `#[non_null = "..."]`: the return is `NonNull<T>`. `#[stable_address = "..."]`:
 //   the return is `Set<T>`.
 //
@@ -576,7 +577,9 @@ bwapi_api! {
         #[skip = "BestUnitFilter cannot be passed from Rust yet"]
         fn best_unit = getBestUnit;
 
+        #[deprecated = "commands return their error in a Result, any later failure overwrites this"]
         fn last_error() -> Error = getLastError;
+        #[deprecated = "commands return their error in a Result, any later failure overwrites this"]
         fn set_last_error(#[default] error: Error) -> bool = setLastError;
         fn map_width() -> i32 = mapWidth;
         fn map_height() -> i32 = mapHeight;

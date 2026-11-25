@@ -49,7 +49,8 @@ pub fn slice_elem(api: &Api, ret: &Type) -> String {
 pub struct Signature {
     pub ret: String,
     pub params: Vec<String>,
-    /// Trailing comment of the declaration: a command's return or the `Slice* out` content.
+    /// Trailing comment of the declaration: a deprecation, a command's return or
+    /// the `Slice* out` content.
     pub comment: Option<String>,
 }
 
@@ -73,11 +74,16 @@ pub fn signature(api: &Api, recv: Option<&str>, m: &Method) -> Signature {
         Type::Vec(_) => Some(slice_elem(api, &m.ret)),
         _ => None,
     };
-    let comment = if m.bool_as_result.is_some() {
-        Some("-1 = queued, else a BWAPI::Error".to_owned())
-    } else {
-        out.map(|elem| format!("out: {elem}"))
-    };
+    let mut comments = Vec::new();
+    if let Some(reason) = &m.deprecated {
+        comments.push(format!("deprecated: {reason}"));
+    }
+    if m.bool_as_result.is_some() {
+        comments.push("-1 = queued, else a BWAPI::Error".to_owned());
+    } else if let Some(elem) = out {
+        comments.push(format!("out: {elem}"));
+    }
+    let comment = (!comments.is_empty()).then(|| comments.join(", "));
     let ret = match &m.ret {
         Type::Bool if m.bool_as_result.is_some() => "int32_t".into(),
         Type::Void => "void".into(),

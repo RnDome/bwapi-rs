@@ -707,9 +707,9 @@ Unit* Game_getClosestUnit_d(Game* self, Position center) BWAPI_C_NOEXCEPT;
 Unit* Game_getClosestUnit(Game* self, Position center, int32_t radius) BWAPI_C_NOEXCEPT;
 Unit* Game_getClosestUnitInRectangle_d(Game* self, Position center) BWAPI_C_NOEXCEPT;
 Unit* Game_getClosestUnitInRectangle(Game* self, Position center, int32_t left, int32_t top, int32_t right, int32_t bottom) BWAPI_C_NOEXCEPT;
-Error Game_getLastError(Game* self) BWAPI_C_NOEXCEPT;
-bool Game_setLastError_d(Game* self) BWAPI_C_NOEXCEPT;
-bool Game_setLastError(Game* self, Error error) BWAPI_C_NOEXCEPT;
+Error Game_getLastError(Game* self) BWAPI_C_NOEXCEPT; /* deprecated: commands return their error in a Result, any later failure overwrites this */
+bool Game_setLastError_d(Game* self) BWAPI_C_NOEXCEPT; /* deprecated: commands return their error in a Result, any later failure overwrites this */
+bool Game_setLastError(Game* self, Error error) BWAPI_C_NOEXCEPT; /* deprecated: commands return their error in a Result, any later failure overwrites this */
 int32_t Game_mapWidth(Game* self) BWAPI_C_NOEXCEPT;
 int32_t Game_mapHeight(Game* self) BWAPI_C_NOEXCEPT;
 void Game_mapFileName(Game* self, Slice* out) BWAPI_C_NOEXCEPT; /* out: uint8_t, a string without a terminating zero */

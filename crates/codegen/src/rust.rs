@@ -326,6 +326,9 @@ fn method(out: &mut String, raw: &mut String, owner: &str, cpp: &str, recv: Recv
     if let Some(reason) = &m.bool_as_result {
         writeln!(decl, "    ///\n    /// {reason}").unwrap();
     }
+    if let Some(reason) = &m.deprecated {
+        writeln!(decl, "    #[deprecated = {reason:?}]").unwrap();
+    }
     write!(
         out,
         "{decl}    pub fn {}({}){ret_sig} {{\n        {body}\n    }}\n\n",
