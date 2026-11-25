@@ -158,97 +158,96 @@ unsafe extern "C" {
     pub(crate) fn Unit_isVisible_d(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_isVisible(self_: *mut Unit, player: *mut Player) -> bool;
     pub(crate) fn Unit_isTargetable(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_attack_Position_d(self_: *mut Unit, target: Pos) -> bool;
+    pub(crate) fn Unit_attack_Position_d(self_: *mut Unit, target: Pos) -> i32;
     pub(crate) fn Unit_attack_Position(
         self_: *mut Unit,
         target: Pos,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_attack_Unit_d(self_: *mut Unit, target: *mut Unit) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_attack_Unit_d(self_: *mut Unit, target: *mut Unit) -> i32;
     pub(crate) fn Unit_attack_Unit(
         self_: *mut Unit,
         target: *mut Unit,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_build(self_: *mut Unit, unit_type: i32, target: Pos) -> bool;
-    pub(crate) fn Unit_buildAddon(self_: *mut Unit, unit_type: i32) -> bool;
-    pub(crate) fn Unit_train(self_: *mut Unit, unit_type: i32) -> bool;
-    pub(crate) fn Unit_morph(self_: *mut Unit, unit_type: i32) -> bool;
-    pub(crate) fn Unit_research(self_: *mut Unit, tech: i32) -> bool;
-    pub(crate) fn Unit_upgrade(self_: *mut Unit, upgrade: i32) -> bool;
-    pub(crate) fn Unit_setRallyPoint_Position(self_: *mut Unit, target: Pos) -> bool;
-    pub(crate) fn Unit_setRallyPoint_Unit(self_: *mut Unit, target: *mut Unit) -> bool;
-    pub(crate) fn Unit_move_d(self_: *mut Unit, target: Pos) -> bool;
-    pub(crate) fn Unit_move(self_: *mut Unit, target: Pos, shift_queue_command: bool) -> bool;
-    pub(crate) fn Unit_patrol_d(self_: *mut Unit, target: Pos) -> bool;
-    pub(crate) fn Unit_patrol(self_: *mut Unit, target: Pos, shift_queue_command: bool) -> bool;
-    pub(crate) fn Unit_holdPosition_d(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_holdPosition(self_: *mut Unit, shift_queue_command: bool) -> bool;
-    pub(crate) fn Unit_stop_d(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_stop(self_: *mut Unit, shift_queue_command: bool) -> bool;
-    pub(crate) fn Unit_follow_d(self_: *mut Unit, target: *mut Unit) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_build(self_: *mut Unit, unit_type: i32, target: Pos) -> i32;
+    pub(crate) fn Unit_buildAddon(self_: *mut Unit, unit_type: i32) -> i32;
+    pub(crate) fn Unit_train(self_: *mut Unit, unit_type: i32) -> i32;
+    pub(crate) fn Unit_morph(self_: *mut Unit, unit_type: i32) -> i32;
+    pub(crate) fn Unit_research(self_: *mut Unit, tech: i32) -> i32;
+    pub(crate) fn Unit_upgrade(self_: *mut Unit, upgrade: i32) -> i32;
+    pub(crate) fn Unit_setRallyPoint_Position(self_: *mut Unit, target: Pos) -> i32;
+    pub(crate) fn Unit_setRallyPoint_Unit(self_: *mut Unit, target: *mut Unit) -> i32;
+    pub(crate) fn Unit_move_d(self_: *mut Unit, target: Pos) -> i32;
+    pub(crate) fn Unit_move(self_: *mut Unit, target: Pos, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_patrol_d(self_: *mut Unit, target: Pos) -> i32;
+    pub(crate) fn Unit_patrol(self_: *mut Unit, target: Pos, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_holdPosition_d(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_holdPosition(self_: *mut Unit, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_stop_d(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_stop(self_: *mut Unit, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_follow_d(self_: *mut Unit, target: *mut Unit) -> i32;
     pub(crate) fn Unit_follow(
         self_: *mut Unit,
         target: *mut Unit,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_gather_d(self_: *mut Unit, target: *mut Unit) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_gather_d(self_: *mut Unit, target: *mut Unit) -> i32;
     pub(crate) fn Unit_gather(
         self_: *mut Unit,
         target: *mut Unit,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_returnCargo_d(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_returnCargo(self_: *mut Unit, shift_queue_command: bool) -> bool;
-    pub(crate) fn Unit_repair_d(self_: *mut Unit, target: *mut Unit) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_returnCargo_d(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_returnCargo(self_: *mut Unit, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_repair_d(self_: *mut Unit, target: *mut Unit) -> i32;
     pub(crate) fn Unit_repair(
         self_: *mut Unit,
         target: *mut Unit,
         shift_queue_command: bool,
-    ) -> bool;
+    ) -> i32;
     pub(crate) fn Unit_burrow(self_: *mut Unit) -> i32;
     pub(crate) fn Unit_unburrow(self_: *mut Unit) -> i32;
-    pub(crate) fn Unit_cloak(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_decloak(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_siege(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_unsiege(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_lift(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_land(self_: *mut Unit, target: Pos) -> bool;
-    pub(crate) fn Unit_load_d(self_: *mut Unit, target: *mut Unit) -> bool;
-    pub(crate) fn Unit_load(self_: *mut Unit, target: *mut Unit, shift_queue_command: bool)
-    -> bool;
-    pub(crate) fn Unit_unload(self_: *mut Unit, target: *mut Unit) -> bool;
-    pub(crate) fn Unit_unloadAll_d(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_unloadAll(self_: *mut Unit, shift_queue_command: bool) -> bool;
-    pub(crate) fn Unit_unloadAll_Position_d(self_: *mut Unit, target: Pos) -> bool;
+    pub(crate) fn Unit_cloak(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_decloak(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_siege(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_unsiege(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_lift(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_land(self_: *mut Unit, target: Pos) -> i32;
+    pub(crate) fn Unit_load_d(self_: *mut Unit, target: *mut Unit) -> i32;
+    pub(crate) fn Unit_load(self_: *mut Unit, target: *mut Unit, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_unload(self_: *mut Unit, target: *mut Unit) -> i32;
+    pub(crate) fn Unit_unloadAll_d(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_unloadAll(self_: *mut Unit, shift_queue_command: bool) -> i32;
+    pub(crate) fn Unit_unloadAll_Position_d(self_: *mut Unit, target: Pos) -> i32;
     pub(crate) fn Unit_unloadAll_Position(
         self_: *mut Unit,
         target: Pos,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_rightClick_Position_d(self_: *mut Unit, target: Pos) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_rightClick_Position_d(self_: *mut Unit, target: Pos) -> i32;
     pub(crate) fn Unit_rightClick_Position(
         self_: *mut Unit,
         target: Pos,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_rightClick_Unit_d(self_: *mut Unit, target: *mut Unit) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_rightClick_Unit_d(self_: *mut Unit, target: *mut Unit) -> i32;
     pub(crate) fn Unit_rightClick_Unit(
         self_: *mut Unit,
         target: *mut Unit,
         shift_queue_command: bool,
-    ) -> bool;
-    pub(crate) fn Unit_haltConstruction(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_cancelConstruction(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_cancelAddon(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_cancelTrain_d(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_cancelTrain(self_: *mut Unit, slot: i32) -> bool;
-    pub(crate) fn Unit_cancelMorph(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_cancelResearch(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_cancelUpgrade(self_: *mut Unit) -> bool;
-    pub(crate) fn Unit_useTech_TechType_Position(self_: *mut Unit, tech: i32, target: Pos) -> bool;
-    pub(crate) fn Unit_useTech_TechType_d(self_: *mut Unit, tech: i32) -> bool;
-    pub(crate) fn Unit_useTech_TechType(self_: *mut Unit, tech: i32, target: *mut Unit) -> bool;
+    ) -> i32;
+    pub(crate) fn Unit_haltConstruction(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_cancelConstruction(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_cancelAddon(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_cancelTrain_d(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_cancelTrain(self_: *mut Unit, slot: i32) -> i32;
+    pub(crate) fn Unit_cancelMorph(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_cancelResearch(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_cancelUpgrade(self_: *mut Unit) -> i32;
+    pub(crate) fn Unit_useTech_TechType_Position(self_: *mut Unit, tech: i32, target: Pos) -> i32;
+    pub(crate) fn Unit_useTech_TechType_d(self_: *mut Unit, tech: i32) -> i32;
+    pub(crate) fn Unit_useTech_TechType(self_: *mut Unit, tech: i32, target: *mut Unit) -> i32;
     pub(crate) fn Unit_placeCOP(self_: *mut Unit, target: Pos) -> i32;
     pub(crate) fn Unit_canCommand(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_canCommandGrouped_d(self_: *mut Unit) -> bool;

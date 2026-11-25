@@ -305,64 +305,64 @@ bool Unit_isUpgrading(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_isVisible_d(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_isVisible(Unit* self, Player* player) BWAPI_C_NOEXCEPT;
 bool Unit_isTargetable(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_build(Unit* self, UnitType unitType, TilePosition target) BWAPI_C_NOEXCEPT;
-bool Unit_buildAddon(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT;
-bool Unit_train(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT;
-bool Unit_morph(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT;
-bool Unit_research(Unit* self, TechType tech) BWAPI_C_NOEXCEPT;
-bool Unit_upgrade(Unit* self, UpgradeType upgrade) BWAPI_C_NOEXCEPT;
-bool Unit_setRallyPoint_Position(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_setRallyPoint_Unit(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_move_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_move(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_patrol_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_patrol(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_holdPosition_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_holdPosition(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_stop_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_stop(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_follow_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_follow(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_gather_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_gather(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_returnCargo_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_returnCargo(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_repair_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
+int32_t Unit_attack_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_attack_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_attack_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_attack_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_build(Unit* self, UnitType unitType, TilePosition target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_buildAddon(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_train(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_morph(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_research(Unit* self, TechType tech) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_upgrade(Unit* self, UpgradeType upgrade) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_setRallyPoint_Position(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_setRallyPoint_Unit(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_move_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_move(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_patrol_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_patrol(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_holdPosition_d(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_holdPosition(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_stop_d(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_stop(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_follow_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_follow(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_gather_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_gather(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_returnCargo_d(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_returnCargo(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_repair_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
 int32_t Unit_burrow(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
 int32_t Unit_unburrow(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
-bool Unit_cloak(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_decloak(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_siege(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_unsiege(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_lift(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_land(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT;
-bool Unit_load_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_load(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_unload(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_haltConstruction(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelConstruction(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelAddon(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelTrain_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelTrain(Unit* self, int32_t slot) BWAPI_C_NOEXCEPT;
-bool Unit_cancelMorph(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelResearch(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelUpgrade(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_useTech_TechType_d(Unit* self, TechType tech) BWAPI_C_NOEXCEPT;
-bool Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) BWAPI_C_NOEXCEPT;
+int32_t Unit_cloak(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_decloak(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_siege(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unsiege(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_lift(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_land(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_load_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_load(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unload(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unloadAll_d(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unloadAll(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unloadAll_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_unloadAll_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_rightClick_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_rightClick_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_rightClick_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_rightClick_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_haltConstruction(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelConstruction(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelAddon(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelTrain_d(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelTrain(Unit* self, int32_t slot) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelMorph(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelResearch(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_cancelUpgrade(Unit* self) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_useTech_TechType_d(Unit* self, TechType tech) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
+int32_t Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
 int32_t Unit_placeCOP(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT; /* -1 = queued, else a BWAPI::Error */
 bool Unit_canCommand(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_canCommandGrouped_d(Unit* self) BWAPI_C_NOEXCEPT;

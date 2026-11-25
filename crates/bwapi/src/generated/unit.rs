@@ -743,143 +743,351 @@ impl<'game> Unit<'game> {
     }
 
     /// BWAPI: `BWAPI::UnitInterface::attack`
-    pub fn attack_position(self, target: Position) -> bool {
-        unsafe { raw::Unit_attack_Position_d(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn attack_position(self, target: Position) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_attack_Position_d(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::attack`
-    pub fn attack_position_with(self, target: Position, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_attack_Position(self.as_ptr(), Pos::from(target), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn attack_position_with(
+        self,
+        target: Position,
+        shift_queue_command: bool,
+    ) -> Result<(), Error> {
+        let ret = unsafe {
+            raw::Unit_attack_Position(self.as_ptr(), Pos::from(target), shift_queue_command)
+        };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::attack`
-    pub fn attack_unit(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_attack_Unit_d(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn attack_unit(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_attack_Unit_d(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::attack`
-    pub fn attack_unit_with(self, target: Unit<'game>, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_attack_Unit(self.as_ptr(), target.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn attack_unit_with(
+        self,
+        target: Unit<'game>,
+        shift_queue_command: bool,
+    ) -> Result<(), Error> {
+        let ret =
+            unsafe { raw::Unit_attack_Unit(self.as_ptr(), target.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::build`
-    pub fn build(self, unit_type: UnitType, target: TilePosition) -> bool {
-        unsafe { raw::Unit_build(self.as_ptr(), unit_type.id(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn build(self, unit_type: UnitType, target: TilePosition) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_build(self.as_ptr(), unit_type.id(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::buildAddon`
-    pub fn build_addon(self, unit_type: UnitType) -> bool {
-        unsafe { raw::Unit_buildAddon(self.as_ptr(), unit_type.id()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn build_addon(self, unit_type: UnitType) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_buildAddon(self.as_ptr(), unit_type.id()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::train`
-    pub fn train(self, unit_type: UnitType) -> bool {
-        unsafe { raw::Unit_train(self.as_ptr(), unit_type.id()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn train(self, unit_type: UnitType) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_train(self.as_ptr(), unit_type.id()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::morph`
-    pub fn morph(self, unit_type: UnitType) -> bool {
-        unsafe { raw::Unit_morph(self.as_ptr(), unit_type.id()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn morph(self, unit_type: UnitType) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_morph(self.as_ptr(), unit_type.id()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::research`
-    pub fn research(self, tech: TechType) -> bool {
-        unsafe { raw::Unit_research(self.as_ptr(), tech.id()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn research(self, tech: TechType) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_research(self.as_ptr(), tech.id()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::upgrade`
-    pub fn upgrade(self, upgrade: UpgradeType) -> bool {
-        unsafe { raw::Unit_upgrade(self.as_ptr(), upgrade.id()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn upgrade(self, upgrade: UpgradeType) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_upgrade(self.as_ptr(), upgrade.id()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::setRallyPoint`
-    pub fn set_rally_point_position(self, target: Position) -> bool {
-        unsafe { raw::Unit_setRallyPoint_Position(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn set_rally_point_position(self, target: Position) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_setRallyPoint_Position(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::setRallyPoint`
-    pub fn set_rally_point_unit(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_setRallyPoint_Unit(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn set_rally_point_unit(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_setRallyPoint_Unit(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::move`
-    pub fn move_to(self, target: Position) -> bool {
-        unsafe { raw::Unit_move_d(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn move_to(self, target: Position) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_move_d(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::move`
-    pub fn move_to_with(self, target: Position, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_move(self.as_ptr(), Pos::from(target), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn move_to_with(self, target: Position, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_move(self.as_ptr(), Pos::from(target), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::patrol`
-    pub fn patrol(self, target: Position) -> bool {
-        unsafe { raw::Unit_patrol_d(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn patrol(self, target: Position) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_patrol_d(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::patrol`
-    pub fn patrol_with(self, target: Position, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_patrol(self.as_ptr(), Pos::from(target), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn patrol_with(self, target: Position, shift_queue_command: bool) -> Result<(), Error> {
+        let ret =
+            unsafe { raw::Unit_patrol(self.as_ptr(), Pos::from(target), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::holdPosition`
-    pub fn hold_position(self) -> bool {
-        unsafe { raw::Unit_holdPosition_d(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn hold_position(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_holdPosition_d(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::holdPosition`
-    pub fn hold_position_with(self, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_holdPosition(self.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn hold_position_with(self, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_holdPosition(self.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::stop`
-    pub fn stop(self) -> bool {
-        unsafe { raw::Unit_stop_d(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn stop(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_stop_d(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::stop`
-    pub fn stop_with(self, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_stop(self.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn stop_with(self, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_stop(self.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::follow`
-    pub fn follow(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_follow_d(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn follow(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_follow_d(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::follow`
-    pub fn follow_with(self, target: Unit<'game>, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_follow(self.as_ptr(), target.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn follow_with(self, target: Unit<'game>, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_follow(self.as_ptr(), target.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::gather`
-    pub fn gather(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_gather_d(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn gather(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_gather_d(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::gather`
-    pub fn gather_with(self, target: Unit<'game>, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_gather(self.as_ptr(), target.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn gather_with(self, target: Unit<'game>, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_gather(self.as_ptr(), target.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::returnCargo`
-    pub fn return_cargo(self) -> bool {
-        unsafe { raw::Unit_returnCargo_d(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn return_cargo(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_returnCargo_d(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::returnCargo`
-    pub fn return_cargo_with(self, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_returnCargo(self.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn return_cargo_with(self, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_returnCargo(self.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::repair`
-    pub fn repair(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_repair_d(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn repair(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_repair_d(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::repair`
-    pub fn repair_with(self, target: Unit<'game>, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_repair(self.as_ptr(), target.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn repair_with(self, target: Unit<'game>, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_repair(self.as_ptr(), target.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::burrow`
@@ -907,152 +1115,368 @@ impl<'game> Unit<'game> {
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cloak`
-    pub fn cloak(self) -> bool {
-        unsafe { raw::Unit_cloak(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cloak(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cloak(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::decloak`
-    pub fn decloak(self) -> bool {
-        unsafe { raw::Unit_decloak(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn decloak(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_decloak(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::siege`
-    pub fn siege(self) -> bool {
-        unsafe { raw::Unit_siege(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn siege(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_siege(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unsiege`
-    pub fn unsiege(self) -> bool {
-        unsafe { raw::Unit_unsiege(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unsiege(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_unsiege(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::lift`
-    pub fn lift(self) -> bool {
-        unsafe { raw::Unit_lift(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn lift(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_lift(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::land`
-    pub fn land(self, target: TilePosition) -> bool {
-        unsafe { raw::Unit_land(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn land(self, target: TilePosition) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_land(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::load`
-    pub fn load(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_load_d(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn load(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_load_d(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::load`
-    pub fn load_with(self, target: Unit<'game>, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_load(self.as_ptr(), target.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn load_with(self, target: Unit<'game>, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_load(self.as_ptr(), target.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unload`
-    pub fn unload(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_unload(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unload(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_unload(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unloadAll`
-    pub fn unload_all(self) -> bool {
-        unsafe { raw::Unit_unloadAll_d(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unload_all(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_unloadAll_d(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unloadAll`
-    pub fn unload_all_with(self, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_unloadAll(self.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unload_all_with(self, shift_queue_command: bool) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_unloadAll(self.as_ptr(), shift_queue_command) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unloadAll`
-    pub fn unload_all_position(self, target: Position) -> bool {
-        unsafe { raw::Unit_unloadAll_Position_d(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unload_all_position(self, target: Position) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_unloadAll_Position_d(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::unloadAll`
-    pub fn unload_all_position_with(self, target: Position, shift_queue_command: bool) -> bool {
-        unsafe {
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn unload_all_position_with(
+        self,
+        target: Position,
+        shift_queue_command: bool,
+    ) -> Result<(), Error> {
+        let ret = unsafe {
             raw::Unit_unloadAll_Position(self.as_ptr(), Pos::from(target), shift_queue_command)
+        };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
         }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::rightClick`
-    pub fn right_click_position(self, target: Position) -> bool {
-        unsafe { raw::Unit_rightClick_Position_d(self.as_ptr(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn right_click_position(self, target: Position) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_rightClick_Position_d(self.as_ptr(), Pos::from(target)) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::rightClick`
-    pub fn right_click_position_with(self, target: Position, shift_queue_command: bool) -> bool {
-        unsafe {
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn right_click_position_with(
+        self,
+        target: Position,
+        shift_queue_command: bool,
+    ) -> Result<(), Error> {
+        let ret = unsafe {
             raw::Unit_rightClick_Position(self.as_ptr(), Pos::from(target), shift_queue_command)
+        };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
         }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::rightClick`
-    pub fn right_click_unit(self, target: Unit<'game>) -> bool {
-        unsafe { raw::Unit_rightClick_Unit_d(self.as_ptr(), target.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn right_click_unit(self, target: Unit<'game>) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_rightClick_Unit_d(self.as_ptr(), target.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::rightClick`
-    pub fn right_click_unit_with(self, target: Unit<'game>, shift_queue_command: bool) -> bool {
-        unsafe { raw::Unit_rightClick_Unit(self.as_ptr(), target.as_ptr(), shift_queue_command) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn right_click_unit_with(
+        self,
+        target: Unit<'game>,
+        shift_queue_command: bool,
+    ) -> Result<(), Error> {
+        let ret = unsafe {
+            raw::Unit_rightClick_Unit(self.as_ptr(), target.as_ptr(), shift_queue_command)
+        };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::haltConstruction`
-    pub fn halt_construction(self) -> bool {
-        unsafe { raw::Unit_haltConstruction(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn halt_construction(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_haltConstruction(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelConstruction`
-    pub fn cancel_construction(self) -> bool {
-        unsafe { raw::Unit_cancelConstruction(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_construction(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelConstruction(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelAddon`
-    pub fn cancel_addon(self) -> bool {
-        unsafe { raw::Unit_cancelAddon(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_addon(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelAddon(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelTrain`
-    pub fn cancel_train(self) -> bool {
-        unsafe { raw::Unit_cancelTrain_d(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_train(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelTrain_d(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelTrain`
-    pub fn cancel_train_with(self, slot: i32) -> bool {
-        unsafe { raw::Unit_cancelTrain(self.as_ptr(), slot) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_train_with(self, slot: i32) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelTrain(self.as_ptr(), slot) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelMorph`
-    pub fn cancel_morph(self) -> bool {
-        unsafe { raw::Unit_cancelMorph(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_morph(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelMorph(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelResearch`
-    pub fn cancel_research(self) -> bool {
-        unsafe { raw::Unit_cancelResearch(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_research(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelResearch(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::cancelUpgrade`
-    pub fn cancel_upgrade(self) -> bool {
-        unsafe { raw::Unit_cancelUpgrade(self.as_ptr()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn cancel_upgrade(self) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_cancelUpgrade(self.as_ptr()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::useTech`
-    pub fn use_tech_position(self, tech: TechType, target: Position) -> bool {
-        unsafe { raw::Unit_useTech_TechType_Position(self.as_ptr(), tech.id(), Pos::from(target)) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn use_tech_position(self, tech: TechType, target: Position) -> Result<(), Error> {
+        let ret = unsafe {
+            raw::Unit_useTech_TechType_Position(self.as_ptr(), tech.id(), Pos::from(target))
+        };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::useTech`
-    pub fn use_tech_unit(self, tech: TechType) -> bool {
-        unsafe { raw::Unit_useTech_TechType_d(self.as_ptr(), tech.id()) }
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn use_tech_unit(self, tech: TechType) -> Result<(), Error> {
+        let ret = unsafe { raw::Unit_useTech_TechType_d(self.as_ptr(), tech.id()) };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
+        }
     }
 
     /// BWAPI: `BWAPI::UnitInterface::useTech`
-    pub fn use_tech_unit_with(self, tech: TechType, target: Option<Unit<'game>>) -> bool {
-        unsafe {
+    ///
+    /// `false` return is interpreted as a BWAPI error
+    pub fn use_tech_unit_with(
+        self,
+        tech: TechType,
+        target: Option<Unit<'game>>,
+    ) -> Result<(), Error> {
+        let ret = unsafe {
             raw::Unit_useTech_TechType(
                 self.as_ptr(),
                 tech.id(),
                 target.map_or(core::ptr::null_mut(), Unit::as_ptr),
             )
+        };
+        if ret < 0 {
+            Ok(())
+        } else {
+            Err(Error::from_id(ret))
         }
     }
 

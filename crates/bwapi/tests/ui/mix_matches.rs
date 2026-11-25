@@ -2,7 +2,7 @@
 
 use bwapi::Unit;
 
-fn mix<'a, 'b>(a: Unit<'a>, b: Unit<'b>) -> bool {
+fn mix<'a, 'b>(a: Unit<'a>, b: Unit<'b>) -> Result<(), bwapi::Error> {
     a.attack_unit(b)
 }
 
