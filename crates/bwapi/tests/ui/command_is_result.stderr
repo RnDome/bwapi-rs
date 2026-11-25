@@ -1,0 +1,8 @@
+error[E0308]: mismatched types
+ --> tests/ui/command_is_result.rs:6:8
+  |
+6 |     if unit.morph(unit_type) {}
+  |        ^^^^^^^^^^^^^^^^^^^^^ expected `bool`, found `Result<(), Error>`
+  |
+  = note: expected type `bool`
+             found enum `Result<(), bwapi::Error>`
