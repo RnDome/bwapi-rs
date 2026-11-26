@@ -37,6 +37,8 @@ struct Lowering {
     markers: HashMap<String, Marker>,
     /// C names taken so far: one C namespace for the whole manifest.
     c_names: HashMap<String, Span>,
+    /// The first `#[bool_as_result]` method: its wrapper reads `Game::getLastError`.
+    command: Option<Span>,
 }
 
 /// Where a marker type occurs: the rules differ.
@@ -125,6 +127,21 @@ impl Lowering {
                     });
                 }
             }
+        }
+        // Without `Game_getLastError` the `#[bool_as_result]` wrappers fail to build.
+        let last_error = api
+            .handles
+            .iter()
+            .filter(|h| h.class.name.0 == "Game")
+            .flat_map(|h| &h.class.methods)
+            .any(|m| m.cpp.0 == "getLastError");
+        if let Some(span) = self.command
+            && !last_error
+        {
+            self.error(
+                span,
+                "`#[bool_as_result]` reads the refusal with `Game::getLastError`, it must not be skipped",
+            );
         }
         api
     }
@@ -297,6 +314,9 @@ impl Lowering {
                 );
             }
             let bool_as_result = attrs.get("bool_as_result").cloned();
+            if bool_as_result.is_some() {
+                self.command.get_or_insert(f.name.span());
+            }
             if bool_as_result.is_some() && ret != Type::Bool {
                 self.error(
                     f.name.span(),
