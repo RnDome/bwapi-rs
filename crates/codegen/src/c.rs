@@ -49,7 +49,7 @@ pub fn slice_elem(api: &Api, ret: &Type) -> String {
 pub struct Signature {
     pub ret: String,
     pub params: Vec<String>,
-    /// Trailing comment of the declaration: a deprecation or the `Slice* out` content.
+    /// Trailing comment of the declaration: the error of a command or the `Slice* out` content.
     pub comment: Option<String>,
 }
 
@@ -73,9 +73,10 @@ pub fn signature(api: &Api, recv: Option<&str>, m: &Method) -> Signature {
         Type::Vec(_) => Some(slice_elem(api, &m.ret)),
         _ => None,
     };
+    // A deprecation stays in Rust: its reason speaks of the Rust API.
     let mut comments = Vec::new();
-    if let Some(reason) = &m.deprecated {
-        comments.push(format!("deprecated: {reason}"));
+    if m.bool_as_result.is_some() {
+        comments.push("false return is an error: get it with Game_getLastError".to_owned());
     }
     if let Some(elem) = out {
         comments.push(format!("out: {elem}"));

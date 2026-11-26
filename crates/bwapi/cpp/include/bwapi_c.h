@@ -307,65 +307,65 @@ bool Unit_isUpgrading(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_isVisible_d(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_isVisible(Unit* self, Player* player) BWAPI_C_NOEXCEPT;
 bool Unit_isTargetable(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_attack_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_build(Unit* self, UnitType unitType, TilePosition target) BWAPI_C_NOEXCEPT;
-bool Unit_buildAddon(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT;
-bool Unit_train(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT;
-bool Unit_morph(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT;
-bool Unit_research(Unit* self, TechType tech) BWAPI_C_NOEXCEPT;
-bool Unit_upgrade(Unit* self, UpgradeType upgrade) BWAPI_C_NOEXCEPT;
-bool Unit_setRallyPoint_Position(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_setRallyPoint_Unit(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_move_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_move(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_patrol_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_patrol(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_holdPosition_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_holdPosition(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_stop_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_stop(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_follow_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_follow(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_gather_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_gather(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_returnCargo_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_returnCargo(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_repair_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_burrow(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_unburrow(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cloak(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_decloak(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_siege(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_unsiege(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_lift(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_land(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT;
-bool Unit_load_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_load(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_unload(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_unloadAll_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_rightClick_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT;
-bool Unit_haltConstruction(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelConstruction(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelAddon(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelTrain_d(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelTrain(Unit* self, int32_t slot) BWAPI_C_NOEXCEPT;
-bool Unit_cancelMorph(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelResearch(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_cancelUpgrade(Unit* self) BWAPI_C_NOEXCEPT;
-bool Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) BWAPI_C_NOEXCEPT;
-bool Unit_useTech_TechType_d(Unit* self, TechType tech) BWAPI_C_NOEXCEPT;
-bool Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) BWAPI_C_NOEXCEPT;
-bool Unit_placeCOP(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT;
+bool Unit_attack_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_attack_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_attack_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_attack_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_build(Unit* self, UnitType unitType, TilePosition target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_buildAddon(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_train(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_morph(Unit* self, UnitType unitType) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_research(Unit* self, TechType tech) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_upgrade(Unit* self, UpgradeType upgrade) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_setRallyPoint_Position(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_setRallyPoint_Unit(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_move_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_move(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_patrol_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_patrol(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_holdPosition_d(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_holdPosition(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_stop_d(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_stop(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_follow_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_follow(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_gather_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_gather(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_returnCargo_d(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_returnCargo(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_repair_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_burrow(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unburrow(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cloak(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_decloak(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_siege(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unsiege(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_lift(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_land(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_load_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_load(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unload(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unloadAll_d(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unloadAll(Unit* self, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unloadAll_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_unloadAll_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_rightClick_Position_d(Unit* self, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_rightClick_Position(Unit* self, Position target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_rightClick_Unit_d(Unit* self, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_rightClick_Unit(Unit* self, Unit* target, bool shiftQueueCommand) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_haltConstruction(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelConstruction(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelAddon(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelTrain_d(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelTrain(Unit* self, int32_t slot) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelMorph(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelResearch(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_cancelUpgrade(Unit* self) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_useTech_TechType_d(Unit* self, TechType tech) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
+bool Unit_placeCOP(Unit* self, TilePosition target) BWAPI_C_NOEXCEPT; /* false return is an error: get it with Game_getLastError */
 bool Unit_canCommand(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_canCommandGrouped_d(Unit* self) BWAPI_C_NOEXCEPT;
 bool Unit_canCommandGrouped(Unit* self, bool checkCommandibility) BWAPI_C_NOEXCEPT;
@@ -709,9 +709,9 @@ Unit* Game_getClosestUnit_d(Game* self, Position center) BWAPI_C_NOEXCEPT;
 Unit* Game_getClosestUnit(Game* self, Position center, int32_t radius) BWAPI_C_NOEXCEPT;
 Unit* Game_getClosestUnitInRectangle_d(Game* self, Position center) BWAPI_C_NOEXCEPT;
 Unit* Game_getClosestUnitInRectangle(Game* self, Position center, int32_t left, int32_t top, int32_t right, int32_t bottom) BWAPI_C_NOEXCEPT;
-Error Game_getLastError(Game* self) BWAPI_C_NOEXCEPT; /* deprecated: commands return their error in a Result, any later failure overwrites this */
-bool Game_setLastError_d(Game* self) BWAPI_C_NOEXCEPT; /* deprecated: commands return their error in a Result, any later failure overwrites this */
-bool Game_setLastError(Game* self, Error error) BWAPI_C_NOEXCEPT; /* deprecated: commands return their error in a Result, any later failure overwrites this */
+Error Game_getLastError(Game* self) BWAPI_C_NOEXCEPT;
+bool Game_setLastError_d(Game* self) BWAPI_C_NOEXCEPT;
+bool Game_setLastError(Game* self, Error error) BWAPI_C_NOEXCEPT;
 int32_t Game_mapWidth(Game* self) BWAPI_C_NOEXCEPT;
 int32_t Game_mapHeight(Game* self) BWAPI_C_NOEXCEPT;
 void Game_mapFileName(Game* self, Slice* out) BWAPI_C_NOEXCEPT; /* out: uint8_t, a string without a terminating zero */
