@@ -691,359 +691,300 @@ bool Unit_isTargetable(Unit* self) noexcept {
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of isTargetable");
   return ret;
 }
-int32_t Unit_attack_Position_d(Unit* self, Position target) noexcept {
+bool Unit_attack_Position_d(Unit* self, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->attack(BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of attack");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_attack_Position(Unit* self, Position target, bool shiftQueueCommand) noexcept {
+bool Unit_attack_Position(Unit* self, Position target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->attack(BWAPI::Position(target.x, target.y), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of attack");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_attack_Unit_d(Unit* self, Unit* target) noexcept {
+bool Unit_attack_Unit_d(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->attack(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of attack");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_attack_Unit(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
+bool Unit_attack_Unit(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->attack(reinterpret_cast<BWAPI::UnitInterface*>(target), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of attack");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_build(Unit* self, UnitType unitType, TilePosition target) noexcept {
+bool Unit_build(Unit* self, UnitType unitType, TilePosition target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->build(BWAPI::UnitType(unitType), BWAPI::TilePosition(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of build");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_buildAddon(Unit* self, UnitType unitType) noexcept {
+bool Unit_buildAddon(Unit* self, UnitType unitType) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->buildAddon(BWAPI::UnitType(unitType));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of buildAddon");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_train(Unit* self, UnitType unitType) noexcept {
+bool Unit_train(Unit* self, UnitType unitType) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->train(BWAPI::UnitType(unitType));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of train");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_morph(Unit* self, UnitType unitType) noexcept {
+bool Unit_morph(Unit* self, UnitType unitType) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->morph(BWAPI::UnitType(unitType));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of morph");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_research(Unit* self, TechType tech) noexcept {
+bool Unit_research(Unit* self, TechType tech) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->research(BWAPI::TechType(tech));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of research");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_upgrade(Unit* self, UpgradeType upgrade) noexcept {
+bool Unit_upgrade(Unit* self, UpgradeType upgrade) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->upgrade(BWAPI::UpgradeType(upgrade));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of upgrade");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_setRallyPoint_Position(Unit* self, Position target) noexcept {
+bool Unit_setRallyPoint_Position(Unit* self, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->setRallyPoint(BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of setRallyPoint");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_setRallyPoint_Unit(Unit* self, Unit* target) noexcept {
+bool Unit_setRallyPoint_Unit(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->setRallyPoint(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of setRallyPoint");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_move_d(Unit* self, Position target) noexcept {
+bool Unit_move_d(Unit* self, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->move(BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of move");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_move(Unit* self, Position target, bool shiftQueueCommand) noexcept {
+bool Unit_move(Unit* self, Position target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->move(BWAPI::Position(target.x, target.y), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of move");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_patrol_d(Unit* self, Position target) noexcept {
+bool Unit_patrol_d(Unit* self, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->patrol(BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of patrol");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_patrol(Unit* self, Position target, bool shiftQueueCommand) noexcept {
+bool Unit_patrol(Unit* self, Position target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->patrol(BWAPI::Position(target.x, target.y), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of patrol");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_holdPosition_d(Unit* self) noexcept {
+bool Unit_holdPosition_d(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->holdPosition();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of holdPosition");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_holdPosition(Unit* self, bool shiftQueueCommand) noexcept {
+bool Unit_holdPosition(Unit* self, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->holdPosition(shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of holdPosition");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_stop_d(Unit* self) noexcept {
+bool Unit_stop_d(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->stop();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of stop");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_stop(Unit* self, bool shiftQueueCommand) noexcept {
+bool Unit_stop(Unit* self, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->stop(shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of stop");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_follow_d(Unit* self, Unit* target) noexcept {
+bool Unit_follow_d(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->follow(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of follow");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_follow(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
+bool Unit_follow(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->follow(reinterpret_cast<BWAPI::UnitInterface*>(target), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of follow");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_gather_d(Unit* self, Unit* target) noexcept {
+bool Unit_gather_d(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->gather(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of gather");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_gather(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
+bool Unit_gather(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->gather(reinterpret_cast<BWAPI::UnitInterface*>(target), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of gather");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_returnCargo_d(Unit* self) noexcept {
+bool Unit_returnCargo_d(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->returnCargo();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of returnCargo");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_returnCargo(Unit* self, bool shiftQueueCommand) noexcept {
+bool Unit_returnCargo(Unit* self, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->returnCargo(shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of returnCargo");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_repair_d(Unit* self, Unit* target) noexcept {
+bool Unit_repair_d(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->repair(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of repair");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
+bool Unit_repair(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->repair(reinterpret_cast<BWAPI::UnitInterface*>(target), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of repair");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_burrow(Unit* self) noexcept {
+bool Unit_burrow(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->burrow();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of burrow");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unburrow(Unit* self) noexcept {
+bool Unit_unburrow(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unburrow();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unburrow");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cloak(Unit* self) noexcept {
+bool Unit_cloak(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cloak();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cloak");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_decloak(Unit* self) noexcept {
+bool Unit_decloak(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->decloak();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of decloak");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_siege(Unit* self) noexcept {
+bool Unit_siege(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->siege();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of siege");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unsiege(Unit* self) noexcept {
+bool Unit_unsiege(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unsiege();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unsiege");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_lift(Unit* self) noexcept {
+bool Unit_lift(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->lift();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of lift");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_land(Unit* self, TilePosition target) noexcept {
+bool Unit_land(Unit* self, TilePosition target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->land(BWAPI::TilePosition(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of land");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_load_d(Unit* self, Unit* target) noexcept {
+bool Unit_load_d(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->load(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of load");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_load(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
+bool Unit_load(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->load(reinterpret_cast<BWAPI::UnitInterface*>(target), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of load");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unload(Unit* self, Unit* target) noexcept {
+bool Unit_unload(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unload(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unload");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unloadAll_d(Unit* self) noexcept {
+bool Unit_unloadAll_d(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unloadAll();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unloadAll");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unloadAll(Unit* self, bool shiftQueueCommand) noexcept {
+bool Unit_unloadAll(Unit* self, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unloadAll(shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unloadAll");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unloadAll_Position_d(Unit* self, Position target) noexcept {
+bool Unit_unloadAll_Position_d(Unit* self, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unloadAll(BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unloadAll");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_unloadAll_Position(Unit* self, Position target, bool shiftQueueCommand) noexcept {
+bool Unit_unloadAll_Position(Unit* self, Position target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->unloadAll(BWAPI::Position(target.x, target.y), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of unloadAll");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_rightClick_Position_d(Unit* self, Position target) noexcept {
+bool Unit_rightClick_Position_d(Unit* self, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->rightClick(BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of rightClick");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_rightClick_Position(Unit* self, Position target, bool shiftQueueCommand) noexcept {
+bool Unit_rightClick_Position(Unit* self, Position target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->rightClick(BWAPI::Position(target.x, target.y), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of rightClick");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_rightClick_Unit_d(Unit* self, Unit* target) noexcept {
+bool Unit_rightClick_Unit_d(Unit* self, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->rightClick(reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of rightClick");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_rightClick_Unit(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
+bool Unit_rightClick_Unit(Unit* self, Unit* target, bool shiftQueueCommand) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->rightClick(reinterpret_cast<BWAPI::UnitInterface*>(target), shiftQueueCommand);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of rightClick");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_haltConstruction(Unit* self) noexcept {
+bool Unit_haltConstruction(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->haltConstruction();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of haltConstruction");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelConstruction(Unit* self) noexcept {
+bool Unit_cancelConstruction(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelConstruction();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelConstruction");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelAddon(Unit* self) noexcept {
+bool Unit_cancelAddon(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelAddon();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelAddon");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelTrain_d(Unit* self) noexcept {
+bool Unit_cancelTrain_d(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelTrain();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelTrain");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelTrain(Unit* self, int32_t slot) noexcept {
+bool Unit_cancelTrain(Unit* self, int32_t slot) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelTrain(slot);
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelTrain");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelMorph(Unit* self) noexcept {
+bool Unit_cancelMorph(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelMorph();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelMorph");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelResearch(Unit* self) noexcept {
+bool Unit_cancelResearch(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelResearch();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelResearch");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_cancelUpgrade(Unit* self) noexcept {
+bool Unit_cancelUpgrade(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->cancelUpgrade();
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of cancelUpgrade");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) noexcept {
+bool Unit_useTech_TechType_Position(Unit* self, TechType tech, Position target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->useTech(BWAPI::TechType(tech), BWAPI::Position(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of useTech");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_useTech_TechType_d(Unit* self, TechType tech) noexcept {
+bool Unit_useTech_TechType_d(Unit* self, TechType tech) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->useTech(BWAPI::TechType(tech));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of useTech");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) noexcept {
+bool Unit_useTech_TechType(Unit* self, TechType tech, Unit* target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->useTech(BWAPI::TechType(tech), reinterpret_cast<BWAPI::UnitInterface*>(target));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of useTech");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
-int32_t Unit_placeCOP(Unit* self, TilePosition target) noexcept {
+bool Unit_placeCOP(Unit* self, TilePosition target) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->placeCOP(BWAPI::TilePosition(target.x, target.y));
   static_assert(bwapi_c::same_v<decltype(ret), bool>, "bwapi.api: wrong return type of placeCOP");
-  if (ret) return -1;
-  return static_cast<int32_t>(BWAPI::BroodwarPtr->getLastError().getID());
+  return ret;
 }
 bool Unit_canCommand(Unit* self) noexcept {
   decltype(auto) ret = reinterpret_cast<BWAPI::UnitInterface*>(self)->canCommand();

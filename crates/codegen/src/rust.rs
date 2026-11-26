@@ -98,7 +98,11 @@ pub fn generate(api: &Api) -> Vec<OutputFile> {
         )
         .unwrap();
     }
-    write!(raw_rs, "\nunsafe extern \"C\" {{\n{raw}}}\n").unwrap();
+    write!(
+        raw_rs,
+        "\nunsafe extern \"C\" {{\n    pub(crate) fn bwapi_c_game() -> *mut Game;\n{raw}}}\n"
+    )
+    .unwrap();
     files.push(OutputFile {
         path: "raw.rs".into(),
         contents: raw_rs,
@@ -248,7 +252,7 @@ fn method(out: &mut String, raw: &mut String, owner: &str, cpp: &str, recv: Recv
     let slice_call = format!("let mut out = Slice::new();\n{};\n", raw_call(&out_call));
     let body = match ret {
         Type::Bool if m.bool_as_result.is_some() => format!(
-            "let ret = {};\nif ret < 0 {{\n    Ok(())\n}} else {{\n    Err(Error::from_id(ret))\n}}",
+            "if {} {{\n    Ok(())\n}} else {{\n    Err(Error::from_id(unsafe {{ raw::Game_getLastError(raw::bwapi_c_game()) }}))\n}}",
             raw_call(&call)
         ),
         Type::Void | Type::Bool | Type::I32 | Type::U32 | Type::F64 => raw_call(&call),
@@ -307,7 +311,6 @@ fn method(out: &mut String, raw: &mut String, owner: &str, cpp: &str, recv: Recv
             raw_params.push("out: *mut Slice".into());
             String::new()
         }
-        Type::Bool if m.bool_as_result.is_some() => " -> i32".to_owned(),
         t => format!(" -> {}", raw_ty(t)),
     };
     writeln!(
