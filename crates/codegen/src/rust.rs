@@ -98,7 +98,11 @@ pub fn generate(api: &Api) -> Vec<OutputFile> {
         )
         .unwrap();
     }
-    write!(raw_rs, "\nunsafe extern \"C\" {{\n{raw}}}\n").unwrap();
+    write!(
+        raw_rs,
+        "\nunsafe extern \"C\" {{\n    pub(crate) fn bwapi_c_game() -> *mut Game;\n{raw}}}\n"
+    )
+    .unwrap();
     files.push(OutputFile {
         path: "raw.rs".into(),
         contents: raw_rs,
@@ -247,6 +251,10 @@ fn method(out: &mut String, raw: &mut String, owner: &str, cpp: &str, recv: Recv
     out_call.push("&mut out".into());
     let slice_call = format!("let mut out = Slice::new();\n{};\n", raw_call(&out_call));
     let body = match ret {
+        Type::Bool if m.bool_as_result.is_some() => format!(
+            "if {} {{\n    Ok(())\n}} else {{\n    Err(Error::from_id(unsafe {{ raw::Game_getLastError(raw::bwapi_c_game()) }}))\n}}",
+            raw_call(&call)
+        ),
         Type::Void | Type::Bool | Type::I32 | Type::U32 | Type::F64 => raw_call(&call),
         Type::Handle { name, nullability } => {
             let get = format!(
@@ -314,12 +322,19 @@ fn method(out: &mut String, raw: &mut String, owner: &str, cpp: &str, recv: Recv
 
     let ret_sig = match ret {
         Type::Void => String::new(),
+        Type::Bool if m.bool_as_result.is_some() => " -> Result<(), Error>".to_owned(),
         _ => format!(" -> {}", public(ret)),
     };
+    let mut decl = format!("    /// BWAPI: `{cpp}::{}`\n", m.cpp.0);
+    if let Some(reason) = &m.bool_as_result {
+        writeln!(decl, "    ///\n    /// {reason}").unwrap();
+    }
+    if let Some(reason) = &m.deprecated {
+        writeln!(decl, "    #[deprecated = {reason:?}]").unwrap();
+    }
     write!(
         out,
-        "    /// BWAPI: `{cpp}::{}`\n    pub fn {}({}){ret_sig} {{\n        {body}\n    }}\n\n",
-        m.cpp.0,
+        "{decl}    pub fn {}({}){ret_sig} {{\n        {body}\n    }}\n\n",
         m.name.0,
         sig.join(", ")
     )

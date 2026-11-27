@@ -268,17 +268,20 @@ impl<'game> Game<'game> {
     }
 
     /// BWAPI: `BWAPI::Game::getLastError`
+    #[deprecated = "commands return their error in a Result, any later failure overwrites this"]
     pub fn last_error(self) -> Error {
         let ret = unsafe { raw::Game_getLastError(self.as_ptr()) };
         Error::from_id(ret)
     }
 
     /// BWAPI: `BWAPI::Game::setLastError`
+    #[deprecated = "commands return their error in a Result, any later failure overwrites this"]
     pub fn set_last_error(self) -> bool {
         unsafe { raw::Game_setLastError_d(self.as_ptr()) }
     }
 
     /// BWAPI: `BWAPI::Game::setLastError`
+    #[deprecated = "commands return their error in a Result, any later failure overwrites this"]
     pub fn set_last_error_with(self, error: Error) -> bool {
         unsafe { raw::Game_setLastError(self.as_ptr(), error.id()) }
     }

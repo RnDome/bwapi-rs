@@ -6,7 +6,9 @@
 //!
 //! Build and run: see "Running a bot" in the README of the repository.
 
-use bwapi::{Bot, Color, Context, CoordinateType, Game, TextColor, Unit, UnitQuery, UnitSet};
+use bwapi::{
+    Bot, Color, Context, CoordinateType, Error, Game, TextColor, Unit, UnitQuery, UnitSet,
+};
 
 struct ExampleBot<'game> {
     name: String,
@@ -37,14 +39,19 @@ impl<'game> ExampleBot<'game> {
     }
 
     fn give_orders(&self, cx: Context<'_, 'game>) {
+        let game = cx.game();
         for unit in self.own_units.iter(cx) {
             let unit_type = unit.unit_type();
+            // A refused command shows its error at the unit for this frame.
+            let show = |error: Error| game.draw_text_map(unit.position(), &format!("{error}"));
             if unit_type.is_worker() {
                 if !unit.is_idle() {
                     continue;
                 }
                 if unit.is_carrying_gas() || unit.is_carrying_minerals() {
-                    unit.return_cargo();
+                    if let Err(error) = unit.return_cargo() {
+                        show(error);
+                    }
                     continue;
                 }
                 let closest = self
@@ -52,10 +59,14 @@ impl<'game> ExampleBot<'game> {
                     .iter(cx)
                     .min_by_key(|&mineral| unit.distance_to_unit(mineral));
                 if let Some(mineral) = closest {
-                    unit.right_click_unit(mineral);
+                    if let Err(error) = unit.right_click_unit(mineral) {
+                        show(error);
+                    }
                 }
             } else if unit_type.is_resource_depot() && !unit.is_training() {
-                unit.train(unit_type.race().worker());
+                if let Err(error) = unit.train(unit_type.race().worker()) {
+                    show(error);
+                }
             }
         }
     }

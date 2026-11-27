@@ -775,3 +775,99 @@ fn skips_are_accepted() {
     // A C++ name may be a Rust keyword.
     assert_eq!(game.methods[0].cpp.0, "self");
 }
+
+// ------------------------------------------------------------------ bool_as_result
+
+#[test]
+fn bool_as_result_needs_a_bool_return() {
+    rejects(
+        &game(
+            r#"#[bool_as_result = "false: the last error says why"]
+            fn frame() -> i32 = getFrameCount;
+            fn last_error() -> i32 = getLastError;"#,
+        ),
+        &[("frame", "`#[bool_as_result")],
+    );
+}
+
+#[test]
+fn bool_as_result_needs_a_reason() {
+    rejects(
+        &game(
+            r#"#[bool_as_result = ""]
+            fn morph(unit_type: UnitType) -> bool = morph;
+            fn last_error() -> i32 = getLastError;"#,
+        ),
+        &[(r#""""#, "`#[bool_as_result]` needs a non-empty reason")],
+    );
+}
+
+#[test]
+fn bool_as_result_needs_last_error() {
+    // The error of a refusal is read with it: skipped or missing, it must be rejected.
+    rejects(
+        &game(
+            r#"#[bool_as_result = "false: the last error says why"]
+            fn morph(unit_type: UnitType) -> bool = morph;
+            #[skip = "not needed here"]
+            fn last_error = getLastError;"#,
+        ),
+        &[(
+            "morph",
+            "`#[bool_as_result]` reads the refusal with `Game::getLastError`",
+        )],
+    );
+    rejects(
+        &game(
+            r#"#[bool_as_result = "false: the last error says why"]
+            fn morph(unit_type: UnitType) -> bool = morph;"#,
+        ),
+        &[(
+            "morph",
+            "`#[bool_as_result]` reads the refusal with `Game::getLastError`",
+        )],
+    );
+}
+
+#[test]
+fn bool_as_result_is_accepted() {
+    let api = accepts(&game(
+        r#"#[bool_as_result = "false: the last error says why"]
+        fn morph(unit_type: UnitType) -> bool = morph;
+        #[bool_as_result = "false: the last error says why"]
+        fn hold_position(#[default] shift_queue_command: bool) -> bool = holdPosition;
+        fn frame() -> i32 = getFrameCount;
+        fn last_error() -> i32 = getLastError;"#,
+    ));
+    let methods = &api.handle("Game").class.methods;
+    // A call with defaults gives two methods.
+    assert_eq!(methods.len(), 5);
+    for m in &methods[..3] {
+        assert_eq!(
+            m.bool_as_result.as_deref(),
+            Some("false: the last error says why")
+        );
+        assert!(m.ret == Type::Bool);
+    }
+    assert_eq!(methods[3].bool_as_result, None);
+    assert_eq!(methods[4].bool_as_result, None);
+}
+
+// ------------------------------------------------------------------ deprecated
+
+#[test]
+fn deprecated_is_accepted() {
+    let api = accepts(&game(
+        r#"#[deprecated = "commands return their error"]
+        fn last_error() -> i32 = getLastError;
+        #[deprecated = "commands return their error"]
+        fn hold_position(#[default] shift_queue_command: bool) -> bool = holdPosition;"#,
+    ));
+    let methods = &api.handle("Game").class.methods;
+    // A call with defaults gives two methods.
+    assert_eq!(methods.len(), 3);
+    for m in methods {
+        assert_eq!(m.deprecated.as_deref(), Some("commands return their error"));
+        assert_eq!(m.bool_as_result, None);
+    }
+}

@@ -93,6 +93,10 @@ pub struct Method {
     pub cpp: CppIdent,
     pub args: Vec<Arg>,
     pub ret: Type,
+    /// `#[bool_as_result = "reason"]`: a command. A refusal returns its error instead of `bool`.
+    pub bool_as_result: Option<String>,
+    /// `#[deprecated = "reason"]`: a deprecated method. The reason says what to use instead.
+    pub deprecated: Option<String>,
 }
 
 pub struct Skip {

@@ -14,6 +14,7 @@ crate::runtime::types::opaque!(Region, "BWAPI::RegionInterface");
 crate::runtime::types::opaque!(Game, "BWAPI::Game");
 
 unsafe extern "C" {
+    pub(crate) fn bwapi_c_game() -> *mut Game;
     pub(crate) fn Unit_getID(self_: *mut Unit) -> i32;
     pub(crate) fn Unit_exists(self_: *mut Unit) -> bool;
     pub(crate) fn Unit_getReplayID(self_: *mut Unit) -> i32;

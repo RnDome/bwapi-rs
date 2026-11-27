@@ -37,6 +37,8 @@ struct Lowering {
     markers: HashMap<String, Marker>,
     /// C names taken so far: one C namespace for the whole manifest.
     c_names: HashMap<String, Span>,
+    /// The first `#[bool_as_result]` method: its wrapper reads `Game::getLastError`.
+    command: Option<Span>,
 }
 
 /// Where a marker type occurs: the rules differ.
@@ -126,6 +128,21 @@ impl Lowering {
                 }
             }
         }
+        // Without `Game_getLastError` the `#[bool_as_result]` wrappers fail to build.
+        let last_error = api
+            .handles
+            .iter()
+            .filter(|h| h.class.name.0 == "Game")
+            .flat_map(|h| &h.class.methods)
+            .any(|m| m.cpp.0 == "getLastError");
+        if let Some(span) = self.command
+            && !last_error
+        {
+            self.error(
+                span,
+                "`#[bool_as_result]` reads the refusal with `Game::getLastError`, it must not be skipped",
+            );
+        }
         api
     }
 
@@ -187,7 +204,16 @@ impl Lowering {
                 }
                 Entry::Const(_) => continue,
             };
-            let attrs = self.attrs(&f.attrs, &["skip", "non_null", "stable_address"]);
+            let attrs = self.attrs(
+                &f.attrs,
+                &[
+                    "skip",
+                    "non_null",
+                    "stable_address",
+                    "bool_as_result",
+                    "deprecated",
+                ],
+            );
             let name = RustIdent(f.name.to_string());
             let cpp = CppIdent(f.cpp.to_string());
             let Some(sig) = &f.sig else {
@@ -287,6 +313,17 @@ impl Lowering {
                     "`Set<T>` and `#[stable_address = \"why the set stays at one address for the whole match\"]` go together: `const XSet&` alone does not prove it",
                 );
             }
+            let bool_as_result = attrs.get("bool_as_result").cloned();
+            if bool_as_result.is_some() {
+                self.command.get_or_insert(f.name.span());
+            }
+            if bool_as_result.is_some() && ret != Type::Bool {
+                self.error(
+                    f.name.span(),
+                    "`#[bool_as_result = \"why BWAPI returns false\"]` applies only to a method that returns `bool`",
+                );
+            }
+            let deprecated = attrs.get("deprecated").cloned();
             // An overload is named in C by the types of the arguments a call cannot
             // omit: `Unit_attack_Position`, `Unit_canBuild_UnitType_TilePosition`.
             let mut c_name = format!("{c_prefix}_{}", cpp.0);
@@ -308,6 +345,8 @@ impl Lowering {
                     cpp: cpp.clone(),
                     args: args[..required].to_vec(),
                     ret: ret.clone(),
+                    bool_as_result: bool_as_result.clone(),
+                    deprecated: deprecated.clone(),
                 });
                 methods.push(Method {
                     name: RustIdent(format!("{}_with", name.0)),
@@ -315,6 +354,8 @@ impl Lowering {
                     cpp,
                     args,
                     ret,
+                    bool_as_result,
+                    deprecated,
                 });
             } else {
                 self.c_name(c_name.clone(), f.name.span());
@@ -324,6 +365,8 @@ impl Lowering {
                     cpp,
                     args,
                     ret,
+                    bool_as_result,
+                    deprecated,
                 });
             }
         }

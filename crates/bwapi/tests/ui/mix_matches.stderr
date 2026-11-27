@@ -1,7 +1,7 @@
 error: lifetime may not live long enough
  --> tests/ui/mix_matches.rs:6:5
   |
-5 | fn mix<'a, 'b>(a: Unit<'a>, b: Unit<'b>) -> bool {
+5 | fn mix<'a, 'b>(a: Unit<'a>, b: Unit<'b>) -> Result<(), bwapi::Error> {
   |        --  -- lifetime `'b` defined here
   |        |
   |        lifetime `'a` defined here
@@ -16,7 +16,7 @@ error: lifetime may not live long enough
 error: lifetime may not live long enough
  --> tests/ui/mix_matches.rs:6:5
   |
-5 | fn mix<'a, 'b>(a: Unit<'a>, b: Unit<'b>) -> bool {
+5 | fn mix<'a, 'b>(a: Unit<'a>, b: Unit<'b>) -> Result<(), bwapi::Error> {
   |        --  -- lifetime `'b` defined here
   |        |
   |        lifetime `'a` defined here

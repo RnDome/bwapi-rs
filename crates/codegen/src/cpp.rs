@@ -2,8 +2,8 @@
 //!
 //! Every thunk is `noexcept`, checks the declared return type with
 //! `static_assert` before converting it to its C type, and passes arguments
-//! without casts so that `-Wconversion -Werror` rejects narrowing. Handles cross
-//! as opaque C pointers: a thunk casts them to and from the BWAPI class the
+//! without casts so that `-Wconversion -Werror` rejects narrowing. Handles
+//! cross as opaque C pointers: a thunk casts them to and from the BWAPI class the
 //! manifest names. Set iteration is hand-written in `cpp/sets.h` and `cpp/sets.cpp`.
 
 use std::fmt::Write;

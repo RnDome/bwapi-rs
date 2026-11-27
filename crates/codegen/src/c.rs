@@ -49,8 +49,8 @@ pub fn slice_elem(api: &Api, ret: &Type) -> String {
 pub struct Signature {
     pub ret: String,
     pub params: Vec<String>,
-    /// What the function writes to `Slice* out`, for the comment of the declaration.
-    pub slice: Option<String>,
+    /// Trailing comment of the declaration: the error of a command or the `Slice* out` content.
+    pub comment: Option<String>,
 }
 
 /// The C signature of a function of the manifest.
@@ -68,11 +68,20 @@ pub fn signature(api: &Api, recv: Option<&str>, m: &Method) -> Signature {
             t => format!("{} {p}", c_type(api, t)),
         });
     }
-    let slice = match &m.ret {
+    let out = match &m.ret {
         Type::CxxString => Some("uint8_t, a string without a terminating zero".to_owned()),
         Type::Vec(_) => Some(slice_elem(api, &m.ret)),
         _ => None,
     };
+    // A deprecation stays in Rust: its reason speaks of the Rust API.
+    let mut comments = Vec::new();
+    if m.bool_as_result.is_some() {
+        comments.push("false return is an error: get it with Game_getLastError".to_owned());
+    }
+    if let Some(elem) = out {
+        comments.push(format!("out: {elem}"));
+    }
+    let comment = (!comments.is_empty()).then(|| comments.join(", "));
     let ret = match &m.ret {
         Type::Void => "void".into(),
         Type::CxxString | Type::Vec(_) => {
@@ -81,7 +90,11 @@ pub fn signature(api: &Api, recv: Option<&str>, m: &Method) -> Signature {
         }
         t => c_type(api, t),
     };
-    Signature { ret, params, slice }
+    Signature {
+        ret,
+        params,
+        comment,
+    }
 }
 
 /// The C parameter of an argument. A string is `const char* name, size_t nameLen`:
@@ -151,6 +164,8 @@ const MODULE: &str = r#"
 
 /* For `gameInit` of the bot DLL: sets BWAPI::BroodwarPtr. */
 void bwapi_c_game_init(Game* game) BWAPI_C_NOEXCEPT;
+/* The game of this module: the one bwapi_c_game_init set. */
+Game* bwapi_c_game(void) BWAPI_C_NOEXCEPT;
 /* For `newAIModule` of the bot DLL: a module passing its callbacks to bwapi_c_on_event. */
 AIModule* bwapi_c_new_module(void* module) BWAPI_C_NOEXCEPT;
 
@@ -275,8 +290,8 @@ fn declaration(out: &mut String, api: &Api, recv: Option<&str>, m: &Method) {
         sig.params.join(", ")
     };
     let comment = sig
-        .slice
-        .map(|elem| format!(" /* out: {elem} */"))
+        .comment
+        .map(|c| format!(" /* {c} */"))
         .unwrap_or_default();
     writeln!(
         out,
